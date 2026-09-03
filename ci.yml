@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build e Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar testes (headless)
+        run: npx ng test --watch=false --browsers=ChromeHeadless
+
+      - name: Build de produção
+        run: npx ng build
+
+  release:
+    name: Criar Release
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build de produção
+        run: npx ng build
+
+      - name: Compactar artefato de build
+        run: |
+          cd dist/investai-frontend/browser
+          zip -r ../../../investai-frontend-dist.zip .
+
+      - name: Descobrir versão do package.json
+        id: versao
+        run: echo "versao=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Criar tag e publicar Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.versao.outputs.versao }}-${{ github.run_number }}
+          name: Release v${{ steps.versao.outputs.versao }}-${{ github.run_number }}
+          generate_release_notes: true
+          files: investai-frontend-dist.zip
