@@ -1,1 +1,43 @@
-/* You can add global styles to this file, and also import other style files */
+@use './styles/tokens' as *;
+@forward './styles/themes';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color .2s ease, color .2s ease;
+}
+
+body {
+  font-family: $font-body;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: $font-display;
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+}
+a:hover {
+  filter: brightness(1.15);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: $radius-full;
+}
+
+@keyframes pingdot {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
