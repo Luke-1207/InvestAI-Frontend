@@ -1,0 +1,95 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar__logo">
+      <img src="logo.svg" alt="InvestAI" width="32" height="32" />
+      <div>
+        <h1>InvestAI</h1>
+        <p>AI Wealth Management</p>
+      </div>
+    </div>
+
+    <nav class="sidebar__nav">
+      @for (item of itensNav; track item.rota) {
+        <a [routerLink]="item.rota" routerLinkActive="ativo" class="sidebar__nav-item">
+          <span class="material-symbols-outlined">{{ item.icone }}</span>
+          <span>{{ item.rotulo }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__rodape">
+      <button type="button" class="sidebar__sair" (click)="sair()">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="conteudo">
+    <header class="header">
+      <div class="header__ticker">
+        @for (indicador of indicadores; track indicador.label) {
+          <div class="header__ticker-item">
+            <span class="header__ticker-label">{{ indicador.label }}</span>
+            <span class="header__ticker-valor">{{ indicador.valor }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="header__acoes">
+        <div class="header__busca">
+          <span class="material-symbols-outlined">search</span>
+          <input
+            #campoBusca
+            type="text"
+            placeholder="Buscar ativos... ( / )"
+            [value]="termoBusca()"
+            (input)="termoBusca.set($any($event.target).value)"
+          />
+        </div>
+
+        <button type="button" class="header__icone-botao" routerLink="/notificacoes" title="Notificações">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+
+        <button type="button" class="header__icone-botao" (click)="alternarTema()" title="Alternar tema">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button>
+
+        <div class="header__usuario" data-menu-usuario>
+          <button type="button" class="header__avatar" (click)="alternarMenuUsuario()">
+            {{ iniciais }}
+          </button>
+
+          @if (menuUsuarioAberto()) {
+            <div class="header__dropdown">
+              <a routerLink="/perfil" (click)="menuUsuarioAberto.set(false)">
+                <span class="material-symbols-outlined">person</span>
+                <span>Perfil</span>
+              </a>
+              <div class="header__dropdown-divisor"></div>
+              <a (click)="sair()">
+                <span class="material-symbols-outlined">logout</span>
+                <span>Sair</span>
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <router-outlet />
+    </main>
+
+    <footer class="footer">
+      <p>© 2026 InvestAI. Todos os direitos reservados.</p>
+      <div class="footer__links">
+        <a href="#">Termos de Uso</a>
+        <a href="#">Privacidade</a>
+        <a href="#">Conformidade</a>
+        <a href="#">Regras da CVM</a>
+      </div>
+    </footer>
+  </div>
+</div>
