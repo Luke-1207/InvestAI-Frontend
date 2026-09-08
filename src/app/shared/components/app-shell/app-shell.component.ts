@@ -1,8 +1,8 @@
 import { Component, ElementRef, HostListener, ViewChild, signal } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
+import { AuthService } from '../../services/auth.service';
 import { IndicadorTicker } from '../../models/indicador-mercado';
-import { UsuarioLogado } from '../../models/usuario-logado';
 
 interface ItemNav {
   rota: string;
@@ -34,12 +34,7 @@ export class AppShellComponent {
     { rota: '/perfil', rotulo: 'Perfil', icone: 'person' },
   ];
 
-  readonly usuario: UsuarioLogado = {
-    nome: 'Usuário',
-    email: '',
-    role: 'USUARIO',
-  };
-
+  // TODO(INVAI-87): substituir pelos dados reais de IndicadoresMercadoResponseDTO.
   readonly indicadores: IndicadorTicker[] = [
     { label: 'IBOVESPA', valor: '—' },
     { label: 'DÓLAR', valor: '—' },
@@ -50,16 +45,11 @@ export class AppShellComponent {
 
   constructor(
     protected readonly themeService: ThemeService,
-    private readonly router: Router,
+    protected readonly authService: AuthService,
   ) {}
 
   get iniciais(): string {
-    return this.usuario.nome
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((parte) => parte.charAt(0).toUpperCase())
-      .join('');
+    return this.authService.iniciais();
   }
 
   alternarMenuUsuario(): void {
@@ -72,7 +62,7 @@ export class AppShellComponent {
 
   sair(): void {
     this.menuUsuarioAberto.set(false);
-    this.router.navigateByUrl('/auth');
+    this.authService.logout();
   }
 
   @HostListener('document:keydown', ['$event'])
