@@ -1,0 +1,94 @@
+@use '../../../../styles/tokens' as *;
+
+.auth-layout {
+  display: flex;
+  height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.auth-layout__institucional {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: $space-12;
+  box-sizing: border-box;
+  border-right: 1px solid var(--border-default);
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+}
+
+.auth-layout__logo {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  margin-bottom: $space-10;
+
+  h1 {
+    font-family: $font-display;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  p {
+    font-family: $font-mono;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin: 2px 0 0;
+  }
+}
+
+.auth-layout__headline {
+  h2 {
+    font-family: $font-display;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    max-width: 460px;
+    margin: 0 0 $space-4;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 440px;
+    margin: 0;
+  }
+}
+
+.auth-layout__cvm {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+
+  .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--success-ai);
+  }
+}
+
+.auth-layout__formulario {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-12;
+  box-sizing: border-box;
+}
+
+.auth-layout__formulario-wrapper {
+  width: 100%;
+  max-width: 420px;
+}
