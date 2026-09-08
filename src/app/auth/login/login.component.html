@@ -1,0 +1,46 @@
+<app-auth-layout>
+  <h3 class="auth-form__titulo">Entrar na sua conta</h3>
+  <p class="auth-form__subtitulo">Acesse suas recomendações personalizadas geradas por IA.</p>
+
+  @if (erro()) {
+    <div class="auth-form__alerta auth-form__alerta--erro">
+      <span class="material-symbols-outlined">error</span>
+      {{ erro() }}
+    </div>
+  }
+
+  <form [formGroup]="formulario" (ngSubmit)="enviar()">
+    <div class="auth-form__campos">
+      <div
+        class="auth-form__campo"
+        [class.auth-form__campo--erro]="formulario.controls.email.invalid && formulario.controls.email.touched"
+      >
+        <label for="email">E-MAIL</label>
+        <input id="email" type="email" formControlName="email" placeholder="voce@email.com" />
+        @if (formulario.controls.email.invalid && formulario.controls.email.touched) {
+          <div class="auth-form__erro-campo">Informe um e-mail válido.</div>
+        }
+      </div>
+
+      <div
+        class="auth-form__campo"
+        [class.auth-form__campo--erro]="formulario.controls.senha.invalid && formulario.controls.senha.touched"
+      >
+        <label for="senha">SENHA</label>
+        <input id="senha" type="password" formControlName="senha" placeholder="••••••••" />
+        @if (formulario.controls.senha.invalid && formulario.controls.senha.touched) {
+          <div class="auth-form__erro-campo">Informe sua senha.</div>
+        }
+      </div>
+
+      <button type="submit" class="auth-form__botao" [disabled]="carregando()">
+        {{ carregando() ? 'Entrando...' : 'Entrar' }}
+      </button>
+
+      <div class="auth-form__links">
+        <a routerLink="/auth/recuperar-senha">Esqueci minha senha</a>
+        <a routerLink="/auth/cadastro" class="auth-form__link--destaque">Cadastrar</a>
+      </div>
+    </div>
+  </form>
+</app-auth-layout>
