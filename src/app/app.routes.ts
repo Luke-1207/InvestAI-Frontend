@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { AppShellComponent } from './shared/components/app-shell/app-shell.component';
+import { authGuard } from './shared/guards/auth.guard';
+import { gestorGuard } from './shared/guards/gestor.guard';
 
 export const routes: Routes = [
   {
@@ -9,6 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     component: AppShellComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -40,6 +43,7 @@ export const routes: Routes = [
       },
       {
         path: 'gestor',
+        canActivate: [gestorGuard],
         loadChildren: () => import('./gestor/gestor.routes').then((m) => m.GESTOR_ROUTES),
       },
       {
