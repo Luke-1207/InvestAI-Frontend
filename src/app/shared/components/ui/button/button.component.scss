@@ -1,0 +1,41 @@
+@use '../../../../../styles/tokens' as *;
+
+.app-button {
+  width: 100%;
+  padding: 14px $space-4;
+  background: var(--accent);
+  color: var(--accent-on-accent);
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, opacity .15s, background-color .15s;
+  box-shadow: 0 0 15px rgba(192, 193, 255, 0.2);
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--secundaria {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  }
+
+  &--carregando {
+    opacity: 0.8;
+  }
+}

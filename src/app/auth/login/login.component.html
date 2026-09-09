@@ -11,31 +11,27 @@
 
   <form [formGroup]="formulario" (ngSubmit)="enviar()">
     <div class="auth-form__campos">
-      <div
-        class="auth-form__campo"
-        [class.auth-form__campo--erro]="formulario.controls.email.invalid && formulario.controls.email.touched"
-      >
-        <label for="email">E-MAIL</label>
-        <input id="email" type="email" formControlName="email" placeholder="voce@email.com" />
-        @if (formulario.controls.email.invalid && formulario.controls.email.touched) {
-          <div class="auth-form__erro-campo">Informe um e-mail válido.</div>
-        }
-      </div>
+      <app-input
+        formControlName="email"
+        rotulo="E-MAIL"
+        tipo="email"
+        placeholder="voce@email.com"
+        [mostrarErro]="formulario.controls.email.invalid && formulario.controls.email.touched"
+        mensagemErro="Informe um e-mail válido."
+      />
 
-      <div
-        class="auth-form__campo"
-        [class.auth-form__campo--erro]="formulario.controls.senha.invalid && formulario.controls.senha.touched"
-      >
-        <label for="senha">SENHA</label>
-        <input id="senha" type="password" formControlName="senha" placeholder="••••••••" />
-        @if (formulario.controls.senha.invalid && formulario.controls.senha.touched) {
-          <div class="auth-form__erro-campo">Informe sua senha.</div>
-        }
-      </div>
+      <app-input
+        formControlName="senha"
+        rotulo="SENHA"
+        tipo="password"
+        placeholder="••••••••"
+        [mostrarErro]="formulario.controls.senha.invalid && formulario.controls.senha.touched"
+        mensagemErro="Informe sua senha."
+      />
 
-      <button type="submit" class="auth-form__botao" [disabled]="carregando()">
+      <app-button tipoHtml="submit" [carregando]="carregando()">
         {{ carregando() ? 'Entrando...' : 'Entrar' }}
-      </button>
+      </app-button>
 
       <div class="auth-form__links">
         <a routerLink="/auth/recuperar-senha">Esqueci minha senha</a>

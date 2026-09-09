@@ -9,6 +9,11 @@ export const routes: Routes = [
     loadChildren: () => import('./auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
   {
+    path: 'onboarding',
+    canActivate: [authGuard],
+    loadChildren: () => import('./onboarding/onboarding.routes').then((m) => m.ONBOARDING_ROUTES),
+  },
+  {
     path: '',
     component: AppShellComponent,
     canActivate: [authGuard],

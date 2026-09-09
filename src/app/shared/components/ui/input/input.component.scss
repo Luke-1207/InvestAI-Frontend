@@ -1,0 +1,48 @@
+@use '../../../../../styles/tokens' as *;
+
+.app-input {
+  label {
+    display: block;
+    font-family: $font-mono;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: $space-2;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: $space-3 $space-4;
+    background: var(--bg-input);
+    border: 1px solid var(--border-strong);
+    border-radius: $radius-md;
+    color: var(--text-primary);
+    font-family: $font-body;
+    font-size: 16px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+
+    &:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(192, 193, 255, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &--erro input {
+    border-color: var(--danger);
+  }
+}
+
+.app-input__erro {
+  font-family: $font-body;
+  font-size: 13px;
+  color: var(--danger);
+  margin-top: $space-1;
+}
