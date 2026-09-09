@@ -1,14 +1,33 @@
 <div class="app-input" [class.app-input--erro]="mostrarErro()">
   <label [for]="id">{{ rotulo() }}</label>
-  <input
-    [id]="id"
-    [type]="tipo()"
-    [placeholder]="placeholder()"
-    [value]="valor()"
-    [disabled]="desabilitado()"
-    (input)="aoDigitar($event)"
-    (blur)="aoPerderFoco()"
-  />
+
+  <div class="app-input__wrapper">
+    <input
+      [id]="id"
+      [type]="tipoEfetivo()"
+      [placeholder]="placeholder()"
+      [value]="valor()"
+      [disabled]="desabilitado()"
+      [class.app-input__campo--com-icone]="ehCampoDeSenha()"
+      (input)="aoDigitar($event)"
+      (blur)="aoPerderFoco()"
+    />
+
+    @if (ehCampoDeSenha()) {
+      <button
+        type="button"
+        class="app-input__alternar-senha"
+        tabindex="-1"
+        (click)="alternarVisibilidadeSenha()"
+        [attr.aria-label]="senhaVisivel() ? 'Ocultar senha' : 'Mostrar senha'"
+      >
+        <span class="material-symbols-outlined">
+          {{ senhaVisivel() ? 'visibility_off' : 'visibility' }}
+        </span>
+      </button>
+    }
+  </div>
+
   @if (mostrarErro() && mensagemErro()) {
     <div class="app-input__erro">{{ mensagemErro() }}</div>
   }

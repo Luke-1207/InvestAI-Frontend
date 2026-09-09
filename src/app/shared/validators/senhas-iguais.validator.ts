@@ -1,12 +1,14 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function senhasIguaisValidator(grupo: AbstractControl): ValidationErrors | null {
-  const senha = grupo.get('senha')?.value;
-  const confirmarSenha = grupo.get('confirmarSenha')?.value;
+export function senhasIguaisValidator(campoSenha: string, campoConfirmacao: string): ValidatorFn {
+  return (grupo: AbstractControl): ValidationErrors | null => {
+    const senha = grupo.get(campoSenha)?.value;
+    const confirmacao = grupo.get(campoConfirmacao)?.value;
 
-  if (!senha || !confirmarSenha) {
-    return null;
-  }
+    if (!senha || !confirmacao) {
+      return null;
+    }
 
-  return senha === confirmarSenha ? null : { senhasDiferentes: true };
+    return senha === confirmacao ? null : { senhasDiferentes: true };
+  };
 }

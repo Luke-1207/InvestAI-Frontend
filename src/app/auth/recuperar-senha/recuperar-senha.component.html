@@ -1,0 +1,44 @@
+<app-auth-layout>
+  <h3 class="auth-form__titulo">Recuperar senha</h3>
+  <p class="auth-form__subtitulo">
+    Informe o e-mail cadastrado na sua conta para receber o link de redefinição.
+  </p>
+
+  @if (enviado()) {
+    <div class="auth-form__alerta auth-form__alerta--sucesso">
+      <span class="material-symbols-outlined">mark_email_read</span>
+      Link de redefinição enviado para o seu e-mail.
+    </div>
+    <div class="auth-form__links">
+      <a routerLink="/auth/login">Voltar para o login</a>
+    </div>
+  } @else {
+    @if (erro()) {
+      <div class="auth-form__alerta auth-form__alerta--erro">
+        <span class="material-symbols-outlined">error</span>
+        {{ erro() }}
+      </div>
+    }
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()">
+      <div class="auth-form__campos">
+        <app-input
+          formControlName="email"
+          rotulo="E-MAIL"
+          tipo="email"
+          placeholder="voce@email.com"
+          [mostrarErro]="formulario.controls.email.invalid && formulario.controls.email.touched"
+          mensagemErro="Informe um e-mail válido."
+        />
+
+        <app-button tipoHtml="submit" [carregando]="carregando()">
+          {{ carregando() ? 'Enviando...' : 'Enviar link de redefinição' }}
+        </app-button>
+
+        <div class="auth-form__links">
+          <a routerLink="/auth/login">Voltar para o login</a>
+        </div>
+      </div>
+    </form>
+  }
+</app-auth-layout>
