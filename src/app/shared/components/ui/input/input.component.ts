@@ -1,4 +1,4 @@
-import { Component, forwardRef, input, signal } from '@angular/core';
+import { Component, computed, forwardRef, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 let proximoId = 0;
@@ -26,6 +26,13 @@ export class InputComponent implements ControlValueAccessor {
   protected readonly id = `app-input-${proximoId++}`;
   protected readonly valor = signal('');
   protected readonly desabilitado = signal(false);
+  protected readonly senhaVisivel = signal(false);
+
+  protected readonly ehCampoDeSenha = computed(() => this.tipo() === 'password');
+
+  protected readonly tipoEfetivo = computed(() =>
+    this.ehCampoDeSenha() && this.senhaVisivel() ? 'text' : this.tipo(),
+  );
 
   private aoMudar: (valor: string) => void = () => {};
   private aoTocar: () => void = () => {};
@@ -54,5 +61,9 @@ export class InputComponent implements ControlValueAccessor {
 
   protected aoPerderFoco(): void {
     this.aoTocar();
+  }
+
+  protected alternarVisibilidadeSenha(): void {
+    this.senhaVisivel.set(!this.senhaVisivel());
   }
 }

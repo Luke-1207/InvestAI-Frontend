@@ -33,6 +33,16 @@ export interface CadastroResponse {
   role: 'USUARIO' | 'GESTOR';
 }
 
+export interface EsqueciSenhaRequest {
+  email: string;
+}
+
+export interface RedefinirSenhaRequest {
+  token: string;
+  novaSenha: string;
+  confirmarNovaSenha: string;
+}
+
 interface TokenPayload {
   sub: string;
   userId: string;
@@ -119,6 +129,14 @@ export class AuthService {
 
   obterRefreshToken(): string | null {
     return localStorage.getItem(CHAVE_REFRESH_TOKEN);
+  }
+
+  esqueciSenha(dados: EsqueciSenhaRequest): Observable<{ mensagem: string }> {
+    return this.http.post<{ mensagem: string }>(`${this.baseUrl}/esqueci-senha`, dados);
+  }
+
+  redefinirSenha(dados: RedefinirSenhaRequest): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/redefinir-senha`, dados);
   }
 
   private carregarUsuarioAtual(): void {
