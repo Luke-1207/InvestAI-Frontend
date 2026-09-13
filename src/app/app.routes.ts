@@ -53,7 +53,10 @@ export const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'dashboard',
+        loadComponent: () =>
+          import('./pagina-nao-encontrada/pagina-nao-encontrada.component').then(
+            (m) => m.PaginaNaoEncontradaComponent,
+          ),
       },
     ],
   },
