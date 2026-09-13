@@ -1,0 +1,16 @@
+<div class="toast-container">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="toast" [class]="'toast--' + toast.tipo">
+      <span class="material-symbols-outlined toast__icone">{{ icone(toast.tipo) }}</span>
+      <span class="toast__mensagem">{{ toast.mensagem }}</span>
+      <button
+        type="button"
+        class="toast__fechar"
+        (click)="toastService.remover(toast.id)"
+        aria-label="Fechar notificação"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  }
+</div>

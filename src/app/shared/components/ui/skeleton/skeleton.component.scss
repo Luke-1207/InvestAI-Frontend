@@ -1,0 +1,10 @@
+.app-skeleton {
+  background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-chip) 50%, var(--bg-muted) 75%);
+  background-size: 200% 100%;
+  animation: app-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes app-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

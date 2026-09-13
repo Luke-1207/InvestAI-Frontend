@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, catchError, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UsuarioResponseDTO } from '../models/usuario';
+import { ToastService } from './toast.service';
 
 const CHAVE_ACCESS_TOKEN = 'investai-access-token';
 const CHAVE_REFRESH_TOKEN = 'investai-refresh-token';
@@ -83,6 +84,7 @@ export class AuthService {
   constructor(
     private readonly http: HttpClient,
     private readonly router: Router,
+    private readonly toastService: ToastService,
   ) {
     if (this.autenticado()) {
       this.carregarUsuarioAtual();
@@ -109,11 +111,15 @@ export class AuthService {
       .pipe(tap((resposta) => this.armazenarTokens(resposta)));
   }
 
-  logout(): void {
+  logout(mensagem?: string): void {
     const refreshToken = this.obterRefreshToken();
 
     this.limparSessaoLocal();
     this.router.navigateByUrl('/auth');
+
+    if (mensagem) {
+      this.toastService.erro(mensagem);
+    }
 
     if (refreshToken) {
       this.http

@@ -1,0 +1,25 @@
+@use '../../../../../styles/tokens' as *;
+
+.skeleton-detalhe {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+}
+
+.skeleton-detalhe__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.skeleton-detalhe__titulos {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.skeleton-detalhe__linhas {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
