@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject, catchError, filter, switchMap, take, throw
 import { AuthService } from '../services/auth.service';
 
 const ROTAS_SEM_TOKEN = ['/auth/login', '/auth/cadastro', '/auth/refresh', '/auth/esqueci-senha', '/auth/redefinir-senha'];
+const MENSAGEM_SESSAO_EXPIRADA = 'Sua sessão expirou, faça login novamente.';
 
 let renovandoToken = false;
 const tokenRenovado$ = new BehaviorSubject<string | null>(null);
@@ -38,8 +39,8 @@ function tratar401(
   authService: AuthService,
 ): Observable<HttpEvent<unknown>> {
   if (!authService.obterRefreshToken()) {
-    authService.logout();
-    return throwError(() => new Error('Sessão expirada — faça login novamente.'));
+    authService.logout(MENSAGEM_SESSAO_EXPIRADA);
+    return throwError(() => new Error(MENSAGEM_SESSAO_EXPIRADA));
   }
 
   if (!renovandoToken) {
@@ -56,7 +57,7 @@ function tratar401(
       }),
       catchError((erroRefresh) => {
         renovandoToken = false;
-        authService.logout();
+        authService.logout(MENSAGEM_SESSAO_EXPIRADA);
         return throwError(() => erroRefresh);
       }),
     );

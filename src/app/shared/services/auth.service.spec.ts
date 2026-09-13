@@ -4,6 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
+import {ToastService} from './toast.service';
 
 function criarTokenFalso(payload: Record<string, unknown>): string {
   const base64 = (obj: object) =>
@@ -107,5 +108,32 @@ describe('AuthService', () => {
     const req = httpMock.expectOne(`${baseUrl}/logout`);
     expect(req.request.body).toEqual({ refreshToken: 'refresh-xyz' });
     req.flush(null);
+  });
+
+  it('logout(mensagem) deve exibir um toast de erro — usado só na sessão expirada forçada', () => {
+    localStorage.setItem('investai-access-token', tokenValido);
+    localStorage.setItem('investai-refresh-token', 'refresh-xyz');
+    spyOn(router, 'navigateByUrl');
+    const toastService = TestBed.inject(ToastService);
+
+    service.logout('Sua sessão expirou, faça login novamente.');
+
+    expect(toastService.toasts().length).toBe(1);
+    expect(toastService.toasts()[0].tipo).toBe('erro');
+    expect(toastService.toasts()[0].mensagem).toBe('Sua sessão expirou, faça login novamente.');
+
+    httpMock.expectOne(`${baseUrl}/logout`).flush(null);
+  });
+
+  it('logout() sem mensagem (clique manual em Sair) não deve exibir nenhum toast', () => {
+    localStorage.setItem('investai-access-token', tokenValido);
+    localStorage.setItem('investai-refresh-token', 'refresh-xyz');
+    spyOn(router, 'navigateByUrl');
+    const toastService = TestBed.inject(ToastService);
+
+    service.logout();
+
+    expect(toastService.toasts().length).toBe(0);
+    httpMock.expectOne(`${baseUrl}/logout`).flush(null);
   });
 });
