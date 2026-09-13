@@ -1,0 +1,17 @@
+<div class="estado-erro">
+  <span
+    class="material-symbols-outlined estado-erro__icone"
+    [class.estado-erro__icone--alerta]="variante() === 'alerta'"
+  >
+    {{ icone() }}
+  </span>
+
+  <h2 class="estado-erro__titulo">{{ titulo() }}</h2>
+  <p class="estado-erro__mensagem">{{ mensagem() }}</p>
+
+  @if (textoAcao()) {
+    <div class="estado-erro__acao">
+      <app-button (click)="acao.emit()">{{ textoAcao() }}</app-button>
+    </div>
+  }
+</div>
