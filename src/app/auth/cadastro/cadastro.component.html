@@ -1,0 +1,58 @@
+<app-auth-layout>
+  <h3 class="auth-form__titulo">Criar sua conta</h3>
+  <p class="auth-form__subtitulo">Responda um quiz rápido e receba recomendações sob medida.</p>
+
+  @if (erro()) {
+    <div class="auth-form__alerta auth-form__alerta--erro">
+      <span class="material-symbols-outlined">error</span>
+      {{ erro() }}
+    </div>
+  }
+
+  <form [formGroup]="formulario" (ngSubmit)="enviar()">
+    <div class="auth-form__campos">
+      <app-input
+        formControlName="nome"
+        rotulo="NOME COMPLETO"
+        placeholder="Seu nome"
+        [mostrarErro]="formulario.controls.nome.invalid && formulario.controls.nome.touched"
+        mensagemErro="Nome deve ter entre 2 e 150 caracteres."
+      />
+
+      <app-input
+        formControlName="email"
+        rotulo="E-MAIL"
+        tipo="email"
+        placeholder="voce@email.com"
+        [mostrarErro]="formulario.controls.email.invalid && formulario.controls.email.touched"
+        mensagemErro="Informe um e-mail válido."
+      />
+
+      <app-input
+        formControlName="senha"
+        rotulo="CRIAR SENHA"
+        tipo="password"
+        placeholder="Mínimo de 8 caracteres"
+        [mostrarErro]="formulario.controls.senha.invalid && formulario.controls.senha.touched"
+        mensagemErro="A senha precisa ter no mínimo 8 caracteres."
+      />
+
+      <app-input
+        formControlName="confirmarSenha"
+        rotulo="CONFIRMAR SENHA"
+        tipo="password"
+        placeholder="Repita a senha"
+        [mostrarErro]="senhasNaoConferem"
+        mensagemErro="As senhas não conferem."
+      />
+
+      <app-button tipoHtml="submit" [carregando]="carregando()">
+        {{ carregando() ? 'Criando conta...' : 'Criar conta e responder o quiz' }}
+      </app-button>
+
+      <div class="auth-form__links">
+        <a routerLink="/auth/login">Já tenho conta — entrar</a>
+      </div>
+    </div>
+  </form>
+</app-auth-layout>

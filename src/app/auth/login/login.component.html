@@ -1,0 +1,42 @@
+<app-auth-layout>
+  <h3 class="auth-form__titulo">Entrar na sua conta</h3>
+  <p class="auth-form__subtitulo">Acesse suas recomendações personalizadas geradas por IA.</p>
+
+  @if (erro()) {
+    <div class="auth-form__alerta auth-form__alerta--erro">
+      <span class="material-symbols-outlined">error</span>
+      {{ erro() }}
+    </div>
+  }
+
+  <form [formGroup]="formulario" (ngSubmit)="enviar()">
+    <div class="auth-form__campos">
+      <app-input
+        formControlName="email"
+        rotulo="E-MAIL"
+        tipo="email"
+        placeholder="voce@email.com"
+        [mostrarErro]="formulario.controls.email.invalid && formulario.controls.email.touched"
+        mensagemErro="Informe um e-mail válido."
+      />
+
+      <app-input
+        formControlName="senha"
+        rotulo="SENHA"
+        tipo="password"
+        placeholder="••••••••"
+        [mostrarErro]="formulario.controls.senha.invalid && formulario.controls.senha.touched"
+        mensagemErro="Informe sua senha."
+      />
+
+      <app-button tipoHtml="submit" [carregando]="carregando()">
+        {{ carregando() ? 'Entrando...' : 'Entrar' }}
+      </app-button>
+
+      <div class="auth-form__links">
+        <a routerLink="/auth/recuperar-senha">Esqueci minha senha</a>
+        <a routerLink="/auth/cadastro" class="auth-form__link--destaque">Cadastrar</a>
+      </div>
+    </div>
+  </form>
+</app-auth-layout>

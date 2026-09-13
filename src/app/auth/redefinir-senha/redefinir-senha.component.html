@@ -1,0 +1,56 @@
+<app-auth-layout>
+  @if (tokenAusente) {
+    <h3 class="auth-form__titulo">Link inválido</h3>
+    <p class="auth-form__subtitulo">
+      Esse link de redefinição está incompleto ou expirado. Solicite um novo.
+    </p>
+    <div class="auth-form__links">
+      <a routerLink="/auth/recuperar-senha" class="auth-form__link--destaque">Solicitar novo link</a>
+    </div>
+  } @else if (concluido()) {
+    <h3 class="auth-form__titulo">Senha redefinida</h3>
+    <div class="auth-form__alerta auth-form__alerta--sucesso">
+      <span class="material-symbols-outlined">check_circle</span>
+      Sua senha foi alterada com sucesso.
+    </div>
+    <div class="auth-form__links">
+      <a routerLink="/auth/login" class="auth-form__link--destaque">Ir para o login</a>
+    </div>
+  } @else {
+    <h3 class="auth-form__titulo">Criar nova senha</h3>
+    <p class="auth-form__subtitulo">Escolha uma nova senha para a sua conta.</p>
+
+    @if (erro()) {
+      <div class="auth-form__alerta auth-form__alerta--erro">
+        <span class="material-symbols-outlined">error</span>
+        {{ erro() }}
+      </div>
+    }
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()">
+      <div class="auth-form__campos">
+        <app-input
+          formControlName="novaSenha"
+          rotulo="NOVA SENHA"
+          tipo="password"
+          placeholder="Mínimo de 8 caracteres"
+          [mostrarErro]="formulario.controls.novaSenha.invalid && formulario.controls.novaSenha.touched"
+          mensagemErro="A senha precisa ter no mínimo 8 caracteres."
+        />
+
+        <app-input
+          formControlName="confirmarNovaSenha"
+          rotulo="CONFIRMAR NOVA SENHA"
+          tipo="password"
+          placeholder="Repita a nova senha"
+          [mostrarErro]="senhasNaoConferem"
+          mensagemErro="As senhas não conferem."
+        />
+
+        <app-button tipoHtml="submit" [carregando]="carregando()">
+          {{ carregando() ? 'Salvando...' : 'Redefinir senha' }}
+        </app-button>
+      </div>
+    </form>
+  }
+</app-auth-layout>

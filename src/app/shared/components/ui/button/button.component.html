@@ -1,0 +1,9 @@
+<button
+  [type]="tipoHtml()"
+  [disabled]="desabilitado() || carregando()"
+  class="app-button"
+  [class.app-button--secundaria]="variante() === 'secundaria'"
+  [class.app-button--carregando]="carregando()"
+>
+  <ng-content />
+</button>

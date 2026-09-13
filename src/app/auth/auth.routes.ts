@@ -1,7 +1,27 @@
 import { Routes } from '@angular/router';
 
-/**
- * Rotas do domínio de autenticação (login, cadastro, recuperação de senha).
- * Preenchidas nos próximos cards (INVAI-83, INVAI-84, INVAI-85).
- */
-export const AUTH_ROUTES: Routes = [];
+export const AUTH_ROUTES: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'login',
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'cadastro',
+    loadComponent: () => import('./cadastro/cadastro.component').then((m) => m.CadastroComponent),
+  },
+  {
+    path: 'recuperar-senha',
+    loadComponent: () =>
+      import('./recuperar-senha/recuperar-senha.component').then((m) => m.RecuperarSenhaComponent),
+  },
+  {
+    path: 'redefinir-senha',
+    loadComponent: () =>
+      import('./redefinir-senha/redefinir-senha.component').then((m) => m.RedefinirSenhaComponent),
+  },
+];

@@ -1,13 +1,14 @@
   {
   "name": "investai-frontend",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:investai-frontend": "node dist/investai-frontend/server/server.mjs"
+    "serve:ssr:investai-frontend": "node dist/investai-frontend/server/server.mjs",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless"
   },
   "private": true,
   "dependencies": {
