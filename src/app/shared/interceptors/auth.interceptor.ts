@@ -16,6 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (
   const authService = inject(AuthService);
 
   const ehRotaPublica = ROTAS_SEM_TOKEN.some((rota) => requisicao.url.includes(rota));
+  const ehLogout = requisicao.url.includes('/auth/logout');
   const token = authService.obterAccessToken();
 
   const requisicaoComToken =
@@ -25,7 +26,7 @@ export const authInterceptor: HttpInterceptorFn = (
 
   return next(requisicaoComToken).pipe(
     catchError((erro: HttpErrorResponse) => {
-      if (erro.status !== 401 || ehRotaPublica) {
+      if (erro.status !== 401 || ehRotaPublica || ehLogout) {
         return throwError(() => erro);
       }
       return tratar401(requisicao, next, authService);
