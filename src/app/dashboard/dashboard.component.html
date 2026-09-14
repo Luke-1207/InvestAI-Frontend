@@ -1,0 +1,154 @@
+<div class="dashboard">
+  @if (carregando()) {
+    <div class="dashboard__estado">
+      <app-spinner tamanho="grande" />
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregarDashboard()" />
+  } @else {
+    @if (dashboardService.dashboard(); as dados) {
+      <h1 class="dashboard__titulo">Visão Geral</h1>
+
+      @if (!dados.perfil.perfilPreenchido) {
+        <div class="dashboard__perfil-incompleto">
+          <span class="material-symbols-outlined">assignment_late</span>
+          <div class="dashboard__perfil-incompleto-texto">
+            <h3>Complete seu perfil pra receber sugestões personalizadas</h3>
+            <p>Leva menos de 2 minutos e a InvestAI passa a te mostrar recomendações sob medida.</p>
+          </div>
+          <a routerLink="/onboarding" class="dashboard__link-quiz">Responder o quiz</a>
+        </div>
+      }
+
+      @if (dicaDoDia(); as dica) {
+        <div class="dashboard__dica-do-dia">
+          <span class="dashboard__dica-etiqueta">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            Dica do Dia
+          </span>
+          <h2>{{ dica.codigo }} — {{ dica.nome }}</h2>
+          <p class="dashboard__dica-justificativa">{{ dica.justificativa }}</p>
+          <div class="dashboard__dica-metricas">
+            <span class="dashboard__preco">R$ {{ dica.preco | number: '1.2-2' }}</span>
+            <span
+              class="dashboard__variacao"
+              [class.dashboard__variacao--positiva]="dica.variacaoDia >= 0"
+              [class.dashboard__variacao--negativa]="dica.variacaoDia < 0"
+            >
+              {{ dica.variacaoDia >= 0 ? '+' : '' }}{{ dica.variacaoDia | number: '1.2-2' }}%
+            </span>
+            <span class="dashboard__score-texto">Score {{ dica.score }}</span>
+          </div>
+        </div>
+      }
+
+      <section class="dashboard__secao">
+        <h2>Sugestões de Renda Variável</h2>
+        @if (dados.sugestoesRendaVariavel.itens.length > 0) {
+          <div class="dashboard__grid">
+            @for (item of dados.sugestoesRendaVariavel.itens; track item.codigo) {
+              <div class="dashboard__card">
+                <div class="dashboard__card-cabecalho">
+                  <div>
+                    <h4>{{ item.codigo }}</h4>
+                    <p>{{ item.nome }}</p>
+                  </div>
+                  <span
+                    class="dashboard__score-circulo"
+                    [style.color]="corCompatibilidade[item.compatibilidade]"
+                    [style.border-color]="corCompatibilidade[item.compatibilidade]"
+                  >
+                    {{ item.score }}
+                  </span>
+                </div>
+                <div class="dashboard__card-metricas">
+                  <span class="dashboard__preco">R$ {{ item.preco | number: '1.2-2' }}</span>
+                  <span
+                    class="dashboard__variacao"
+                    [class.dashboard__variacao--positiva]="item.variacaoDia >= 0"
+                    [class.dashboard__variacao--negativa]="item.variacaoDia < 0"
+                  >
+                    {{ item.variacaoDia >= 0 ? '+' : '' }}{{ item.variacaoDia | number: '1.2-2' }}%
+                  </span>
+                </div>
+                <p class="dashboard__card-justificativa">{{ item.justificativa }}</p>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="dashboard__mensagem-vazia">{{ dados.sugestoesRendaVariavel.mensagem }}</p>
+        }
+      </section>
+
+      <section class="dashboard__secao">
+        <h2>Sugestões de Renda Fixa</h2>
+        @if (dados.sugestoesRendaFixa.itens.length > 0) {
+          <div class="dashboard__grid">
+            @for (item of dados.sugestoesRendaFixa.itens; track item.id) {
+              <div class="dashboard__card">
+                <div class="dashboard__card-cabecalho">
+                  <div>
+                    <h4>{{ item.nome }}</h4>
+                    <p>{{ item.categoria }}</p>
+                  </div>
+                  <span
+                    class="dashboard__score-circulo"
+                    [style.color]="corCompatibilidade[item.compatibilidade]"
+                    [style.border-color]="corCompatibilidade[item.compatibilidade]"
+                  >
+                    {{ item.score }}
+                  </span>
+                </div>
+                <div class="dashboard__card-metricas">
+                  <span>{{ item.taxa }}% a.a.</span>
+                  <span>Vence em {{ item.vencimento | date: 'dd/MM/yyyy' }}</span>
+                </div>
+                <p class="dashboard__card-justificativa">{{ item.justificativa }}</p>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="dashboard__mensagem-vazia">{{ dados.sugestoesRendaFixa.mensagem }}</p>
+        }
+      </section>
+
+      @if (dados.perfil.perfilPreenchido) {
+        <div class="dashboard__resumo-grid">
+          <div class="dashboard__resumo-card">
+            <h3>Seu perfil</h3>
+            <p class="dashboard__perfil-tipo">{{ dados.perfil.perfilRisco.descricao }}</p>
+
+            <div class="dashboard__barra-linha">
+              <span>Risco</span>
+              <div class="dashboard__barra">
+                @for (i of tresEtapas; track i) {
+                  <span
+                    class="dashboard__barra-segmento"
+                    [class.dashboard__barra-segmento--ativo]="i <= indiceRisco(dados.perfil.perfilRisco.valor)"
+                  ></span>
+                }
+              </div>
+            </div>
+
+            <div class="dashboard__barra-linha">
+              <span>Horizonte</span>
+              <div class="dashboard__barra">
+                @for (i of tresEtapas; track i) {
+                  <span
+                    class="dashboard__barra-segmento"
+                    [class.dashboard__barra-segmento--ativo]="i <= indiceHorizonte(dados.perfil.horizonteInvestimento.valor)"
+                  ></span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard__resumo-card">
+            <h3>Distribuição Recomendada</h3>
+            <app-donut-chart [segmentos]="segmentosAlocacao()" />
+          </div>
+        </div>
+      }
+    }
+  }
+</div>

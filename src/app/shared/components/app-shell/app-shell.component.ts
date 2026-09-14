@@ -1,7 +1,8 @@
-import { Component, ElementRef, HostListener, ViewChild, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
+import { DashboardService } from '../../services/dashboard.service';
 import { IndicadorTicker } from '../../models/indicador-mercado';
 
 interface ItemNav {
@@ -17,8 +18,12 @@ interface ItemNav {
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
-export class AppShellComponent {
+export class AppShellComponent implements OnInit {
   @ViewChild('campoBusca') campoBusca?: ElementRef<HTMLInputElement>;
+
+  protected readonly themeService = inject(ThemeService);
+  protected readonly authService = inject(AuthService);
+  private readonly dashboardService = inject(DashboardService);
 
   readonly menuUsuarioAberto = signal(false);
   readonly termoBusca = signal('');
@@ -34,19 +39,32 @@ export class AppShellComponent {
     { rota: '/perfil', rotulo: 'Perfil', icone: 'person' },
   ];
 
-  // TODO(INVAI-87): substituir pelos dados reais de IndicadoresMercadoResponseDTO.
-  readonly indicadores: IndicadorTicker[] = [
-    { label: 'IBOVESPA', valor: '—' },
-    { label: 'DÓLAR', valor: '—' },
-    { label: 'EURO', valor: '—' },
-    { label: 'SELIC', valor: '—' },
-    { label: 'IPCA', valor: '—' },
-  ];
+  readonly indicadores = computed<IndicadorTicker[]>(() => {
+    const dados = this.dashboardService.dashboard()?.indicadoresMercado;
+    if (!dados) {
+      return [
+        { label: 'IBOVESPA', valor: '—' },
+        { label: 'DÓLAR', valor: '—' },
+        { label: 'EURO', valor: '—' },
+        { label: 'SELIC', valor: '—' },
+        { label: 'IPCA', valor: '—' },
+      ];
+    }
 
-  constructor(
-    protected readonly themeService: ThemeService,
-    protected readonly authService: AuthService,
-  ) {}
+    return [
+      { label: 'IBOVESPA', valor: dados.ibovespaPontos.toLocaleString('pt-BR'), positivo: dados.ibovespaVariacaoDia >= 0 },
+      { label: 'DÓLAR', valor: `R$ ${dados.dolarValor.toFixed(2)}`, positivo: dados.dolarVariacaoDia >= 0 },
+      { label: 'EURO', valor: `R$ ${dados.euroValor.toFixed(2)}`, positivo: dados.euroVariacaoDia >= 0 },
+      { label: 'SELIC', valor: `${dados.selicAtual.toFixed(2)}%` },
+      { label: 'IPCA', valor: `${dados.ipcaAcumulado12m.toFixed(2)}%` },
+    ];
+  });
+
+  ngOnInit(): void {
+    if (!this.dashboardService.dashboard()) {
+      this.dashboardService.carregar().subscribe();
+    }
+  }
 
   get iniciais(): string {
     return this.authService.iniciais();
