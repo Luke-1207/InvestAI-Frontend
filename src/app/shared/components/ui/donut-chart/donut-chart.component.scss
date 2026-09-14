@@ -1,0 +1,38 @@
+@use '../../../../../styles/tokens' as *;
+
+.donut-chart {
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+}
+
+.donut-chart__legenda {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.donut-chart__item {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-body;
+  font-size: 14px;
+}
+
+.donut-chart__ponto {
+  width: 10px;
+  height: 10px;
+  border-radius: $radius-full;
+  flex-shrink: 0;
+}
+
+.donut-chart__rotulo {
+  color: var(--text-secondary);
+}
+
+.donut-chart__percentual {
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-left: auto;
+}

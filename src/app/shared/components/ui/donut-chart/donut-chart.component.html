@@ -1,0 +1,40 @@
+<div class="donut-chart">
+  <svg
+    [attr.width]="tamanhoSvg()"
+    [attr.height]="tamanhoSvg()"
+    [attr.viewBox]="'0 0 ' + tamanhoSvg() + ' ' + tamanhoSvg()"
+  >
+    <circle
+      [attr.cx]="centro()"
+      [attr.cy]="centro()"
+      [attr.r]="raio()"
+      fill="none"
+      [attr.stroke-width]="espessura()"
+      stroke="var(--bg-muted)"
+    />
+    @for (arco of arcos(); track arco.rotulo) {
+      <circle
+        [attr.cx]="centro()"
+        [attr.cy]="centro()"
+        [attr.r]="raio()"
+        fill="none"
+        [attr.stroke]="arco.cor"
+        [attr.stroke-width]="espessura()"
+        [attr.stroke-dasharray]="arco.dasharray"
+        [attr.stroke-dashoffset]="arco.dashoffset"
+        [attr.transform]="'rotate(-90 ' + centro() + ' ' + centro() + ')'"
+        stroke-linecap="butt"
+      />
+    }
+  </svg>
+
+  <div class="donut-chart__legenda">
+    @for (arco of arcos(); track arco.rotulo) {
+      <div class="donut-chart__item">
+        <span class="donut-chart__ponto" [style.background]="arco.cor"></span>
+        <span class="donut-chart__rotulo">{{ arco.rotulo }}</span>
+        <span class="donut-chart__percentual">{{ arco.percentual }}%</span>
+      </div>
+    }
+  </div>
+</div>
