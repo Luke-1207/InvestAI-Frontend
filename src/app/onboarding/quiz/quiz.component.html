@@ -1,0 +1,59 @@
+<div class="quiz">
+  @if (carregando()) {
+    <div class="quiz__estado">
+      <app-spinner tamanho="grande" />
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregarQuiz()" />
+  } @else {
+    @if (perguntaAtual(); as pergunta) {
+      <div class="quiz__progresso">
+        <div class="quiz__progresso-barra" [style.width.%]="progresso()"></div>
+      </div>
+
+      <div class="quiz__conteudo">
+        <p class="quiz__contador">
+          Pergunta {{ etapaAtual() + 1 }} de {{ perguntas().length }}
+          @if (pergunta.tipo === 'MULTIPLA_ESCOLHA') {
+            <span class="quiz__dica">— selecione uma ou mais opções</span>
+          }
+        </p>
+
+        <h2 class="quiz__pergunta">{{ pergunta.texto }}</h2>
+
+        <div class="quiz__opcoes">
+          @for (opcao of pergunta.opcoes; track opcao.id) {
+            <button
+              type="button"
+              class="quiz__opcao"
+              [class.quiz__opcao--selecionada]="estaSelecionada(opcao.id)"
+              (click)="selecionarOpcao(opcao.id)"
+            >
+              <span class="quiz__opcao-emoji">{{ opcao.emoji }}</span>
+              <span class="quiz__opcao-texto">{{ opcao.texto }}</span>
+            </button>
+          }
+        </div>
+
+        <div class="quiz__navegacao">
+          @if (etapaAtual() > 0) {
+            <button type="button" class="quiz__voltar" (click)="voltar()">Voltar</button>
+          } @else {
+            <span></span>
+          }
+
+          <div class="quiz__continuar">
+            <app-button
+              tipoHtml="button"
+              [desabilitado]="!podeContinuar()"
+              [carregando]="enviando()"
+              (click)="continuar()"
+            >
+              {{ enviando() ? 'Salvando...' : ehUltimaEtapa() ? 'Concluir' : 'Continuar' }}
+            </app-button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>
