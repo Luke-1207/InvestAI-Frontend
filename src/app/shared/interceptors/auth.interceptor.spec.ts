@@ -65,4 +65,30 @@ describe('authInterceptor', () => {
     expect(req.request.headers.get('Authorization')).toBe('Bearer meu-token');
     req.flush({});
   });
+
+  it('/auth/logout deve receber o Authorization normalmente (não é rota pública)', () => {
+    spyOn(authService, 'obterAccessToken').and.returnValue('token-de-quem-esta-saindo');
+
+    http.post('http://localhost:8080/investai-api/v1/auth/logout', { refreshToken: 'r1' }).subscribe();
+
+    const req = httpMock.expectOne('http://localhost:8080/investai-api/v1/auth/logout');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token-de-quem-esta-saindo');
+    req.flush(null);
+  });
+
+  it('um 401 em /auth/logout NUNCA deve disparar um segundo logout forçado (evita loop/toast duplicado)', () => {
+    spyOn(authService, 'obterAccessToken').and.returnValue('token-qualquer');
+    spyOn(authService, 'logout');
+    let erroRecebido: unknown = null;
+
+    http.post('http://localhost:8080/investai-api/v1/auth/logout', { refreshToken: 'r1' }).subscribe({
+      error: (erro) => (erroRecebido = erro),
+    });
+
+    const req = httpMock.expectOne('http://localhost:8080/investai-api/v1/auth/logout');
+    req.flush({ mensagem: 'Não autorizado' }, { status: 401, statusText: 'Unauthorized' });
+
+    expect(authService.logout).not.toHaveBeenCalled();
+    expect(erroRecebido).toBeTruthy(); // o erro ainda propaga normalmente pra quem chamou
+  });
 });

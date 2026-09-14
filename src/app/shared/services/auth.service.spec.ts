@@ -136,4 +136,19 @@ describe('AuthService', () => {
     expect(toastService.toasts().length).toBe(0);
     httpMock.expectOne(`${baseUrl}/logout`).flush(null);
   });
+
+  it('logout() deve disparar a chamada ao backend ANTES de limpar a sessão local (evita o bug do 401 auto-provocado)', () => {
+    localStorage.setItem('investai-access-token', tokenValido);
+    localStorage.setItem('investai-refresh-token', 'refresh-xyz');
+    spyOn(router, 'navigateByUrl');
+
+    service.logout();
+
+    const req = httpMock.expectOne(`${baseUrl}/logout`);
+    expect(req.request.body).toEqual({ refreshToken: 'refresh-xyz' });
+    expect(localStorage.getItem('investai-access-token')).toBeNull();
+    expect(localStorage.getItem('investai-refresh-token')).toBeNull();
+
+    req.flush(null);
+  });
 });
