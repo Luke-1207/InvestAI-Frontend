@@ -1,0 +1,116 @@
+<div class="rv">
+  <div class="rv__cabecalho">
+    <h1>Renda Variável</h1>
+
+    <div class="rv__controles">
+      <div class="rv__filtros-tipo">
+        @for (opcao of OPCOES_TIPO; track opcao.valor) {
+          <button
+            type="button"
+            class="rv__filtro"
+            [class.rv__filtro--ativo]="filtroTipo() === opcao.valor"
+            (click)="selecionarFiltroTipo(opcao.valor)"
+          >
+            {{ opcao.rotulo }}
+          </button>
+        }
+      </div>
+
+      <div class="rv__toggle-modo">
+        <button
+          type="button"
+          class="rv__modo"
+          [class.rv__modo--ativo]="modo() === 'livre'"
+          (click)="alternarModo('livre')"
+        >
+          Livre
+        </button>
+        <button
+          type="button"
+          class="rv__modo"
+          [class.rv__modo--ativo]="modo() === 'inteligente'"
+          (click)="alternarModo('inteligente')"
+        >
+          <span class="material-symbols-outlined">auto_awesome</span>
+          Modo Inteligente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (carregando()) {
+    <div class="rv__grid">
+      @for (i of skeletonsPlaceholder; track i) {
+        <app-skeleton-card />
+      }
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (modo() === 'livre') {
+    @if (pagina(); as dados) {
+      @if (dados.content.length > 0) {
+        <div class="rv__grid">
+          @for (item of dados.content; track item.codigo) {
+            <div class="rv__card" (click)="abrirDetalhe(item.codigo)">
+              <div class="rv__card-cabecalho">
+                <div>
+                  <h4>{{ item.codigo }}</h4>
+                  <p>{{ item.nome }}</p>
+                </div>
+                <span class="rv__card-tipo">{{ item.tipo }}</span>
+              </div>
+
+              @if (item.cotacaoDisponivel) {
+                <div class="rv__card-metricas">
+                  <span class="rv__preco">R$ {{ item.preco | number: '1.2-2' }}</span>
+                  <span
+                    class="rv__variacao"
+                    [class.rv__variacao--positiva]="item.variacaoPercentual >= 0"
+                    [class.rv__variacao--negativa]="item.variacaoPercentual < 0"
+                  >
+                    {{ item.variacaoPercentual >= 0 ? '+' : '' }}{{ item.variacaoPercentual | number: '1.2-2' }}%
+                  </span>
+                </div>
+                <div class="rv__card-secundarias">
+                  <span>DY {{ item.dividendYield | number: '1.2-2' }}%</span>
+                  <span>P/VP {{ item.precoValorPatrimonial | number: '1.2-2' }}</span>
+                </div>
+              } @else {
+                <p class="rv__sem-cotacao">Cotação indisponível no momento</p>
+              }
+            </div>
+          }
+        </div>
+
+        @if (dados.totalPages > 1) {
+          <div class="rv__paginacao">
+            @for (num of numerosDePagina(dados.totalPages); track num) {
+              <button
+                type="button"
+                class="rv__pagina"
+                [class.rv__pagina--ativa]="num === paginaAtual()"
+                (click)="irParaPagina(num)"
+              >
+                {{ num }}
+              </button>
+            }
+          </div>
+        }
+      } @else {
+        <p class="rv__mensagem-vazia">Nenhum ativo encontrado com esses filtros.</p>
+      }
+    }
+  } @else {
+    @if (sugestoes(); as dados) {
+      @if (dados.itens.length > 0) {
+        <div class="rv__grid">
+          @for (item of dados.itens; track item.codigo) {
+            <app-cartao-sugestao-ativo [item]="item" (clique)="abrirDetalhe(item.codigo)" />
+          }
+        </div>
+      } @else {
+        <p class="rv__mensagem-vazia">{{ dados.mensagem }}</p>
+      }
+    }
+  }
+</div>

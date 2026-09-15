@@ -1,0 +1,85 @@
+@use '../../../../styles/tokens' as *;
+
+.cartao-sugestao-ativo {
+  padding: $space-5;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+.cartao-sugestao-ativo__cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $space-3;
+
+  h4 {
+    font-family: $font-display;
+    font-size: 16px;
+    margin: 0;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 2px 0 0;
+  }
+}
+
+.cartao-sugestao-ativo__score {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-full;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cartao-sugestao-ativo__metricas {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  font-family: $font-body;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.cartao-sugestao-ativo__preco {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.cartao-sugestao-ativo__variacao {
+  font-weight: 600;
+
+  &--positiva {
+    color: var(--success-value);
+  }
+
+  &--negativa {
+    color: var(--danger);
+  }
+}
+
+.cartao-sugestao-ativo__justificativa {
+  font-family: $font-body;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+}
