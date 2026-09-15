@@ -1,0 +1,219 @@
+@use '../../styles/tokens' as *;
+
+.rv {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.rv__cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+
+  h1 {
+    font-family: $font-display;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.rv__controles {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  flex-wrap: wrap;
+}
+
+.rv__filtros-tipo {
+  display: flex;
+  gap: $space-1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-full;
+  padding: 4px;
+}
+
+.rv__filtro {
+  padding: $space-1 $space-4;
+  border: none;
+  background: none;
+  border-radius: $radius-full;
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &--ativo {
+    background: var(--accent-strong);
+    color: var(--accent-on-accent);
+    font-weight: 700;
+  }
+}
+
+.rv__toggle-modo {
+  display: flex;
+  gap: $space-1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-full;
+  padding: 4px;
+}
+
+.rv__modo {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-1 $space-4;
+  border: none;
+  background: none;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  &--ativo {
+    background: var(--ai);
+    color: white;
+    font-weight: 700;
+  }
+}
+
+.rv__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: $space-4;
+}
+
+.rv__card {
+  padding: $space-5;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+.rv__card-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $space-3;
+
+  h4 {
+    font-family: $font-display;
+    font-size: 16px;
+    margin: 0;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 2px 0 0;
+  }
+}
+
+.rv__card-tipo {
+  font-family: $font-mono;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  background: var(--bg-chip);
+  padding: 2px $space-2;
+  border-radius: $radius-sm;
+  flex-shrink: 0;
+}
+
+.rv__card-metricas {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  font-family: $font-body;
+  font-size: 13px;
+}
+
+.rv__preco {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rv__variacao {
+  font-weight: 600;
+
+  &--positiva {
+    color: var(--success-value);
+  }
+
+  &--negativa {
+    color: var(--danger);
+  }
+}
+
+.rv__card-secundarias {
+  display: flex;
+  gap: $space-3;
+  font-family: $font-body;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.rv__sem-cotacao {
+  font-family: $font-body;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0;
+}
+
+.rv__mensagem-vazia {
+  font-family: $font-body;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: $space-6;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-default);
+  border-radius: $radius-lg;
+}
+
+.rv__paginacao {
+  display: flex;
+  justify-content: center;
+  gap: $space-2;
+}
+
+.rv__pagina {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-family: $font-body;
+  font-size: 14px;
+  cursor: pointer;
+
+  &--ativa {
+    background: var(--accent-strong);
+    color: var(--accent-on-accent);
+    border-color: var(--accent-strong);
+    font-weight: 700;
+  }
+}
