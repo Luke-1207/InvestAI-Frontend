@@ -1,0 +1,21 @@
+<div class="grafico-linha">
+  <div class="grafico-linha__faixa">
+    <span>Máx: R$ {{ maximo() | number: '1.2-2' }}</span>
+    <span>Mín: R$ {{ minimo() | number: '1.2-2' }}</span>
+  </div>
+
+  @if (pontos().length > 0) {
+    <svg [attr.viewBox]="'0 0 ' + largura + ' ' + altura" preserveAspectRatio="none" class="grafico-linha__svg">
+      <defs>
+        <linearGradient id="gradienteArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3" />
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <path [attr.d]="caminhos().area" fill="url(#gradienteArea)" stroke="none" />
+      <path [attr.d]="caminhos().linha" fill="none" stroke="var(--accent)" stroke-width="2" />
+    </svg>
+  } @else {
+    <p class="grafico-linha__vazio">Sem dados de histórico para esse período.</p>
+  }
+</div>

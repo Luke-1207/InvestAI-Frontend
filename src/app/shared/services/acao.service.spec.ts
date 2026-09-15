@@ -56,3 +56,45 @@ describe('AcaoService', () => {
     req.flush({ itens: [], mensagem: null });
   });
 });
+
+describe('AcaoService - detalhe e sugestão individual', () => {
+  let service: AcaoService;
+  let httpMock: HttpTestingController;
+  const baseUrl = `${environment.apiUrl}/acoes`;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [AcaoService, provideHttpClient(), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(AcaoService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => httpMock.verify());
+
+  it('obterDetalhe deve enviar o periodoGrafico selecionado', () => {
+    service.obterDetalhe('PETR4', '6M').subscribe();
+
+    const req = httpMock.expectOne((r) => r.url === `${baseUrl}/PETR4/detalhe`);
+    expect(req.request.params.get('periodoGrafico')).toBe('6M');
+    req.flush({ pontosGrafico: [] });
+  });
+
+  it('obterSugestao deve chamar GET /acoes/{codigo}/sugestao', () => {
+    service.obterSugestao('PETR4').subscribe();
+
+    const req = httpMock.expectOne(`${baseUrl}/PETR4/sugestao`);
+    expect(req.request.method).toBe('GET');
+    req.flush(null);
+  });
+
+  it('obterSugestao deve entregar null quando o backend responde 204 (perfil incompleto)', (done) => {
+    service.obterSugestao('PETR4').subscribe((resultado) => {
+      expect(resultado).toBeNull();
+      done();
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/PETR4/sugestao`);
+    req.flush(null, { status: 204, statusText: 'No Content' });
+  });
+});
