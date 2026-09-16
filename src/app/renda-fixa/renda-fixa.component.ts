@@ -80,8 +80,8 @@ export class RendaFixaComponent implements OnInit {
     });
   }
 
-  protected abrirDetalhe(id: string): void {
-    this.router.navigateByUrl(`/renda-fixa/${id}`);
+  protected abrirDetalhe(item: RendaFixaListagem): void {
+    this.router.navigateByUrl(`/renda-fixa/${item.codigo ?? item.id}`);
   }
 
   protected seloGarantia(item: RendaFixaListagem): string | null {

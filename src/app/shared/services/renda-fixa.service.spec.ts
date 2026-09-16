@@ -33,4 +33,20 @@ describe('RendaFixaService', () => {
     const req = httpMock.expectOne((r) => r.url === baseUrl && r.params.get('modo') === 'livre');
     req.flush([]);
   });
+
+  it('obterDetalhePrivado deve chamar GET /renda-fixa/titulos/{id}', () => {
+    service.obterDetalhePrivado('abc-123').subscribe();
+
+    const req = httpMock.expectOne(`${baseUrl}/titulos/abc-123`);
+    expect(req.request.method).toBe('GET');
+    req.flush({});
+  });
+
+  it('obterDetalheTesouro deve chamar GET /renda-fixa/tesouro/{codigo}', () => {
+    service.obterDetalheTesouro('tesouro-selic-2029').subscribe();
+
+    const req = httpMock.expectOne(`${baseUrl}/tesouro/tesouro-selic-2029`);
+    expect(req.request.method).toBe('GET');
+    req.flush({});
+  });
 });
