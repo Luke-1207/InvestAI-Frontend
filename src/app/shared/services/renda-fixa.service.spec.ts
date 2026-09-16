@@ -34,35 +34,19 @@ describe('RendaFixaService', () => {
     req.flush([]);
   });
 
-  describe('RendaFixaService - detalhes', () => {
-    let service: RendaFixaService;
-    let httpMock: HttpTestingController;
-    const baseUrl = `${environment.apiUrl}/renda-fixa`;
+  it('obterDetalhePrivado deve chamar GET /renda-fixa/titulos/{id}', () => {
+    service.obterDetalhePrivado('abc-123').subscribe();
 
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        providers: [RendaFixaService, provideHttpClient(), provideHttpClientTesting()],
-      });
-      service = TestBed.inject(RendaFixaService);
-      httpMock = TestBed.inject(HttpTestingController);
-    });
+    const req = httpMock.expectOne(`${baseUrl}/titulos/abc-123`);
+    expect(req.request.method).toBe('GET');
+    req.flush({});
+  });
 
-    afterEach(() => httpMock.verify());
+  it('obterDetalheTesouro deve chamar GET /renda-fixa/tesouro/{codigo}', () => {
+    service.obterDetalheTesouro('tesouro-selic-2029').subscribe();
 
-    it('obterDetalhePrivado deve chamar GET /renda-fixa/titulos/{id}', () => {
-      service.obterDetalhePrivado('abc-123').subscribe();
-
-      const req = httpMock.expectOne(`${baseUrl}/titulos/abc-123`);
-      expect(req.request.method).toBe('GET');
-      req.flush({});
-    });
-
-    it('obterDetalheTesouro deve chamar GET /renda-fixa/tesouro/{codigo}', () => {
-      service.obterDetalheTesouro('tesouro-selic-2029').subscribe();
-
-      const req = httpMock.expectOne(`${baseUrl}/tesouro/tesouro-selic-2029`);
-      expect(req.request.method).toBe('GET');
-      req.flush({});
-    });
+    const req = httpMock.expectOne(`${baseUrl}/tesouro/tesouro-selic-2029`);
+    expect(req.request.method).toBe('GET');
+    req.flush({});
   });
 });
