@@ -49,7 +49,7 @@
   } @else if (itensFiltrados().length > 0) {
     <div class="rf__grid">
       @for (item of itensFiltrados(); track item.id) {
-        <div class="rf__card" (click)="abrirDetalhe(item.id)">
+        <div class="rf__card" (click)="abrirDetalhe(item)">
           <div class="rf__card-cabecalho">
             <div>
               <span class="rf__categoria">{{ item.categoria }}</span>

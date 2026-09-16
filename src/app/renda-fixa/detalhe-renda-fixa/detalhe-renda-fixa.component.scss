@@ -1,0 +1,218 @@
+@use '../../../styles/tokens' as *;
+
+.detalhe-rf {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.detalhe-rf__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: $space-4;
+
+  h1 {
+    font-family: $font-display;
+    font-size: 26px;
+    font-weight: 700;
+    margin: $space-2 0 0;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: $space-1 0 0;
+  }
+}
+
+.detalhe-rf__categoria {
+  font-family: $font-mono;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  background: var(--bg-chip);
+  padding: 2px $space-2;
+  border-radius: $radius-sm;
+}
+
+.detalhe-rf__score {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.detalhe-rf__acoes {
+  display: flex;
+  gap: $space-3;
+}
+
+.detalhe-rf__favorito,
+.detalhe-rf__comparar {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: 1px solid var(--border-strong);
+  border-radius: $radius-md;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: $font-body;
+  font-size: 14px;
+  cursor: pointer;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+.detalhe-rf__favorito--ativo {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.detalhe-rf__painel-dados {
+  padding: $space-6;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.detalhe-rf__selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  font-family: $font-body;
+  font-size: 13px;
+  color: var(--success-strong);
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.detalhe-rf__grid-dados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: $space-4;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  span {
+    font-family: $font-mono;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+  strong {
+    font-family: $font-body;
+    font-size: 16px;
+    color: var(--text-primary);
+  }
+}
+
+.detalhe-rf__grafico-painel,
+.detalhe-rf__tributacao,
+.detalhe-rf__ia {
+  padding: $space-6;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+
+  h3 {
+    font-family: $font-display;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 $space-4;
+  }
+}
+
+.detalhe-rf__tributacao-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $space-4;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  span {
+    font-family: $font-mono;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+  strong {
+    font-family: $font-body;
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+}
+
+.detalhe-rf__isento {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-body;
+  font-size: 15px;
+  color: var(--success-strong);
+  margin: 0;
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+}
+
+.detalhe-rf__ia {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(192, 193, 255, 0.06));
+  border-color: var(--border-ai);
+}
+
+.detalhe-rf__ia-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--ai);
+  margin-bottom: $space-3;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.detalhe-rf__ia p {
+  font-family: $font-body;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+}

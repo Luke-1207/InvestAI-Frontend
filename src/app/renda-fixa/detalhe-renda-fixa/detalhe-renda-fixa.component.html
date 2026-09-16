@@ -1,0 +1,93 @@
+<div class="detalhe-rf">
+  @if (carregando()) {
+    <app-skeleton-detalhe />
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregarDetalhe()" />
+  } @else {
+    @if (detalhe(); as titulo) {
+      <div class="detalhe-rf__cabecalho">
+        <div>
+          <span class="detalhe-rf__categoria">{{ titulo.categoria }}</span>
+          <h1>{{ titulo.nomeOuEmissor }}</h1>
+          <p>{{ titulo.indexadorOuTipo }}</p>
+        </div>
+
+        @if (!carregandoScore() && score() !== null) {
+          <span
+            class="detalhe-rf__score"
+            [style.color]="corCompatibilidade[compatibilidade()!]"
+            [style.border-color]="corCompatibilidade[compatibilidade()!]"
+          >
+            {{ score() }}
+          </span>
+        }
+      </div>
+
+      <div class="detalhe-rf__acoes">
+        <button
+          type="button"
+          class="detalhe-rf__favorito"
+          [class.detalhe-rf__favorito--ativo]="favoritado()"
+          (click)="alternarFavorito()"
+        >
+          <span class="material-symbols-outlined">{{ favoritado() ? 'star' : 'star_border' }}</span>
+          {{ favoritado() ? 'Nos favoritos' : 'Salvar como Favorito' }}
+        </button>
+
+        <button type="button" class="detalhe-rf__comparar" (click)="compararAtivo()">
+          <span class="material-symbols-outlined">compare_arrows</span>
+          Comparar Ativo
+        </button>
+      </div>
+
+      <div class="detalhe-rf__painel-dados">
+        @if (titulo.garantiaLabel) {
+          <span class="detalhe-rf__selo">
+            <span class="material-symbols-outlined">verified</span>
+            {{ titulo.garantiaLabel }}
+          </span>
+        }
+
+        <div class="detalhe-rf__grid-dados">
+          <div><span>Rentabilidade</span><strong>{{ titulo.taxaBrutaAnual | number: '1.2-2' }}% a.a.</strong></div>
+          <div><span>Vencimento</span><strong>{{ titulo.vencimento | date: 'dd/MM/yyyy' }}</strong></div>
+          <div><span>Investimento mínimo</span><strong>R$ {{ titulo.investimentoMinimo | number: '1.2-2' }}</strong></div>
+          <div>
+            <span>Liquidez</span>
+            <strong>{{ titulo.liquidez === 'DIARIA' ? 'Diária' : 'No vencimento' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="detalhe-rf__grafico-painel">
+        <h3>Simulação de retorno (investindo o mínimo, 1 ano)</h3>
+        <app-grafico-barras [barras]="barras()" />
+      </div>
+
+      <div class="detalhe-rf__tributacao">
+        <h3>Tributação</h3>
+        @if (titulo.isentoIr) {
+          <p class="detalhe-rf__isento">
+            <span class="material-symbols-outlined">check_circle</span>
+            Isento de Imposto de Renda
+          </p>
+        } @else {
+          <div class="detalhe-rf__tributacao-grid">
+            <div><span>Alíquota de IR aplicável</span><strong>{{ titulo.aliquotaIR | number: '1.2-2' }}%</strong></div>
+            <div><span>Rentabilidade líquida estimada</span><strong>{{ titulo.taxaLiquidaAnual | number: '1.2-2' }}% a.a.</strong></div>
+          </div>
+        }
+      </div>
+
+      @if (titulo.resumoIA) {
+        <div class="detalhe-rf__ia">
+          <span class="detalhe-rf__ia-etiqueta">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            Análise InvestAI
+          </span>
+          <p>{{ titulo.resumoIA }}</p>
+        </div>
+      }
+    }
+  }
+</div>

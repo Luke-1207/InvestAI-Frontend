@@ -1,0 +1,13 @@
+<div class="grafico-barras">
+  @for (barra of barrasComAltura(); track barra.rotulo) {
+    <div class="grafico-barras__coluna">
+      <span class="grafico-barras__valor">R$ {{ barra.valor | number: '1.2-2' }}</span>
+      <div
+        class="grafico-barras__barra"
+        [style.height.px]="barra.alturaPx"
+        [style.background]="barra.cor"
+      ></div>
+      <span class="grafico-barras__rotulo">{{ barra.rotulo }}</span>
+    </div>
+  }
+</div>

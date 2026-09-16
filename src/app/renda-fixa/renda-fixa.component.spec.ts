@@ -7,7 +7,7 @@ import { RendaFixaListagem } from '../shared/models/renda-fixa';
 
 function itemMock(overrides: Partial<RendaFixaListagem> = {}): RendaFixaListagem {
   return {
-    id: '1', categoria: 'TESOURO', nome: 'Tesouro Selic 2029', indexador: 'SELIC',
+    id: '1', codigo: null, categoria: 'TESOURO', nome: 'Tesouro Selic 2029', indexador: 'SELIC',
     taxa: 10.5, vencimento: '2029-01-01', valorMinimo: 100, liquidez: 'DIARIA',
     isentoIr: false, garantidoFgc: false, score: null, compatibilidade: null, justificativa: null,
     ...overrides,
@@ -103,5 +103,27 @@ describe('RendaFixaComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.rf__mensagem-vazia')).toBeTruthy();
+  });
+
+  it('deve navegar usando o codigo quando o item é Tesouro (tem codigo preenchido)', () => {
+    service.listar.and.returnValue(of([itemMock({ id: '1', codigo: 'tesouro-selic-2029' })]));
+    fixture.componentInstance['carregar']();
+    fixture.detectChanges();
+    const navSpy = spyOn(router, 'navigateByUrl');
+
+    fixture.nativeElement.querySelector('.rf__card').click();
+
+    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/tesouro-selic-2029');
+  });
+
+  it('deve navegar usando o id quando o item é privado (codigo vem null)', () => {
+    service.listar.and.returnValue(of([itemMock({ id: '99', codigo: null, categoria: 'CDB' })]));
+    fixture.componentInstance['carregar']();
+    fixture.detectChanges();
+    const navSpy = spyOn(router, 'navigateByUrl');
+
+    fixture.nativeElement.querySelector('.rf__card').click();
+
+    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/99');
   });
 });
