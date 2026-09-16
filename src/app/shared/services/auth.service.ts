@@ -114,18 +114,18 @@ export class AuthService {
   logout(mensagem?: string): void {
     const refreshToken = this.obterRefreshToken();
 
-    this.limparSessaoLocal();
-    this.router.navigateByUrl('/auth');
-
-    if (mensagem) {
-      this.toastService.erro(mensagem);
-    }
-
     if (refreshToken) {
       this.http
         .post(`${this.baseUrl}/logout`, { refreshToken })
         .pipe(catchError(() => of(null)))
         .subscribe();
+    }
+
+    this.limparSessaoLocal();
+    this.router.navigateByUrl('/auth');
+
+    if (mensagem) {
+      this.toastService.erro(mensagem);
     }
   }
 

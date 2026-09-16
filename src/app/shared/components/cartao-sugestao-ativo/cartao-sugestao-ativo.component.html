@@ -1,0 +1,28 @@
+<div class="cartao-sugestao-ativo" (click)="clique.emit()">
+  <div class="cartao-sugestao-ativo__cabecalho">
+    <div>
+      <h4>{{ item().codigo }}</h4>
+      <p>{{ item().nome }}</p>
+    </div>
+    <span
+      class="cartao-sugestao-ativo__score"
+      [style.color]="corCompatibilidade[item().compatibilidade]"
+      [style.border-color]="corCompatibilidade[item().compatibilidade]"
+    >
+      {{ item().score }}
+    </span>
+  </div>
+
+  <div class="cartao-sugestao-ativo__metricas">
+    <span class="cartao-sugestao-ativo__preco">R$ {{ item().preco | number: '1.2-2' }}</span>
+    <span
+      class="cartao-sugestao-ativo__variacao"
+      [class.cartao-sugestao-ativo__variacao--positiva]="item().variacaoDia >= 0"
+      [class.cartao-sugestao-ativo__variacao--negativa]="item().variacaoDia < 0"
+    >
+      {{ item().variacaoDia >= 0 ? '+' : '' }}{{ item().variacaoDia | number: '1.2-2' }}%
+    </span>
+  </div>
+
+  <p class="cartao-sugestao-ativo__justificativa">{{ item().justificativa }}</p>
+</div>

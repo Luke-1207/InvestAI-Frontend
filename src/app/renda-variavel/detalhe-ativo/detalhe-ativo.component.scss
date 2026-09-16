@@ -1,0 +1,217 @@
+@use '../../../styles/tokens' as *;
+
+.detalhe-ativo {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.detalhe-ativo__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: $space-4;
+
+  h1 {
+    font-family: $font-display;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: $space-1 0 0;
+  }
+}
+
+.detalhe-ativo__preco-bloco {
+  display: flex;
+  align-items: baseline;
+  gap: $space-3;
+}
+
+.detalhe-ativo__preco {
+  font-family: $font-display;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.detalhe-ativo__variacao {
+  font-family: $font-body;
+  font-size: 16px;
+  font-weight: 700;
+
+  &--positiva {
+    color: var(--success-value);
+  }
+
+  &--negativa {
+    color: var(--danger);
+  }
+}
+
+.detalhe-ativo__sem-cotacao {
+  font-family: $font-body;
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.detalhe-ativo__acoes {
+  display: flex;
+  gap: $space-3;
+}
+
+.detalhe-ativo__favorito,
+.detalhe-ativo__comparar {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: 1px solid var(--border-strong);
+  border-radius: $radius-md;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: $font-body;
+  font-size: 14px;
+  cursor: pointer;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+.detalhe-ativo__favorito--ativo {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.detalhe-ativo__grafico-painel {
+  padding: $space-6;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+}
+
+.detalhe-ativo__periodos {
+  display: flex;
+  gap: $space-1;
+  align-self: flex-start;
+  background: var(--bg-muted);
+  border-radius: $radius-full;
+  padding: 4px;
+}
+
+.detalhe-ativo__periodo {
+  padding: $space-1 $space-4;
+  border: none;
+  background: none;
+  border-radius: $radius-full;
+  font-family: $font-mono;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &--ativo {
+    background: var(--accent-strong);
+    color: var(--accent-on-accent);
+    font-weight: 700;
+  }
+}
+
+.detalhe-ativo__metricas-secundarias {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: $space-4;
+
+  div {
+    padding: $space-4;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: $radius-md;
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  span {
+    font-family: $font-mono;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+  strong {
+    font-family: $font-body;
+    font-size: 16px;
+    color: var(--text-primary);
+  }
+}
+
+.detalhe-ativo__ia {
+  padding: $space-6;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(192, 193, 255, 0.06));
+  border: 1px solid var(--border-ai);
+  border-radius: $radius-lg;
+}
+
+.detalhe-ativo__ia-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--ai);
+  margin-bottom: $space-4;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.detalhe-ativo__ia-corpo {
+  display: flex;
+  gap: $space-4;
+  align-items: flex-start;
+}
+
+.detalhe-ativo__ia-score {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.detalhe-ativo__ia-texto {
+  font-family: $font-body;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0 0 $space-2;
+}
+
+.detalhe-ativo__ia-risco {
+  font-family: $font-body;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}

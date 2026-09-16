@@ -1,0 +1,132 @@
+@use '../../../styles/tokens' as *;
+
+.quiz {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.quiz__estado {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz__progresso {
+  height: 6px;
+  background: var(--bg-muted);
+  flex-shrink: 0;
+}
+
+.quiz__progresso-barra {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.quiz__conteudo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: $space-10 $space-6;
+  box-sizing: border-box;
+}
+
+.quiz__contador {
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin: 0 0 $space-3;
+}
+
+.quiz__dica {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.quiz__pergunta {
+  font-family: $font-display;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 $space-8;
+}
+
+.quiz__opcoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: $space-4;
+  margin-bottom: $space-10;
+}
+
+.quiz__opcao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-5;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background-color 0.15s, transform 0.1s;
+
+  &:hover {
+    border-color: var(--accent);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &--selecionada {
+    border-color: var(--accent);
+    background: rgba(192, 193, 255, 0.08);
+  }
+}
+
+.quiz__opcao-emoji {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.quiz__opcao-texto {
+  font-family: $font-body;
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.quiz__navegacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+}
+
+.quiz__voltar {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: $font-body;
+  font-size: 15px;
+  cursor: pointer;
+  padding: $space-2;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.quiz__continuar {
+  width: 200px;
+}

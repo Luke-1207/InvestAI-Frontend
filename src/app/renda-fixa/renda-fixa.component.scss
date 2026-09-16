@@ -1,0 +1,206 @@
+@use '../../styles/tokens' as *;
+
+.rf {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.rf__cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+
+  h1 {
+    font-family: $font-display;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.rf__controles {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  flex-wrap: wrap;
+}
+
+.rf__filtros-categoria {
+  display: flex;
+  gap: $space-1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-full;
+  padding: 4px;
+}
+
+.rf__filtro {
+  padding: $space-1 $space-4;
+  border: none;
+  background: none;
+  border-radius: $radius-full;
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &--ativo {
+    background: var(--accent-strong);
+    color: var(--accent-on-accent);
+    font-weight: 700;
+  }
+}
+
+.rf__toggle-modo {
+  display: flex;
+  gap: $space-1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-full;
+  padding: 4px;
+}
+
+.rf__modo {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-1 $space-4;
+  border: none;
+  background: none;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  &--ativo {
+    background: var(--ai);
+    color: white;
+    font-weight: 700;
+  }
+}
+
+.rf__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $space-4;
+}
+
+.rf__card {
+  padding: $space-5;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+.rf__card-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $space-3;
+
+  h4 {
+    font-family: $font-display;
+    font-size: 15px;
+    margin: 4px 0 0;
+  }
+}
+
+.rf__categoria {
+  font-family: $font-mono;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  background: var(--bg-chip);
+  padding: 2px $space-2;
+  border-radius: $radius-sm;
+}
+
+.rf__score {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-full;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rf__selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  font-family: $font-body;
+  font-size: 12px;
+  color: var(--success-strong);
+
+  .material-symbols-outlined {
+    font-size: 14px;
+  }
+}
+
+.rf__card-metricas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: $font-body;
+  font-size: 13px;
+}
+
+.rf__taxa {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.rf__card-secundarias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+  font-family: $font-body;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.rf__justificativa {
+  font-family: $font-body;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+  padding-top: $space-2;
+  border-top: 1px solid var(--border-default);
+}
+
+.rf__mensagem-vazia {
+  font-family: $font-body;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: $space-6;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-default);
+  border-radius: $radius-lg;
+}

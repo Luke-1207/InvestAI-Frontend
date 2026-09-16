@@ -1,0 +1,96 @@
+<div class="detalhe-ativo">
+  @if (carregando()) {
+    <app-skeleton-detalhe />
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregarDetalhe()" />
+  } @else {
+    @if (detalhe(); as ativo) {
+      <div class="detalhe-ativo__cabecalho">
+        <div>
+          <h1>{{ ativo.codigo }}</h1>
+          <p>{{ ativo.nome }} · {{ ativo.setor }}</p>
+        </div>
+
+        @if (ativo.cotacaoDisponivel) {
+          <div class="detalhe-ativo__preco-bloco">
+            <span class="detalhe-ativo__preco">R$ {{ ativo.preco | number: '1.2-2' }}</span>
+            <span
+              class="detalhe-ativo__variacao"
+              [class.detalhe-ativo__variacao--positiva]="ativo.variacaoPercentual >= 0"
+              [class.detalhe-ativo__variacao--negativa]="ativo.variacaoPercentual < 0"
+            >
+            {{ ativo.variacaoPercentual >= 0 ? '+' : '' }}{{ ativo.variacaoPercentual | number: '1.2-2' }}%
+          </span>
+          </div>
+        } @else {
+          <p class="detalhe-ativo__sem-cotacao">Cotação indisponível no momento</p>
+        }
+      </div>
+
+      <div class="detalhe-ativo__acoes">
+        <button
+          type="button"
+          class="detalhe-ativo__favorito"
+          [class.detalhe-ativo__favorito--ativo]="favoritado()"
+          (click)="alternarFavorito()"
+        >
+          <span class="material-symbols-outlined">{{ favoritado() ? 'star' : 'star_border' }}</span>
+          {{ favoritado() ? 'Nos favoritos' : 'Salvar como Favorito' }}
+        </button>
+
+        <button type="button" class="detalhe-ativo__comparar" (click)="compararAtivo()">
+          <span class="material-symbols-outlined">compare_arrows</span>
+          Comparar Ativo
+        </button>
+      </div>
+
+      <div class="detalhe-ativo__grafico-painel">
+        <div class="detalhe-ativo__periodos">
+          @for (opcao of PERIODOS; track opcao.valor) {
+            <button
+              type="button"
+              class="detalhe-ativo__periodo"
+              [class.detalhe-ativo__periodo--ativo]="periodoSelecionado() === opcao.valor"
+              (click)="selecionarPeriodo(opcao.valor)"
+            >
+              {{ opcao.rotulo }}
+            </button>
+          }
+        </div>
+
+        <app-grafico-linha-preco [pontos]="ativo.pontosGrafico" />
+      </div>
+
+      <div class="detalhe-ativo__metricas-secundarias">
+        <div><span>DY</span><strong>{{ ativo.dividendYield | number: '1.2-2' }}%</strong></div>
+        <div><span>P/VP</span><strong>{{ ativo.precoValorPatrimonial | number: '1.2-2' }}</strong></div>
+        <div><span>Mín. 52 sem.</span><strong>R$ {{ ativo.minimo52Semanas | number: '1.2-2' }}</strong></div>
+        <div><span>Máx. 52 sem.</span><strong>R$ {{ ativo.maximo52Semanas | number: '1.2-2' }}</strong></div>
+      </div>
+
+      @if (!carregandoIA() && sugestaoIA(); as ia) {
+        <div class="detalhe-ativo__ia">
+        <span class="detalhe-ativo__ia-etiqueta">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          Análise da IA
+        </span>
+
+          <div class="detalhe-ativo__ia-corpo">
+          <span
+            class="detalhe-ativo__ia-score"
+            [style.color]="corCompatibilidade[ia.compatibilidade]"
+            [style.border-color]="corCompatibilidade[ia.compatibilidade]"
+          >
+            {{ ia.score }}
+          </span>
+
+            <div>
+              <p class="detalhe-ativo__ia-texto">{{ ia.justificativa }}</p>
+              <p class="detalhe-ativo__ia-risco">{{ notaRisco[ia.compatibilidade] }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>

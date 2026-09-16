@@ -1,0 +1,98 @@
+<div class="rf">
+  <div class="rf__cabecalho">
+    <h1>Renda Fixa</h1>
+
+    <div class="rf__controles">
+      <div class="rf__filtros-categoria">
+        @for (opcao of OPCOES_CATEGORIA; track opcao.valor) {
+          <button
+            type="button"
+            class="rf__filtro"
+            [class.rf__filtro--ativo]="filtroCategoria() === opcao.valor"
+            (click)="selecionarCategoria(opcao.valor)"
+          >
+            {{ opcao.rotulo }}
+          </button>
+        }
+      </div>
+
+      <div class="rf__toggle-modo">
+        <button
+          type="button"
+          class="rf__modo"
+          [class.rf__modo--ativo]="modo() === 'livre'"
+          (click)="alternarModo('livre')"
+        >
+          Livre
+        </button>
+        <button
+          type="button"
+          class="rf__modo"
+          [class.rf__modo--ativo]="modo() === 'inteligente'"
+          (click)="alternarModo('inteligente')"
+        >
+          <span class="material-symbols-outlined">auto_awesome</span>
+          Modo Inteligente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (carregando()) {
+    <div class="rf__grid">
+      @for (i of skeletonsPlaceholder; track i) {
+        <app-skeleton-card />
+      }
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (itensFiltrados().length > 0) {
+    <div class="rf__grid">
+      @for (item of itensFiltrados(); track item.id) {
+        <div class="rf__card" (click)="abrirDetalhe(item)">
+          <div class="rf__card-cabecalho">
+            <div>
+              <span class="rf__categoria">{{ item.categoria }}</span>
+              <h4>{{ item.nome }}</h4>
+            </div>
+            @if (item.score !== null) {
+              <span
+                class="rf__score"
+                [style.color]="corCompatibilidade[item.compatibilidade!]"
+                [style.border-color]="corCompatibilidade[item.compatibilidade!]"
+              >
+                {{ item.score }}
+              </span>
+            }
+          </div>
+
+          @if (seloGarantia(item); as selo) {
+            <span class="rf__selo">
+              <span class="material-symbols-outlined">verified</span>
+              {{ selo }}
+            </span>
+          }
+
+          <div class="rf__card-metricas">
+            <span class="rf__taxa">{{ item.taxa | number: '1.2-2' }}% {{ item.indexador }}</span>
+            <span>Vence em {{ item.vencimento | date: 'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="rf__card-secundarias">
+            <span>Mín. R$ {{ item.valorMinimo | number: '1.2-2' }}</span>
+            <span>Liquidez {{ item.liquidez === 'DIARIA' ? 'diária' : 'no vencimento' }}</span>
+            @if (item.isentoIr) {
+              <span>Isento de IR</span>
+            }
+          </div>
+
+          @if (item.justificativa) {
+            <p class="rf__justificativa">{{ item.justificativa }}</p>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="rf__mensagem-vazia">Nenhum título encontrado com esses filtros.</p>
+  }
+</div>

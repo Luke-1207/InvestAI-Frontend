@@ -1,0 +1,39 @@
+@use '../../../../../styles/tokens' as *;
+
+.grafico-barras {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: $space-6;
+  height: 240px;
+  padding-top: $space-4;
+}
+
+.grafico-barras__coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+  flex: 1;
+}
+
+.grafico-barras__valor {
+  font-family: $font-mono;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.grafico-barras__barra {
+  width: 100%;
+  max-width: 64px;
+  border-radius: $radius-sm $radius-sm 0 0;
+  transition: height 0.3s ease;
+}
+
+.grafico-barras__rotulo {
+  font-family: $font-body;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
