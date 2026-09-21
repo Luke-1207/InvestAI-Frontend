@@ -111,12 +111,14 @@ describe('DetalheAtivoComponent', () => {
     expect(toastService.toasts()[0].mensagem).toContain('Adicionado aos favoritos');
   });
 
-  it('deve navegar pra Comparação com o ativo pré-selecionado ao clicar em Comparar', async () => {
+  it('deve navegar pra Comparação com o ativo pré-selecionado (tipo + identificador)', async () => {
     await montar();
     const navSpy = spyOn(router, 'navigate');
 
     fixture.nativeElement.querySelector('.detalhe-ativo__comparar').click();
 
-    expect(navSpy).toHaveBeenCalledWith(['/comparacao'], { queryParams: { ativo: 'PETR4' } });
+    expect(navSpy).toHaveBeenCalledWith(['/comparacao'], {
+      queryParams: { tipo: 'ACAO', identificador: 'PETR4' },
+    });
   });
 });

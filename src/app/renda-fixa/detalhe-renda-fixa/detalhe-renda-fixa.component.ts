@@ -153,6 +153,8 @@ export class DetalheRendaFixaComponent implements OnInit {
   }
 
   protected compararAtivo(): void {
-    this.router.navigate(['/comparacao'], { queryParams: { titulo: this.identificador } });
+    this.router.navigate(['/comparacao'], {
+      queryParams: { tipo: this.detalhe()?.categoria, identificador: this.identificador },
+    });
   }
 }

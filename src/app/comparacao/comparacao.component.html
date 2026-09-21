@@ -1,0 +1,149 @@
+<div class="comparacao">
+  @if (etapa() === 'selecao') {
+    <div class="comparacao__selecao">
+      <h1>Comparar Ativos</h1>
+      <p class="comparacao__subtitulo">Escolha até dois ativos, de renda variável ou fixa, pra comparar lado a lado.</p>
+
+      <div class="comparacao__slots">
+        <div class="comparacao__slot" [class.comparacao__slot--vazio]="!slotA()">
+          @if (slotA(); as item) {
+            <div class="comparacao__slot-preenchido">
+              <div>
+                <span class="comparacao__slot-tipo">{{ item.tipo }}</span>
+                <p>{{ item.rotulo }}</p>
+              </div>
+              <button type="button" (click)="removerSlot('A')" aria-label="Remover">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          } @else {
+            <span class="material-symbols-outlined">add_circle</span>
+            <p>Escolha o primeiro ativo</p>
+          }
+        </div>
+
+        <span class="comparacao__vs">vs</span>
+
+        <div class="comparacao__slot" [class.comparacao__slot--vazio]="!slotB()">
+          @if (slotB(); as item) {
+            <div class="comparacao__slot-preenchido">
+              <div>
+                <span class="comparacao__slot-tipo">{{ item.tipo }}</span>
+                <p>{{ item.rotulo }}</p>
+              </div>
+              <button type="button" (click)="removerSlot('B')" aria-label="Remover">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          } @else {
+            <span class="material-symbols-outlined">add_circle</span>
+            <p>Escolha o segundo ativo</p>
+          }
+        </div>
+      </div>
+
+      <div class="comparacao__busca">
+        <span class="material-symbols-outlined">search</span>
+        <input
+          type="text"
+          placeholder="Buscar ação, FII, ETF, Tesouro ou título..."
+          [value]="termoBusca()"
+          (input)="termoBusca.set($any($event.target).value)"
+        />
+      </div>
+
+      @if (carregandoLista()) {
+        <div class="comparacao__grid">
+          @for (i of skeletonsPlaceholder; track i) {
+            <app-skeleton-card />
+          }
+        </div>
+      } @else {
+        <div class="comparacao__lista">
+          @for (item of itensFiltrados(); track item.tipo + item.identificador) {
+            <button type="button" class="comparacao__item-lista" (click)="selecionarItem(item)">
+              <span class="comparacao__item-tipo">{{ item.tipo }}</span>
+              <div>
+                <p class="comparacao__item-rotulo">{{ item.rotulo }}</p>
+                <p class="comparacao__item-sub">{{ item.subRotulo }}</p>
+              </div>
+            </button>
+          } @empty {
+            <p class="comparacao__mensagem-vazia">Nenhum ativo encontrado.</p>
+          }
+        </div>
+      }
+
+      <button type="button" class="comparacao__botao-avancar" [disabled]="!podeComparar()" (click)="avancarParaResultado()">
+        Comparar
+      </button>
+    </div>
+  } @else {
+    <div class="comparacao__resultado">
+      <button type="button" class="comparacao__voltar" (click)="voltarParaSelecao()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Trocar ativos
+      </button>
+
+      @if (carregandoResultado()) {
+        <div class="comparacao__grid">
+          <app-skeleton-card />
+          <app-skeleton-card />
+        </div>
+      } @else if (erroResultado()) {
+        <app-erro-servidor (tentarNovamente)="avancarParaResultado()" />
+      } @else {
+        <div class="comparacao__lado-a-lado">
+          @for (item of [itemResultadoA(), itemResultadoB()]; track $index) {
+            @if (item) {
+              <div class="comparacao__cartao">
+                <span class="comparacao__cartao-categoria">{{ item.categoria }}</span>
+                <h3>{{ item.rotulo }}</h3>
+
+                <div class="comparacao__metricas">
+                  @for (metrica of item.metricas; track metrica.rotulo) {
+                    <div class="comparacao__metrica">
+                      <span>{{ metrica.rotulo }}</span>
+                      <strong>{{ metrica.valor }}</strong>
+                    </div>
+                  }
+                </div>
+
+                @if (item.score !== null) {
+                  <div class="comparacao__compatibilidade">
+                    <div class="comparacao__compatibilidade-cabecalho">
+                      <span>Compatibilidade com seu perfil</span>
+                      <strong [style.color]="corCompatibilidade[item.compatibilidade!]">{{ item.score }}</strong>
+                    </div>
+                    <div class="comparacao__barra-fundo">
+                      <div
+                        class="comparacao__barra-preenchida"
+                        [style.width.%]="item.score"
+                        [style.background]="corCompatibilidade[item.compatibilidade!]"
+                      ></div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+
+        <div class="comparacao__veredito">
+          <span class="comparacao__veredito-etiqueta">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            Veredito da IA
+          </span>
+
+          @if (carregandoVeredito()) {
+            <p class="comparacao__veredito-carregando">Gerando análise comparativa...</p>
+          } @else if (veredito()) {
+            <p>{{ veredito() }}</p>
+          } @else {
+            <p class="comparacao__veredito-indisponivel">Não foi possível gerar o veredito agora. O resto da comparação continua válido.</p>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
