@@ -112,6 +112,8 @@ export class DetalheAtivoComponent implements OnInit {
   }
 
   protected compararAtivo(): void {
-    this.router.navigate(['/comparacao'], { queryParams: { ativo: this.codigo } });
+    this.router.navigate(['/comparacao'], {
+      queryParams: { tipo: this.detalhe()?.tipo, identificador: this.codigo },
+    });
   }
 }
