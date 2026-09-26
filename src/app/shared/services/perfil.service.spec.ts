@@ -7,7 +7,6 @@ import { environment } from '../../../environments/environment';
 describe('PerfilService', () => {
   let service: PerfilService;
   let httpMock: HttpTestingController;
-
   const baseUrl = `${environment.apiUrl}/perfil`;
 
   beforeEach(() => {
@@ -20,25 +19,17 @@ describe('PerfilService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('obterQuiz deve fazer GET em /perfil/quiz', () => {
-    service.obterQuiz().subscribe();
-    const req = httpMock.expectOne(`${baseUrl}/quiz`);
+  it('obterPerfil deve chamar GET /perfil', () => {
+    service.obterPerfil().subscribe();
+    const req = httpMock.expectOne(baseUrl);
     expect(req.request.method).toBe('GET');
-    req.flush({ perguntas: [] });
+    req.flush({});
   });
 
-  it('submeterQuiz deve fazer PUT em /perfil/quiz com as respostas no corpo', () => {
-    const respostas = [{ perguntaId: 'p1', opcaoIds: ['o1'] }];
-    service.submeterQuiz(respostas).subscribe();
-
-    const req = httpMock.expectOne(`${baseUrl}/quiz`);
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({ respostas });
-    req.flush({
-      perfilRisco: { valor: 'MODERADO', descricao: 'Moderado' },
-      objetivoFinanceiro: { valor: 'RENDA_PASSIVA', descricao: 'Renda passiva' },
-      horizonteInvestimento: { valor: 'LONGO_PRAZO', descricao: 'Longo prazo' },
-      resumoIA: 'Resumo qualquer',
-    });
+  it('refazerQuiz deve chamar PATCH /perfil/refazer-quiz', () => {
+    service.refazerQuiz().subscribe();
+    const req = httpMock.expectOne(`${baseUrl}/refazer-quiz`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({});
   });
 });

@@ -7,3 +7,10 @@ export interface UsuarioResponseDTO {
   criadoEm: string;
   atualizadoEm: string;
 }
+
+export interface UsuarioAtual {
+  id: string;
+  nome: string;
+  email: string;
+  role: 'USUARIO' | 'GESTOR';
+}
