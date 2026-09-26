@@ -1,0 +1,102 @@
+<div class="perfil">
+  @if (carregando()) {
+    <app-skeleton-detalhe />
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregarPerfil()" />
+  } @else {
+    @if (perfil(); as dados) {
+      <div class="perfil__identificacao">
+        <div class="perfil__avatar">{{ iniciais() }}</div>
+        <div class="perfil__identificacao-texto">
+          <h1>{{ usuario()?.nome }}</h1>
+          <p>{{ usuario()?.email }}</p>
+        </div>
+        <a routerLink="/perfil/editar" class="perfil__botao-editar-dados">
+          <span class="material-symbols-outlined">edit</span>
+          Editar Dados Pessoais
+        </a>
+      </div>
+
+      @if (!dados.perfilPreenchido) {
+        <div class="perfil__incompleto">
+          <span class="material-symbols-outlined">assignment_late</span>
+          <div>
+            <h3>Você ainda não fez o quiz de perfil</h3>
+            <p>Responda em menos de 2 minutos pra gente calibrar suas recomendações.</p>
+          </div>
+          <button type="button" [disabled]="refazendoQuiz()" (click)="refazerQuiz()">
+            {{ refazendoQuiz() ? 'Abrindo...' : 'Responder o quiz' }}
+          </button>
+        </div>
+      } @else {
+        <div class="perfil__risco">
+          <span class="material-symbols-outlined perfil__risco-icone">{{ iconePerfilRisco[dados.perfilRisco.valor] ?? 'balance' }}</span>
+          <div>
+            <span class="perfil__risco-etiqueta">Seu perfil de risco</span>
+            <h2>{{ dados.perfilRisco.descricao }}</h2>
+            @if (dados.resumoIA) {
+              <p>{{ dados.resumoIA }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="perfil__grid">
+          <div class="perfil__cartao">
+            <div class="perfil__cartao-cabecalho">
+              <span>Objetivo</span>
+              <button type="button" (click)="refazerQuiz()" aria-label="Refazer quiz">
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+            </div>
+            <strong>{{ dados.objetivoFinanceiro.descricao }}</strong>
+          </div>
+
+          <div class="perfil__cartao">
+            <div class="perfil__cartao-cabecalho">
+              <span>Horizonte</span>
+              <button type="button" (click)="refazerQuiz()" aria-label="Refazer quiz">
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+            </div>
+            <strong>{{ dados.horizonteInvestimento.descricao }}</strong>
+          </div>
+
+          <div class="perfil__cartao">
+            <div class="perfil__cartao-cabecalho">
+              <span>Valor disponível</span>
+              <button type="button" (click)="refazerQuiz()" aria-label="Refazer quiz">
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+            </div>
+            <strong>R$ {{ dados.valorDisponivel | number: '1.2-2' }}</strong>
+          </div>
+        </div>
+
+        <div class="perfil__secao">
+          <h3>Tipos de ativo permitidos</h3>
+          <div class="perfil__tipos-ativo">
+            @for (opcao of TODOS_TIPOS_ATIVO; track opcao.valor) {
+              <div class="perfil__tipo-ativo" [class.perfil__tipo-ativo--aceito]="tipoAceito(opcao.valor)">
+                <span class="material-symbols-outlined">{{ tipoAceito(opcao.valor) ? 'check_circle' : 'cancel' }}</span>
+                {{ opcao.rotulo }}
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (dados.setoresPreferidos.length > 0) {
+          <div class="perfil__secao">
+            <h3>Setores</h3>
+            <div class="perfil__tags">
+              @for (item of dados.setoresPreferidos; track item.setor) {
+                <span class="perfil__tag" [class.perfil__tag--evitar]="item.preferencia === 'EVITAR'">
+                  {{ item.setor }}
+                </span>
+              }
+            </div>
+          </div>
+        }
+      }
+    }
+  }
+</div>
