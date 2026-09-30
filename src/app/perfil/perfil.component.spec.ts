@@ -6,6 +6,8 @@ import { PerfilService } from '../shared/services/perfil.service';
 import { AuthService } from '../shared/services/auth.service';
 import { ToastService } from '../shared/services/toast.service';
 import { PerfilResponse } from '../shared/models/perfil';
+import { signal } from '@angular/core';
+import { FotoPerfilService } from '../shared/services/foto-perfil.service';
 
 function perfilMock(overrides: Partial<PerfilResponse> = {}): PerfilResponse {
   return {
@@ -31,6 +33,7 @@ describe('PerfilComponent', () => {
   let authService: jasmine.SpyObj<AuthService>;
   let toastService: ToastService;
   let router: Router;
+  const urlFoto = signal<string | null>(null);
 
   async function montar(perfil: PerfilResponse = perfilMock()) {
     perfilService = jasmine.createSpyObj('PerfilService', ['obterPerfil', 'refazerQuiz']);
@@ -42,12 +45,14 @@ describe('PerfilComponent', () => {
     });
     // @ts-ignore
     authService.carregarUsuarioAtual.and.returnValue(of({} as any));
+    urlFoto.set(null);
 
     await TestBed.configureTestingModule({
       imports: [PerfilComponent],
       providers: [
         { provide: PerfilService, useValue: perfilService },
         { provide: AuthService, useValue: authService },
+        { provide: FotoPerfilService, useValue: { url: urlFoto } },
         provideRouter([]),
       ],
     }).compileComponents();
@@ -112,5 +117,13 @@ describe('PerfilComponent', () => {
     expect(navSpy).not.toHaveBeenCalled();
     expect(toastService.toasts().length).toBe(1);
     expect(toastService.toasts()[0].tipo).toBe('erro');
+  });
+
+  it('deve mostrar a foto no avatar quando o usuário tem foto', async () => {
+    await montar();
+    urlFoto.set('blob:foto');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('img.perfil__avatar').getAttribute('src')).toBe('blob:foto');
   });
 });

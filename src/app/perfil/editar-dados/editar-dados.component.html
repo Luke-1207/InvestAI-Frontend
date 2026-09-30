@@ -1,0 +1,127 @@
+<div class="editar-dados">
+  <a routerLink="/perfil" class="editar-dados__voltar">
+    <span class="material-symbols-outlined">arrow_back</span>
+    Voltar ao perfil
+  </a>
+
+  <h1>Dados pessoais</h1>
+
+  @if (carregando()) {
+    <app-skeleton-detalhe />
+  } @else if (erroCarregar()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else {
+    <section class="editar-dados__secao">
+      <h2>Foto de perfil</h2>
+
+      <div class="editar-dados__foto">
+        @if (urlFoto(); as url) {
+          <img class="editar-dados__avatar" [src]="url" alt="Sua foto de perfil" />
+        } @else {
+          <div class="editar-dados__avatar editar-dados__avatar--iniciais" aria-hidden="true">{{ iniciais() }}</div>
+        }
+
+        <div class="editar-dados__foto-acoes">
+          <label class="editar-dados__botao-foto" [class.editar-dados__botao-foto--desabilitado]="processandoFoto()">
+            <span class="material-symbols-outlined">upload</span>
+            {{ urlFoto() ? 'Trocar foto' : 'Enviar foto' }}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              [disabled]="processandoFoto()"
+              (change)="aoSelecionarArquivo($event)"
+              hidden
+            />
+          </label>
+
+          @if (urlFoto()) {
+            <button type="button" class="editar-dados__remover-foto" [disabled]="processandoFoto()" (click)="removerFoto()">
+              <span class="material-symbols-outlined">delete</span>
+              Remover
+            </button>
+          }
+
+          <p class="editar-dados__dica">JPG, PNG ou WEBP, até 2 MB.</p>
+        </div>
+      </div>
+
+      @if (avisoFoto(); as aviso) {
+        <p class="editar-dados__aviso" [class.editar-dados__aviso--erro]="aviso.tipo === 'erro'" role="status">
+          {{ aviso.texto }}
+        </p>
+      }
+    </section>
+
+    <form [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+      <section class="editar-dados__secao">
+        <h2>Dados de contato</h2>
+
+        <div class="editar-dados__campos">
+          <app-input rotulo="Nome" formControlName="nome" [mensagemErro]="erroCampo('nome')" [mostrarErro]="mostrarErroCampo('nome')" />
+          <app-input rotulo="E-mail" tipo="email" formControlName="email" [mensagemErro]="erroCampo('email')" [mostrarErro]="mostrarErroCampo('email')" />
+          <app-input
+            rotulo="Telefone (opcional)"
+            tipo="tel"
+            placeholder="(19) 99999-8888"
+            formControlName="telefone"
+            [mensagemErro]="erroCampo('telefone')"
+            [mostrarErro]="mostrarErroCampo('telefone')"
+          />
+        </div>
+      </section>
+
+      <section class="editar-dados__secao">
+        <div class="editar-dados__senha-cabecalho">
+          <h2>Senha</h2>
+          @if (trocandoSenha()) {
+            <button type="button" class="editar-dados__link" (click)="cancelarTrocaSenha()">Cancelar</button>
+          }
+        </div>
+
+        @if (!trocandoSenha()) {
+          <button type="button" class="editar-dados__botao-foto" (click)="abrirTrocaSenha()">
+            <span class="material-symbols-outlined">lock_reset</span>
+            Alterar senha
+          </button>
+        } @else {
+          <div class="editar-dados__campos" formGroupName="senha">
+            <app-input
+              rotulo="Senha atual"
+              tipo="password"
+              formControlName="senhaAtual"
+              [mensagemErro]="erroSenha('senhaAtual')"
+              [mostrarErro]="mostrarErroSenha('senhaAtual')"
+            />
+            <app-input
+              rotulo="Nova senha"
+              tipo="password"
+              formControlName="novaSenha"
+              [mensagemErro]="erroSenha('novaSenha')"
+              [mostrarErro]="mostrarErroSenha('novaSenha')"
+            />
+            <app-input
+              rotulo="Confirmar nova senha"
+              tipo="password"
+              formControlName="confirmarNovaSenha"
+              [mensagemErro]="erroSenha('confirmarNovaSenha')"
+              [mostrarErro]="mostrarErroSenha('confirmarNovaSenha')"
+            />
+          </div>
+        }
+      </section>
+
+      @if (avisoFormulario(); as aviso) {
+        <p class="editar-dados__aviso" [class.editar-dados__aviso--erro]="aviso.tipo === 'erro'" role="status">
+          <span class="material-symbols-outlined">{{ aviso.tipo === 'erro' ? 'error' : 'check_circle' }}</span>
+          {{ aviso.texto }}
+        </p>
+      }
+
+      <div class="editar-dados__salvar">
+        <app-button tipoHtml="submit" [carregando]="salvando()">
+          {{ salvando() ? 'Salvando...' : 'Salvar alterações' }}
+        </app-button>
+      </div>
+    </form>
+  }
+</div>
