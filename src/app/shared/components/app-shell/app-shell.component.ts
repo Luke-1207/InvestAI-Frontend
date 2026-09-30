@@ -4,6 +4,7 @@ import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { IndicadorTicker } from '../../models/indicador-mercado';
+import {FotoPerfilService} from '../../services/foto-perfil.service';
 
 interface ItemNav {
   rota: string;
@@ -23,6 +24,7 @@ export class AppShellComponent implements OnInit {
 
   protected readonly themeService = inject(ThemeService);
   protected readonly authService = inject(AuthService);
+  protected readonly fotoPerfilService = inject(FotoPerfilService);
   private readonly dashboardService = inject(DashboardService);
 
   readonly menuUsuarioAberto = signal(false);
@@ -61,6 +63,7 @@ export class AppShellComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.fotoPerfilService.carregar();
     if (!this.dashboardService.dashboard()) {
       this.dashboardService.carregar().subscribe();
     }

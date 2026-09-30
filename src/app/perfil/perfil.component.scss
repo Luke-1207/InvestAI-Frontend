@@ -267,3 +267,7 @@
     color: var(--danger);
   }
 }
+
+.perfil__avatar--foto {
+  object-fit: cover;
+}

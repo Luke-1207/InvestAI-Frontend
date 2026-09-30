@@ -18,7 +18,7 @@ let proximoId = 0;
 })
 export class InputComponent implements ControlValueAccessor {
   readonly rotulo = input.required<string>();
-  readonly tipo = input<'text' | 'email' | 'password'>('text');
+  readonly tipo = input<'text' | 'email' | 'password' | 'tel'>('text');
   readonly placeholder = input('');
   readonly mensagemErro = input<string | null>(null);
   readonly mostrarErro = input(false);

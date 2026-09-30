@@ -1,0 +1,186 @@
+@use '../../../styles/tokens' as *;
+
+.editar-dados {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  max-width: 720px;
+
+  h1 {
+    font-family: $font-display;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-6;
+  }
+}
+
+.editar-dados__voltar {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  color: var(--text-secondary);
+  font-family: $font-body;
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.editar-dados__secao {
+  padding: $space-6;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+
+  h2 {
+    font-family: $font-display;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.editar-dados__campos {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.editar-dados__dica {
+  font-family: $font-body;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.editar-dados__foto {
+  display: flex;
+  align-items: center;
+  gap: $space-5;
+}
+
+.editar-dados__avatar {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: $radius-full;
+  object-fit: cover;
+
+  &--iniciais {
+    background: var(--accent-strong);
+    color: var(--accent-on-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $font-display;
+    font-size: 28px;
+    font-weight: 700;
+  }
+}
+
+.editar-dados__foto-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+}
+
+.editar-dados__botao-foto,
+.editar-dados__remover-foto {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: 1px solid var(--border-strong);
+  border-radius: $radius-md;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: $font-body;
+  font-size: 14px;
+  cursor: pointer;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+.editar-dados__botao-foto--desabilitado,
+.editar-dados__remover-foto:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.editar-dados__remover-foto:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.editar-dados__foto-acoes .editar-dados__dica {
+  flex-basis: 100%;
+}
+
+.editar-dados__aviso {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin: 0;
+  padding: $space-3 $space-4;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: 14px;
+  color: var(--success-strong);
+  background: rgba(16, 185, 129, 0.1);
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &--erro {
+    color: var(--danger);
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
+.editar-dados__salvar {
+  align-self: flex-end;
+  width: 220px;
+}
+
+.editar-dados__senha-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editar-dados__link {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: $font-body;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.editar-dados__secao > .editar-dados__botao-foto {
+  align-self: flex-start;
+}

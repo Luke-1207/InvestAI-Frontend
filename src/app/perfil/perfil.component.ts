@@ -8,6 +8,7 @@ import { PerfilResponse } from '../shared/models/perfil';
 import { TipoAtivo } from '../shared/models/acao';
 import { SkeletonDetalheComponent } from '../shared/components/ui/skeleton-detalhe/skeleton-detalhe.component';
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
+import { FotoPerfilService } from '../shared/services/foto-perfil.service';
 
 interface OpcaoTipoAtivo {
   valor: TipoAtivo;
@@ -41,6 +42,7 @@ export class PerfilComponent implements OnInit {
 
   protected readonly TODOS_TIPOS_ATIVO = TODOS_TIPOS_ATIVO;
   protected readonly iconePerfilRisco = ICONE_PERFIL_RISCO;
+  protected readonly urlFoto = inject(FotoPerfilService).url;
 
   protected readonly usuario = this.authService.usuarioAtual;
   protected readonly iniciais = this.authService.iniciais;

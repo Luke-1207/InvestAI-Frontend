@@ -5,8 +5,12 @@
     <app-erro-servidor (tentarNovamente)="carregarPerfil()" />
   } @else {
     @if (perfil(); as dados) {
-      <div class="perfil__identificacao">
-        <div class="perfil__avatar">{{ iniciais() }}</div>
+        <div class="perfil__identificacao">
+        @if (urlFoto(); as url) {
+          <img class="perfil__avatar perfil__avatar--foto" [src]="url" alt="Sua foto de perfil" />
+        } @else {
+          <div class="perfil__avatar">{{ iniciais() }}</div>
+        }
         <div class="perfil__identificacao-texto">
           <h1>{{ usuario()?.nome }}</h1>
           <p>{{ usuario()?.email }}</p>

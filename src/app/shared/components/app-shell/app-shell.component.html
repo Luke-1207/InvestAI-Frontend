@@ -57,8 +57,17 @@
         </button>
 
         <div class="header__usuario" data-menu-usuario>
-          <button type="button" class="header__avatar" (click)="alternarMenuUsuario()">
-            {{ iniciais }}
+          <button
+            type="button"
+            class="header__avatar"
+            [class.header__avatar--foto]="fotoPerfilService.url()"
+            (click)="alternarMenuUsuario()"
+          >
+            @if (fotoPerfilService.url(); as url) {
+              <img [src]="url" alt="Sua foto de perfil" class="header__avatar-foto" />
+            } @else {
+              {{ iniciais }}
+            }
           </button>
 
           @if (menuUsuarioAberto()) {
