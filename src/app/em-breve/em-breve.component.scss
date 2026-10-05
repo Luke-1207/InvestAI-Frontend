@@ -1,0 +1,19 @@
+@use '../../styles/tokens' as *;
+
+.em-breve {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: $space-10;
+}
+
+.em-breve__selo {
+  padding: 2px $space-3;
+  border: 1px solid var(--border-ai);
+  border-radius: $radius-full;
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ai);
+}

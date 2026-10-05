@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AppShellComponent } from './shared/components/app-shell/app-shell.component';
 import { authGuard } from './shared/guards/auth.guard';
 import { gestorGuard } from './shared/guards/gestor.guard';
+import { ROTAS_EM_BREVE } from './em-breve/em-breve.routes';
 
 export const routes: Routes = [
   {
@@ -51,6 +52,7 @@ export const routes: Routes = [
         canActivate: [gestorGuard],
         loadChildren: () => import('./gestor/gestor.routes').then((m) => m.GESTOR_ROUTES),
       },
+      ...ROTAS_EM_BREVE,
       {
         path: '**',
         loadComponent: () =>
