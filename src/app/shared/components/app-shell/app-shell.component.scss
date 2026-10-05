@@ -70,6 +70,21 @@
     color: var(--accent-on-accent);
     font-weight: 700;
   }
+
+  &--gestor:not(.ativo) {
+    color: var(--ai);
+  }
+}
+
+.sidebar__nav-secao {
+  margin-top: $space-4;
+  padding: $space-2 $space-3 $space-1;
+  border-top: 1px solid var(--border-default);
+  font-family: $font-mono;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
 }
 
 .sidebar__rodape {

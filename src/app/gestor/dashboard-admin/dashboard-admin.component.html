@@ -1,0 +1,174 @@
+<div class="painel-gestor">
+  <header class="painel-gestor__cabecalho">
+    <div>
+      <span class="painel-gestor__etiqueta">
+        <span class="material-symbols-outlined">shield_person</span>
+        Área administrativa
+      </span>
+      <h1 class="painel-gestor__titulo">Painel do Gestor</h1>
+    </div>
+    @if (metricas(); as dados) {
+      <p class="painel-gestor__atualizacao">Dados de {{ dados.geradoEm | date: 'dd/MM/yyyy HH:mm' }}</p>
+    }
+  </header>
+
+  @if (carregando()) {
+    <div class="painel-gestor__estado">
+      <app-spinner tamanho="grande" />
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregarMetricas()" />
+  } @else {
+    @if (metricas(); as dados) {
+      <section class="painel-gestor__metricas">
+        <article class="painel-gestor__card" data-teste="card-usuarios">
+          <div class="painel-gestor__card-topo">
+            <h2>Total de usuários</h2>
+            <span class="material-symbols-outlined">group</span>
+          </div>
+          <p class="painel-gestor__numero">{{ formatarNumero(dados.totalUsuarios) }}</p>
+          <p class="painel-gestor__apoio">
+            @if (dados.novosUsuariosUltimos30Dias > 0) {
+              <span class="painel-gestor__variacao painel-gestor__variacao--positiva">
+                <span class="material-symbols-outlined">trending_up</span>
+                +{{ formatarNumero(dados.novosUsuariosUltimos30Dias) }}
+                @if (variacaoUsuarios(); as variacao) {
+                  ({{ formatarVariacao(variacao) }}%)
+                }
+              </span>
+              nos últimos 30 dias
+            } @else {
+              <span class="painel-gestor__variacao">Sem novos cadastros</span>
+              nos últimos 30 dias
+            }
+          </p>
+        </article>
+
+        <article class="painel-gestor__card" data-teste="card-perfis">
+          <div class="painel-gestor__card-topo">
+            <h2>Perfis concluídos</h2>
+            <span class="material-symbols-outlined">fact_check</span>
+          </div>
+          <p class="painel-gestor__numero">
+            {{ formatarNumero(dados.usuariosComPerfilPreenchido) }}
+            <small>de {{ formatarNumero(dados.totalUsuarios) }}</small>
+          </p>
+          <div
+            class="painel-gestor__progresso"
+            role="progressbar"
+            aria-label="Usuários com perfil concluído"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="percentualPerfis()"
+          >
+            <span class="painel-gestor__progresso-preenchido" [style.width.%]="percentualPerfis()"></span>
+          </div>
+          <p class="painel-gestor__apoio">{{ percentualPerfis() }}% responderam o quiz</p>
+        </article>
+
+        <article class="painel-gestor__card" data-teste="card-ia">
+          <div class="painel-gestor__card-topo">
+            <h2>Microsserviço de IA</h2>
+            <span class="material-symbols-outlined">smart_toy</span>
+          </div>
+          @if (statusIa(); as status) {
+            <p class="painel-gestor__status">
+              <span
+                class="painel-gestor__pulso"
+                [class.painel-gestor__pulso--online]="status.disponivel"
+                [class.painel-gestor__pulso--offline]="!status.disponivel"
+              ></span>
+              {{ status.disponivel ? 'Online' : 'Offline' }}
+            </p>
+            <p class="painel-gestor__apoio">
+              @if (status.rabbitmqConectado === null) {
+                RabbitMQ sem informação
+              } @else {
+                RabbitMQ {{ status.rabbitmqConectado ? 'conectado' : 'desconectado' }}
+              }
+            </p>
+            <p class="painel-gestor__apoio painel-gestor__apoio--discreto">
+              Ao vivo · verificado às {{ status.verificadoEm | date: 'HH:mm:ss' }}
+            </p>
+          } @else {
+            <p class="painel-gestor__status">
+              <span class="painel-gestor__pulso"></span>
+              Verificando...
+            </p>
+          }
+        </article>
+      </section>
+
+      <section class="painel-gestor__linha">
+        <article class="painel-gestor__card">
+          <div class="painel-gestor__card-topo">
+            <h2>Distribuição de risco dos usuários</h2>
+          </div>
+          @if (possuiPerfis()) {
+            <app-donut-chart [segmentos]="segmentosRisco()" />
+          } @else {
+            <p class="painel-gestor__vazio">Nenhum usuário concluiu o quiz de perfil ainda.</p>
+          }
+        </article>
+
+        <article class="painel-gestor__card">
+          <div class="painel-gestor__card-topo">
+            <h2>Ativos por categoria</h2>
+            <span class="painel-gestor__total">{{ formatarNumero(totalAtivos()) }} ativos</span>
+          </div>
+          <ul class="painel-gestor__categorias">
+            @for (categoria of categorias(); track categoria.rotulo) {
+              <li class="painel-gestor__categoria">
+                <span class="painel-gestor__categoria-rotulo">{{ categoria.rotulo }}</span>
+                <span class="painel-gestor__categoria-trilho">
+                  <span
+                    class="painel-gestor__categoria-barra"
+                    [class.painel-gestor__categoria-barra--rf]="categoria.grupo === 'rf'"
+                    [style.width.%]="categoria.larguraBarra"
+                  ></span>
+                </span>
+                <span class="painel-gestor__categoria-valor">{{ formatarNumero(categoria.quantidade) }}</span>
+              </li>
+            }
+          </ul>
+          <p class="painel-gestor__apoio painel-gestor__apoio--discreto">
+            @if (dados.ultimaSincronizacaoTesouro; as sincronizacao) {
+              Tesouro Direto sincronizado em {{ sincronizacao | date: 'dd/MM/yyyy HH:mm' }}
+            } @else {
+              Tesouro Direto ainda não sincronizado
+            }
+          </p>
+        </article>
+      </section>
+
+      <section class="painel-gestor__card">
+        <div class="painel-gestor__card-topo">
+          <h2>Títulos privados vencendo em 30 dias</h2>
+          <span class="painel-gestor__total">{{ dados.titulosVencendo.length }}</span>
+        </div>
+        @if (dados.titulosVencendo.length > 0) {
+          <ul class="painel-gestor__alertas">
+            @for (titulo of dados.titulosVencendo; track titulo.id) {
+              <li
+                class="painel-gestor__alerta"
+                [class.painel-gestor__alerta--alta]="titulo.urgencia === 'ALTA'"
+                [class.painel-gestor__alerta--media]="titulo.urgencia === 'MEDIA'"
+                [class.painel-gestor__alerta--baixa]="titulo.urgencia === 'BAIXA'"
+              >
+                <span class="painel-gestor__alerta-marcador"></span>
+                <div class="painel-gestor__alerta-titulo">
+                  <strong>{{ titulo.emissor }}</strong>
+                  <span>{{ titulo.tipo }} · {{ titulo.vencimento | date: 'dd/MM/yyyy' }}</span>
+                </div>
+                <span class="painel-gestor__alerta-prazo">{{ textoPrazo(titulo) }}</span>
+                <span class="painel-gestor__alerta-selo">{{ rotuloUrgencia[titulo.urgencia] }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="painel-gestor__vazio">Nenhum título privado vence nos próximos 30 dias.</p>
+        }
+      </section>
+    }
+  }
+</div>
