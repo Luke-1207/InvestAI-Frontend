@@ -41,6 +41,8 @@ export class AppShellComponent implements OnInit {
     { rota: '/perfil', rotulo: 'Perfil', icone: 'person' },
   ];
 
+  readonly ehGestor = computed(() => this.authService.role() === 'GESTOR');
+
   readonly indicadores = computed<IndicadorTicker[]>(() => {
     const dados = this.dashboardService.dashboard()?.indicadoresMercado;
     if (!dados) {

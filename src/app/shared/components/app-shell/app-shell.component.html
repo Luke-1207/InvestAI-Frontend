@@ -15,6 +15,14 @@
           <span>{{ item.rotulo }}</span>
         </a>
       }
+
+      @if (ehGestor()) {
+        <span class="sidebar__nav-secao">Administração</span>
+        <a routerLink="/gestor" routerLinkActive="ativo" class="sidebar__nav-item sidebar__nav-item--gestor">
+          <span class="material-symbols-outlined">shield_person</span>
+          <span>Painel do Gestor</span>
+        </a>
+      }
     </nav>
 
     <div class="sidebar__rodape">
