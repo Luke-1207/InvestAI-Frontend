@@ -30,6 +30,10 @@
   font-size: 14px;
   text-decoration: none;
 
+  @include ate-tablet {
+    min-height: 40px;
+  }
+
   &:hover {
     color: var(--text-primary);
   }
@@ -160,6 +164,11 @@
 .editar-dados__salvar {
   align-self: flex-end;
   width: 220px;
+
+  @include ate-celular {
+    align-self: stretch;
+    width: auto;
+  }
 }
 
 .editar-dados__senha-cabecalho {

@@ -26,6 +26,11 @@
   align-items: center;
   gap: $space-4;
   flex-wrap: wrap;
+
+  @include ate-celular {
+    width: 100%;
+    gap: $space-3;
+  }
 }
 
 .rf__filtros-categoria {
@@ -35,6 +40,14 @@
   border: 1px solid var(--border-default);
   border-radius: $radius-full;
   padding: 4px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .rf__filtro {
@@ -47,6 +60,11 @@
   letter-spacing: 0.05em;
   color: var(--text-secondary);
   cursor: pointer;
+  white-space: nowrap;
+
+  @include ate-tablet {
+    min-height: 36px;
+  }
 
   &--ativo {
     background: var(--accent-strong);
@@ -69,6 +87,11 @@
   align-items: center;
   gap: $space-1;
   padding: $space-1 $space-4;
+  white-space: nowrap;
+
+  @include ate-tablet {
+    min-height: 36px;
+  }
   border: none;
   background: none;
   border-radius: $radius-full;

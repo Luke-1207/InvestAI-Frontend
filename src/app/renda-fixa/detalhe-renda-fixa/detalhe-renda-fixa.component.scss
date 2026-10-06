@@ -55,6 +55,11 @@
 .detalhe-rf__acoes {
   display: flex;
   gap: $space-3;
+
+  @include ate-celular {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }
 
 .detalhe-rf__favorito,
@@ -70,6 +75,16 @@
   font-family: $font-body;
   font-size: 14px;
   cursor: pointer;
+
+  @include ate-tablet {
+    min-height: 40px;
+  }
+
+  @include ate-celular {
+    flex: 1 1 auto;
+    justify-content: center;
+    white-space: nowrap;
+  }
 
   .material-symbols-outlined {
     font-size: 18px;

@@ -1,5 +1,7 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
@@ -26,8 +28,10 @@ export class AppShellComponent implements OnInit {
   protected readonly authService = inject(AuthService);
   protected readonly fotoPerfilService = inject(FotoPerfilService);
   private readonly dashboardService = inject(DashboardService);
+  private readonly router = inject(Router);
 
   readonly menuUsuarioAberto = signal(false);
+  readonly menuNavegacaoAberto = signal(false);
   readonly termoBusca = signal('');
 
   readonly itensNav: ItemNav[] = [
@@ -64,6 +68,15 @@ export class AppShellComponent implements OnInit {
     ];
   });
 
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((evento) => evento instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.fecharMenuNavegacao());
+  }
+
   ngOnInit(): void {
     this.fotoPerfilService.carregar();
     if (!this.dashboardService.dashboard()) {
@@ -79,6 +92,14 @@ export class AppShellComponent implements OnInit {
     this.menuUsuarioAberto.set(!this.menuUsuarioAberto());
   }
 
+  alternarMenuNavegacao(): void {
+    this.menuNavegacaoAberto.set(!this.menuNavegacaoAberto());
+  }
+
+  fecharMenuNavegacao(): void {
+    this.menuNavegacaoAberto.set(false);
+  }
+
   alternarTema(): void {
     this.themeService.alternarTema();
   }
@@ -90,6 +111,11 @@ export class AppShellComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   aoTeclar(evento: KeyboardEvent): void {
+    if (evento.key === 'Escape') {
+      this.fecharMenuNavegacao();
+      return;
+    }
+
     const alvo = evento.target as HTMLElement;
     const digitandoEmCampo = alvo.tagName === 'INPUT' || alvo.tagName === 'TEXTAREA';
 
