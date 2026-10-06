@@ -65,6 +65,12 @@
   align-items: center;
   justify-content: center;
 
+  @include ate-tablet {
+    right: $space-1;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
   .material-symbols-outlined {
     font-size: 22px;
 

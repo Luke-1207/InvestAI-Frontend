@@ -203,6 +203,10 @@
   font-weight: 700;
   cursor: pointer;
 
+  @include ate-celular {
+    align-self: stretch;
+  }
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;

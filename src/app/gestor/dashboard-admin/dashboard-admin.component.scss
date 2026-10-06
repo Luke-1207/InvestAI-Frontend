@@ -54,13 +54,13 @@
 
 .painel-gestor__metricas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: $space-4;
 }
 
 .painel-gestor__linha {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: $space-4;
 }
 
@@ -98,6 +98,11 @@
 .painel-gestor__numero {
   font-family: $font-display;
   font-size: 36px;
+
+  @include ate-celular {
+    font-size: 30px;
+  }
+
   font-weight: 700;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
@@ -296,6 +301,12 @@
   border-radius: $radius-md;
   font-family: $font-body;
 
+  @include ate-celular {
+    display: grid;
+    grid-template-columns: 4px 1fr auto;
+    row-gap: $space-2;
+  }
+
   &--alta {
     --cor-urgencia: var(--danger);
   }
@@ -311,6 +322,10 @@
   flex-shrink: 0;
   border-radius: $radius-full;
   background: var(--cor-urgencia);
+
+  @include ate-celular {
+    grid-row: 1 / span 2;
+  }
 }
 
 .painel-gestor__alerta-titulo {
@@ -327,6 +342,14 @@
     white-space: nowrap;
   }
 
+  @include ate-celular {
+    grid-column: 2 / span 2;
+
+    strong {
+      white-space: normal;
+    }
+  }
+
   span {
     font-size: 12px;
     color: var(--text-secondary);
@@ -337,6 +360,10 @@
   font-size: 13px;
   color: var(--text-secondary);
   white-space: nowrap;
+
+  @include ate-celular {
+    grid-column: 2;
+  }
 }
 
 .painel-gestor__alerta-selo {
