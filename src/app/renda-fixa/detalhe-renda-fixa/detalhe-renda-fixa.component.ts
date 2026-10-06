@@ -15,6 +15,8 @@ import { calcularAliquotaIR, calcularTaxaLiquida } from '../../shared/utils/ir-r
 import { SkeletonDetalheComponent } from '../../shared/components/ui/skeleton-detalhe/skeleton-detalhe.component';
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
 import { GraficoBarrasComponent, BarraDado } from '../../shared/components/ui/grafico-barras/grafico-barras.component';
+import { RelatorioService } from '../../shared/services/relatorio.service';
+import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
 
 function normalizarPrivado(dto: TituloPrivadoDetalhe): DetalheRendaFixaNormalizado {
   return {
@@ -62,6 +64,7 @@ function normalizarTesouro(dto: TituloTesouroDetalhe): DetalheRendaFixaNormaliza
     SkeletonDetalheComponent,
     ErroServidorComponent,
     GraficoBarrasComponent,
+    BotaoRelatorioComponent,
   ],
   templateUrl: './detalhe-renda-fixa.component.html',
   styleUrl: './detalhe-renda-fixa.component.scss',
@@ -71,6 +74,7 @@ export class DetalheRendaFixaComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly rendaFixaService = inject(RendaFixaService);
   private readonly toastService = inject(ToastService);
+  private readonly relatorioService = inject(RelatorioService);
 
   protected readonly identificador = this.route.snapshot.paramMap.get('id') ?? '';
   protected readonly corCompatibilidade = CORES_COMPATIBILIDADE;
@@ -84,6 +88,8 @@ export class DetalheRendaFixaComponent implements OnInit {
   protected readonly compatibilidade = signal<Compatibilidade | null>(null);
 
   protected readonly favoritado = signal(false);
+
+  protected readonly baixarRelatorio = () => this.relatorioService.baixarRelatorioAtivo(this.identificador, 'FIXA');
 
   protected readonly barras = computed<BarraDado[]>(() => {
     const d = this.detalhe();

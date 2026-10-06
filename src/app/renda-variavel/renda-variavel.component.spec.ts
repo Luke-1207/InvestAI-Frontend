@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RelatorioService } from '../shared/services/relatorio.service';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { RendaVariavelComponent } from './renda-variavel.component';
@@ -27,6 +28,19 @@ function sugestoesMock(overrides: Partial<SugestoesRendaVariavel> = {}): Sugesto
 }
 
 describe('RendaVariavelComponent', () => {
+  let relatorioService: jasmine.SpyObj<RelatorioService>;
+
+  beforeEach(() => {
+    relatorioService = jasmine.createSpyObj<RelatorioService>('RelatorioService', [
+      'baixarRelatorioAtivo',
+      'baixarRelatorioListagem',
+      'baixarRelatorioPerfil',
+    ]);
+    relatorioService.baixarRelatorioAtivo.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioListagem.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioPerfil.and.returnValue(of('relatorio.pdf'));
+  });
+
   let fixture: ComponentFixture<RendaVariavelComponent>;
   let acaoService: jasmine.SpyObj<AcaoService>;
   let router: Router;
@@ -38,7 +52,7 @@ describe('RendaVariavelComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [RendaVariavelComponent],
-      providers: [{ provide: AcaoService, useValue: acaoService }, provideRouter([])],
+      providers: [{ provide: AcaoService, useValue: acaoService }, provideRouter([]), { provide: RelatorioService, useValue: relatorioService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RendaVariavelComponent);
@@ -114,5 +128,51 @@ describe('RendaVariavelComponent', () => {
     (botoes[1] as HTMLButtonElement).click();
 
     expect(acaoService.listar).toHaveBeenCalledWith(jasmine.objectContaining({ pagina: 2 }));
+  });
+
+  function irParaModoInteligente(): void {
+    const botaoInteligente = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('.rv__modo')).find(
+      (b) => b.textContent?.includes('Modo Inteligente'),
+    ) as HTMLButtonElement;
+    botaoInteligente.click();
+    fixture.detectChanges();
+  }
+
+  it('não deve mostrar "Exportar PDF" no Modo Livre', () => {
+    expect(fixture.nativeElement.querySelector('app-botao-relatorio')).toBeNull();
+  });
+
+  it('"Exportar PDF" no Modo Inteligente deve enviar módulo, filtros e os códigos exibidos', () => {
+    irParaModoInteligente();
+
+    const botao: HTMLButtonElement = fixture.nativeElement.querySelector('app-botao-relatorio button');
+    expect(botao.textContent).toContain('Exportar PDF');
+    botao.click();
+
+    expect(relatorioService.baixarRelatorioListagem).toHaveBeenCalledOnceWith({
+      modulo: 'VARIAVEL',
+      filtros: { Modo: 'Inteligente', Tipo: 'Tudo' },
+      ativos: ['VALE3'],
+    });
+  });
+
+  it('"Exportar PDF" deve mandar no máximo 50 ativos', () => {
+    const itens = Array.from({ length: 60 }, (_, i) => ({ ...sugestoesMock().itens[0], codigo: `ATV${i + 1}` }));
+    acaoService.listarSugestoes.and.returnValue(of(sugestoesMock({ itens })));
+    irParaModoInteligente();
+
+    (fixture.nativeElement.querySelector('app-botao-relatorio button') as HTMLButtonElement).click();
+
+    const request = relatorioService.baixarRelatorioListagem.calls.mostRecent().args[0];
+    expect(request.ativos?.length).toBe(50);
+    expect(request.ativos?.[0]).toBe('ATV1');
+    expect(request.ativos?.[49]).toBe('ATV50');
+  });
+
+  it('não deve mostrar "Exportar PDF" quando o Modo Inteligente não tem sugestões', () => {
+    acaoService.listarSugestoes.and.returnValue(of(sugestoesMock({ itens: [], mensagem: 'Complete seu perfil' })));
+    irParaModoInteligente();
+
+    expect(fixture.nativeElement.querySelector('app-botao-relatorio')).toBeNull();
   });
 });

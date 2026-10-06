@@ -1,0 +1,15 @@
+<button
+  type="button"
+  class="botao-relatorio"
+  [disabled]="baixando() || desabilitado()"
+  [attr.aria-busy]="baixando()"
+  (click)="baixar()"
+>
+  @if (baixando()) {
+    <app-spinner tamanho="pequeno" rotulo="Gerando relatório" />
+    <span>Gerando PDF...</span>
+  } @else {
+    <span class="material-symbols-outlined">{{ icone() }}</span>
+    <span>{{ rotulo() }}</span>
+  }
+</button>

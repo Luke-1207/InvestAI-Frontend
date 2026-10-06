@@ -52,6 +52,10 @@ export const routes: Routes = [
         canActivate: [gestorGuard],
         loadChildren: () => import('./gestor/gestor.routes').then((m) => m.GESTOR_ROUTES),
       },
+      {
+        path: 'relatorios',
+        loadChildren: () => import('./relatorios/relatorios.routes').then((m) => m.RELATORIOS_ROUTES),
+      },
       ...ROTAS_EM_BREVE,
       {
         path: '**',

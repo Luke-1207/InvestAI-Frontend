@@ -35,6 +35,10 @@
           Modo Inteligente
         </button>
       </div>
+
+      @if (podeExportar()) {
+        <app-botao-relatorio rotulo="Exportar PDF" icone="picture_as_pdf" [requisicao]="exportarPdf" />
+      }
     </div>
   </div>
 

@@ -54,6 +54,7 @@
 
 .detalhe-rf__acoes {
   display: flex;
+  flex-wrap: wrap;
   gap: $space-3;
 
   @include ate-celular {

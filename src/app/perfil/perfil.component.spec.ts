@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RelatorioService } from '../shared/services/relatorio.service';
 import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { PerfilComponent } from './perfil.component';
@@ -28,6 +29,19 @@ function perfilMock(overrides: Partial<PerfilResponse> = {}): PerfilResponse {
 }
 
 describe('PerfilComponent', () => {
+  let relatorioService: jasmine.SpyObj<RelatorioService>;
+
+  beforeEach(() => {
+    relatorioService = jasmine.createSpyObj<RelatorioService>('RelatorioService', [
+      'baixarRelatorioAtivo',
+      'baixarRelatorioListagem',
+      'baixarRelatorioPerfil',
+    ]);
+    relatorioService.baixarRelatorioAtivo.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioListagem.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioPerfil.and.returnValue(of('relatorio.pdf'));
+  });
+
   let fixture: ComponentFixture<PerfilComponent>;
   let perfilService: jasmine.SpyObj<PerfilService>;
   let authService: jasmine.SpyObj<AuthService>;
@@ -53,7 +67,7 @@ describe('PerfilComponent', () => {
         { provide: PerfilService, useValue: perfilService },
         { provide: AuthService, useValue: authService },
         { provide: FotoPerfilService, useValue: { url: urlFoto } },
-        provideRouter([]),
+        provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
       ],
     }).compileComponents();
 
@@ -125,5 +139,15 @@ describe('PerfilComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('img.perfil__avatar').getAttribute('src')).toBe('blob:foto');
+  });
+
+  it('botão "Exportar perfil" deve pedir o relatório de perfil', async () => {
+    await montar();
+
+    const botao: HTMLButtonElement = fixture.nativeElement.querySelector('app-botao-relatorio button');
+    expect(botao.textContent).toContain('Exportar perfil');
+    botao.click();
+
+    expect(relatorioService.baixarRelatorioPerfil).toHaveBeenCalledTimes(1);
   });
 });

@@ -6,6 +6,9 @@ import { RendaFixaListagem, CategoriaRendaFixa } from '../shared/models/renda-fi
 import { CORES_COMPATIBILIDADE } from '../shared/models/compatibilidade';
 import { SkeletonCardComponent } from '../shared/components/ui/skeleton-card/skeleton-card.component';
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
+import { RelatorioService } from '../shared/services/relatorio.service';
+import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
+import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
 
 type Modo = 'livre' | 'inteligente';
 type FiltroCategoria = 'TODOS' | 'TESOURO' | 'CDB';
@@ -20,13 +23,14 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 @Component({
   selector: 'app-renda-fixa',
   standalone: true,
-  imports: [DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent],
+  imports: [DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent, BotaoRelatorioComponent],
   templateUrl: './renda-fixa.component.html',
   styleUrl: './renda-fixa.component.scss',
 })
 export class RendaFixaComponent implements OnInit {
   private readonly rendaFixaService = inject(RendaFixaService);
   private readonly router = inject(Router);
+  private readonly relatorioService = inject(RelatorioService);
 
   protected readonly OPCOES_CATEGORIA: OpcaoCategoria[] = [
     { valor: 'TODOS', rotulo: 'Tudo' },
@@ -49,6 +53,23 @@ export class RendaFixaComponent implements OnInit {
     if (categoria === 'TODOS') return this.itens();
     return this.itens().filter((item) => item.categoria === categoria);
   });
+
+  protected readonly podeExportar = computed(
+    () => this.modo() === 'inteligente' && !this.carregando() && !this.erro() && this.itensFiltrados().length > 0,
+  );
+
+  protected readonly exportarPdf = () =>
+    this.relatorioService.baixarRelatorioListagem({
+      modulo: 'FIXA',
+      filtros: {
+        Modo: 'Inteligente',
+        Categoria:
+          this.OPCOES_CATEGORIA.find((opcao) => opcao.valor === this.filtroCategoria())?.rotulo ?? 'Tudo',
+      },
+      ativos: this.itensFiltrados()
+        .slice(0, LIMITE_ATIVOS_RELATORIO)
+        .map((item) => item.codigo ?? item.id),
+    });
 
   ngOnInit(): void {
     this.carregar();

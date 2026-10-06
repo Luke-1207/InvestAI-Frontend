@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { AcaoService } from '../shared/services/acao.service';
@@ -7,6 +7,9 @@ import { SugestoesRendaVariavel } from '../shared/models/dashboard';
 import { SkeletonCardComponent } from '../shared/components/ui/skeleton-card/skeleton-card.component';
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
 import { CartaoSugestaoAtivoComponent } from '../shared/components/cartao-sugestao-ativo/cartao-sugestao-ativo.component';
+import { RelatorioService } from '../shared/services/relatorio.service';
+import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
+import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
 
 type Modo = 'livre' | 'inteligente';
 type FiltroTipo = 'TODOS' | TipoAtivo;
@@ -27,6 +30,7 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
     SkeletonCardComponent,
     ErroServidorComponent,
     CartaoSugestaoAtivoComponent,
+    BotaoRelatorioComponent,
   ],
   templateUrl: './renda-variavel.component.html',
   styleUrl: './renda-variavel.component.scss',
@@ -34,6 +38,7 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 export class RendaVariavelComponent implements OnInit {
   private readonly acaoService = inject(AcaoService);
   private readonly router = inject(Router);
+  private readonly relatorioService = inject(RelatorioService);
 
   protected readonly OPCOES_TIPO: OpcaoTipo[] = [
     { valor: 'TODOS', rotulo: 'Tudo' },
@@ -53,6 +58,20 @@ export class RendaVariavelComponent implements OnInit {
 
   protected readonly pagina = signal<PageResponse<AcaoListagem> | null>(null);
   protected readonly sugestoes = signal<SugestoesRendaVariavel | null>(null);
+
+  protected readonly podeExportar = computed(
+    () => this.modo() === 'inteligente' && !this.carregando() && (this.sugestoes()?.itens.length ?? 0) > 0,
+  );
+
+  protected readonly exportarPdf = () =>
+    this.relatorioService.baixarRelatorioListagem({
+      modulo: 'VARIAVEL',
+      filtros: {
+        Modo: 'Inteligente',
+        Tipo: this.OPCOES_TIPO.find((opcao) => opcao.valor === this.filtroTipo())?.rotulo ?? 'Tudo',
+      },
+      ativos: (this.sugestoes()?.itens ?? []).slice(0, LIMITE_ATIVOS_RELATORIO).map((item) => item.codigo),
+    });
 
   ngOnInit(): void {
     this.carregar();
