@@ -25,6 +25,10 @@
   align-items: center;
   gap: $space-4;
   padding: $space-5;
+
+  @include ate-celular {
+    flex-wrap: wrap;
+  }
   background: rgba(245, 158, 11, 0.08);
   border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: $radius-lg;
@@ -38,6 +42,7 @@
 
 .dashboard__perfil-incompleto-texto {
   flex: 1;
+  min-width: 0;
 
   h3 {
     font-family: $font-display;
@@ -68,6 +73,11 @@
 
 .dashboard__dica-do-dia {
   padding: $space-6;
+
+  @include ate-celular {
+    padding: $space-5;
+  }
+
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(192, 193, 255, 0.06));
   border: 1px solid var(--border-ai);
   border-radius: $radius-lg;
@@ -104,7 +114,8 @@
 .dashboard__dica-metricas {
   display: flex;
   align-items: center;
-  gap: $space-4;
+  flex-wrap: wrap;
+  gap: $space-2 $space-4;
 }
 
 .dashboard__secao {

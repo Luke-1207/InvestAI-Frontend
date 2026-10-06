@@ -127,14 +127,14 @@ describe('DetalheRendaFixaComponent', () => {
     expect(toastService.toasts()[0].mensagem).toContain('Adicionado aos favoritos');
   });
 
-  it('deve navegar pra Comparação com o título pré-selecionado', async () => {
+  it('deve navegar pra Comparação com o título pré-selecionado (tipo/categoria + identificador)', async () => {
     await montar('123e4567-e89b-12d3-a456-426614174000');
     const navSpy = spyOn(router, 'navigate');
 
     fixture.nativeElement.querySelector('.detalhe-rf__comparar').click();
 
     expect(navSpy).toHaveBeenCalledWith(['/comparacao'], {
-      queryParams: { titulo: '123e4567-e89b-12d3-a456-426614174000' },
+      queryParams: { tipo: 'CDB', identificador: '123e4567-e89b-12d3-a456-426614174000' },
     });
   });
 

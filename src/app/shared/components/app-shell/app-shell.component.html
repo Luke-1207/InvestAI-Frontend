@@ -1,18 +1,43 @@
 <div class="shell">
-  <aside class="sidebar">
+  @if (menuNavegacaoAberto()) {
+    <div class="shell__fundo" (click)="fecharMenuNavegacao()"></div>
+  }
+
+  <aside id="menu-navegacao" class="sidebar" [class.sidebar--aberta]="menuNavegacaoAberto()">
     <div class="sidebar__logo">
       <img src="logo.svg" alt="InvestAI" width="32" height="32" />
       <div>
         <h1>InvestAI</h1>
         <p>AI Wealth Management</p>
       </div>
+      <button type="button" class="sidebar__fechar" aria-label="Fechar menu" (click)="fecharMenuNavegacao()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
     </div>
 
     <nav class="sidebar__nav">
       @for (item of itensNav; track item.rota) {
-        <a [routerLink]="item.rota" routerLinkActive="ativo" class="sidebar__nav-item">
+        <a
+          [routerLink]="item.rota"
+          routerLinkActive="ativo"
+          class="sidebar__nav-item"
+          (click)="fecharMenuNavegacao()"
+        >
           <span class="material-symbols-outlined">{{ item.icone }}</span>
           <span>{{ item.rotulo }}</span>
+        </a>
+      }
+
+      @if (ehGestor()) {
+        <span class="sidebar__nav-secao">Administração</span>
+        <a
+          routerLink="/gestor"
+          routerLinkActive="ativo"
+          class="sidebar__nav-item sidebar__nav-item--gestor"
+          (click)="fecharMenuNavegacao()"
+        >
+          <span class="material-symbols-outlined">shield_person</span>
+          <span>Painel do Gestor</span>
         </a>
       }
     </nav>
@@ -27,6 +52,21 @@
 
   <div class="conteudo">
     <header class="header">
+      <button
+        type="button"
+        class="header__menu"
+        aria-label="Abrir menu"
+        aria-controls="menu-navegacao"
+        [attr.aria-expanded]="menuNavegacaoAberto()"
+        (click)="alternarMenuNavegacao()"
+      >
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+
+      <a routerLink="/dashboard" class="header__marca">
+        <span>InvestAI</span>
+      </a>
+
       <div class="header__ticker">
         @for (indicador of indicadores(); track indicador.label) {
           <div class="header__ticker-item">
@@ -57,8 +97,17 @@
         </button>
 
         <div class="header__usuario" data-menu-usuario>
-          <button type="button" class="header__avatar" (click)="alternarMenuUsuario()">
-            {{ iniciais }}
+          <button
+            type="button"
+            class="header__avatar"
+            [class.header__avatar--foto]="fotoPerfilService.url()"
+            (click)="alternarMenuUsuario()"
+          >
+            @if (fotoPerfilService.url(); as url) {
+              <img [src]="url" alt="Sua foto de perfil" class="header__avatar-foto" />
+            } @else {
+              {{ iniciais }}
+            }
           </button>
 
           @if (menuUsuarioAberto()) {

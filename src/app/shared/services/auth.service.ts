@@ -145,7 +145,7 @@ export class AuthService {
     return this.http.post<void>(`${this.baseUrl}/redefinir-senha`, dados);
   }
 
-  private carregarUsuarioAtual(): void {
+  carregarUsuarioAtual(): void {
     this.http
       .get<UsuarioResponseDTO>(`${this.usuariosUrl}/me`)
       .pipe(catchError(() => of(null)))

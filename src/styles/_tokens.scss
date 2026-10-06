@@ -19,3 +19,19 @@ $radius-sm: 4px;
 $radius-md: 8px;
 $radius-lg: 12px;
 $radius-full: 999px;
+
+// ===== Breakpoints =====
+$bp-tablet: 1024px;
+$bp-celular: 640px;
+
+@mixin ate-tablet {
+  @media (max-width: $bp-tablet) {
+    @content;
+  }
+}
+
+@mixin ate-celular {
+  @media (max-width: $bp-celular) {
+    @content;
+  }
+}
