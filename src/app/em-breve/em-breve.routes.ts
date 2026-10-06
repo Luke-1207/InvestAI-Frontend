@@ -20,9 +20,4 @@ export const ROTAS_EM_BREVE: Route[] = [
     titulo: 'Notificações',
     descricao: 'Em breve você vai receber aqui alertas de preço e de vencimento dos seus ativos.',
   }),
-  rotaEmBreve('relatorios', {
-    icone: 'description',
-    titulo: 'Relatórios',
-    descricao: 'Em breve você vai poder gerar relatórios com a análise da sua carteira.',
-  }),
 ];

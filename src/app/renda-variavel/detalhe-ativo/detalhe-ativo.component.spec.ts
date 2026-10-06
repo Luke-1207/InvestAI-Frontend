@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RelatorioService } from '../../shared/services/relatorio.service';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -27,6 +28,19 @@ function sugestaoMock(): SugestaoAtivoItem {
 }
 
 describe('DetalheAtivoComponent', () => {
+  let relatorioService: jasmine.SpyObj<RelatorioService>;
+
+  beforeEach(() => {
+    relatorioService = jasmine.createSpyObj<RelatorioService>('RelatorioService', [
+      'baixarRelatorioAtivo',
+      'baixarRelatorioListagem',
+      'baixarRelatorioPerfil',
+    ]);
+    relatorioService.baixarRelatorioAtivo.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioListagem.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioPerfil.and.returnValue(of('relatorio.pdf'));
+  });
+
   let fixture: ComponentFixture<DetalheAtivoComponent>;
   let acaoService: jasmine.SpyObj<AcaoService>;
   let toastService: ToastService;
@@ -41,7 +55,7 @@ describe('DetalheAtivoComponent', () => {
       imports: [DetalheAtivoComponent],
       providers: [
         { provide: AcaoService, useValue: acaoService },
-        provideRouter([]),
+        provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: convertToParamMap({ codigo: 'PETR4' }) } },
@@ -88,7 +102,7 @@ describe('DetalheAtivoComponent', () => {
       imports: [DetalheAtivoComponent],
       providers: [
         { provide: AcaoService, useValue: acaoService },
-        provideRouter([]),
+        provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ codigo: 'PETR4' }) } } },
       ],
     }).compileComponents();
@@ -120,5 +134,15 @@ describe('DetalheAtivoComponent', () => {
     expect(navSpy).toHaveBeenCalledWith(['/comparacao'], {
       queryParams: { tipo: 'ACAO', identificador: 'PETR4' },
     });
+  });
+
+  it('botão "Baixar relatório" deve pedir o relatório de renda variável do ativo aberto', async () => {
+    await montar();
+
+    const botao: HTMLButtonElement = fixture.nativeElement.querySelector('app-botao-relatorio button');
+    expect(botao.textContent).toContain('Baixar relatório');
+    botao.click();
+
+    expect(relatorioService.baixarRelatorioAtivo).toHaveBeenCalledOnceWith('PETR4', 'VARIAVEL');
   });
 });

@@ -45,8 +45,8 @@ describe('EmBreveComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
   });
 
-  it('as rotas em breve devem cobrir favoritos, notificações e relatórios, cada uma com seus dados', () => {
-    expect(ROTAS_EM_BREVE.map((rota) => rota.path)).toEqual(['favoritos', 'notificacoes', 'relatorios']);
+  it('as rotas em breve devem cobrir favoritos e notificações, cada uma com seus dados', () => {
+    expect(ROTAS_EM_BREVE.map((rota) => rota.path)).toEqual(['favoritos', 'notificacoes']);
 
     for (const rota of ROTAS_EM_BREVE) {
       const dadosDaRota = rota.data as DadosEmBreve;

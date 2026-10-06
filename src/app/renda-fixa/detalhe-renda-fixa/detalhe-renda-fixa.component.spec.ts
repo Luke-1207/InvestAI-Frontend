@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RelatorioService } from '../../shared/services/relatorio.service';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { DetalheRendaFixaComponent } from './detalhe-renda-fixa.component';
@@ -31,6 +32,19 @@ function itemListagemMock(overrides: Partial<RendaFixaListagem> = {}): RendaFixa
 }
 
 describe('DetalheRendaFixaComponent', () => {
+  let relatorioService: jasmine.SpyObj<RelatorioService>;
+
+  beforeEach(() => {
+    relatorioService = jasmine.createSpyObj<RelatorioService>('RelatorioService', [
+      'baixarRelatorioAtivo',
+      'baixarRelatorioListagem',
+      'baixarRelatorioPerfil',
+    ]);
+    relatorioService.baixarRelatorioAtivo.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioListagem.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioPerfil.and.returnValue(of('relatorio.pdf'));
+  });
+
   let fixture: ComponentFixture<DetalheRendaFixaComponent>;
   let service: jasmine.SpyObj<RendaFixaService>;
   let toastService: ToastService;
@@ -48,7 +62,7 @@ describe('DetalheRendaFixaComponent', () => {
       imports: [DetalheRendaFixaComponent],
       providers: [
         { provide: RendaFixaService, useValue: service },
-        provideRouter([]),
+        provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: identificador }) } } },
       ],
     }).compileComponents();
@@ -100,7 +114,7 @@ describe('DetalheRendaFixaComponent', () => {
       imports: [DetalheRendaFixaComponent],
       providers: [
         { provide: RendaFixaService, useValue: service },
-        provideRouter([]),
+        provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: '123e4567-e89b-12d3-a456-426614174000' }) } } },
       ],
     }).compileComponents();
@@ -145,5 +159,18 @@ describe('DetalheRendaFixaComponent', () => {
     expect(valores[0].valor).toBe(500);
     expect(valores[1].valor).toBeCloseTo(550, 1);
     expect(valores[2].valor).toBeCloseTo(541.25, 1);
+  });
+
+  it('botão "Baixar relatório" deve pedir o relatório de renda fixa com o identificador da URL', async () => {
+    await montar('123e4567-e89b-12d3-a456-426614174000');
+
+    const botao: HTMLButtonElement = fixture.nativeElement.querySelector('app-botao-relatorio button');
+    expect(botao.textContent).toContain('Baixar relatório');
+    botao.click();
+
+    expect(relatorioService.baixarRelatorioAtivo).toHaveBeenCalledOnceWith(
+      '123e4567-e89b-12d3-a456-426614174000',
+      'FIXA',
+    );
   });
 });
