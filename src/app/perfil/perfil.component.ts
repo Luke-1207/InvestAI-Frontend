@@ -9,6 +9,8 @@ import { TipoAtivo } from '../shared/models/acao';
 import { SkeletonDetalheComponent } from '../shared/components/ui/skeleton-detalhe/skeleton-detalhe.component';
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
 import { FotoPerfilService } from '../shared/services/foto-perfil.service';
+import { RelatorioService } from '../shared/services/relatorio.service';
+import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
 
 interface OpcaoTipoAtivo {
   valor: TipoAtivo;
@@ -30,7 +32,7 @@ const ICONE_PERFIL_RISCO: { [chave: string]: string | undefined } = {
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [DecimalPipe, RouterLink, SkeletonDetalheComponent, ErroServidorComponent],
+  imports: [DecimalPipe, RouterLink, SkeletonDetalheComponent, ErroServidorComponent, BotaoRelatorioComponent],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.scss',
 })
@@ -39,6 +41,9 @@ export class PerfilComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly relatorioService = inject(RelatorioService);
+
+  protected readonly exportarPerfil = () => this.relatorioService.baixarRelatorioPerfil();
 
   protected readonly TODOS_TIPOS_ATIVO = TODOS_TIPOS_ATIVO;
   protected readonly iconePerfilRisco = ICONE_PERFIL_RISCO;

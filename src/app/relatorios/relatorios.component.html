@@ -1,0 +1,57 @@
+<div class="relatorios">
+  <header class="relatorios__cabecalho">
+    <div>
+      <h1>Relatórios</h1>
+      <p>Histórico dos PDFs que você já gerou. Os arquivos não ficam guardados aqui, só o registro.</p>
+    </div>
+    @if (!carregando() && !erro() && total() > 0) {
+      <span class="relatorios__total">{{ total() }} {{ total() === 1 ? 'relatório' : 'relatórios' }}</span>
+    }
+  </header>
+
+  @if (carregando()) {
+    <div class="relatorios__estado">
+      <app-spinner tamanho="grande" />
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (registros().length === 0) {
+    <app-estado-erro
+      icone="description"
+      titulo="Nenhum relatório gerado ainda"
+      mensagem="Gere um PDF na tela de um ativo, numa listagem em modo inteligente ou no seu perfil, e ele aparece aqui."
+      textoAcao="Ver Renda Variável"
+      (acao)="irParaRendaVariavel()"
+    />
+  } @else {
+    <ul class="relatorios__lista">
+      @for (registro of registros(); track registro.id) {
+        <li class="relatorios__item">
+          <span class="relatorios__icone material-symbols-outlined">{{ iconeTipo(registro.tipo) }}</span>
+          <div class="relatorios__descricao">
+            <strong>{{ rotuloTipo(registro.tipo) }}</strong>
+            <span>{{ rotuloReferencia(registro.referencia) }}</span>
+          </div>
+          <time class="relatorios__data" [attr.datetime]="registro.geradoEm">
+            {{ registro.geradoEm | date: 'dd/MM/yyyy HH:mm' }}
+          </time>
+        </li>
+      }
+    </ul>
+
+    @if (erroAoCarregarMais()) {
+      <p class="relatorios__aviso">Não foi possível carregar mais registros. Tente de novo.</p>
+    }
+
+    @if (temMais()) {
+      <button type="button" class="relatorios__mais" [disabled]="carregandoMais()" (click)="carregarMais()">
+        @if (carregandoMais()) {
+          <app-spinner tamanho="pequeno" />
+          Carregando...
+        } @else {
+          Carregar mais
+        }
+      </button>
+    }
+  }
+</div>

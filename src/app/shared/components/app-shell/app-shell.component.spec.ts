@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppShellComponent } from './app-shell.component';
@@ -93,5 +94,102 @@ describe('AppShellComponent', () => {
   it('deve renderizar todos os itens de navegação configurados', () => {
     const links = fixture.nativeElement.querySelectorAll('.sidebar__nav-item');
     expect(links.length).toBe(fixture.componentInstance.itensNav.length);
+  });
+
+  function sidebar(): HTMLElement {
+    return fixture.nativeElement.querySelector('.sidebar');
+  }
+
+  function botaoMenu(): HTMLButtonElement {
+    return fixture.nativeElement.querySelector('.header__menu');
+  }
+
+  function abrirMenuNavegacao(): void {
+    botaoMenu().click();
+    fixture.detectChanges();
+  }
+
+  it('usuário comum não deve ver a seção de administração', () => {
+    expect(fixture.nativeElement.querySelector('.sidebar__nav-secao')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.sidebar__nav-item--gestor')).toBeNull();
+  });
+
+  it('gestor deve ver o link do Painel do Gestor apontando pra /gestor', () => {
+    Object.defineProperty(authService, 'role', { value: signal('GESTOR') });
+    const fixtureGestor = TestBed.createComponent(AppShellComponent);
+    fixtureGestor.detectChanges();
+
+    const link: HTMLAnchorElement = fixtureGestor.nativeElement.querySelector('.sidebar__nav-item--gestor');
+    expect(fixtureGestor.nativeElement.querySelector('.sidebar__nav-secao')?.textContent?.trim()).toBe('Administração');
+    expect(link.textContent).toContain('Painel do Gestor');
+    expect(link.getAttribute('href')).toBe('/gestor');
+    fixtureGestor.destroy();
+  });
+
+  it('menu de navegação deve começar fechado', () => {
+    expect(sidebar().classList).not.toContain('sidebar--aberta');
+    expect(fixture.nativeElement.querySelector('.shell__fundo')).toBeNull();
+    expect(botaoMenu().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('botão de menu deve abrir a navegação e mostrar o fundo escuro', () => {
+    abrirMenuNavegacao();
+
+    expect(sidebar().classList).toContain('sidebar--aberta');
+    expect(fixture.nativeElement.querySelector('.shell__fundo')).toBeTruthy();
+    expect(botaoMenu().getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('botão de menu deve fechar a navegação quando ela já está aberta', () => {
+    abrirMenuNavegacao();
+    abrirMenuNavegacao();
+
+    expect(sidebar().classList).not.toContain('sidebar--aberta');
+  });
+
+  it('clicar no fundo escuro deve fechar a navegação', () => {
+    abrirMenuNavegacao();
+
+    fixture.nativeElement.querySelector('.shell__fundo').click();
+    fixture.detectChanges();
+
+    expect(sidebar().classList).not.toContain('sidebar--aberta');
+    expect(fixture.nativeElement.querySelector('.shell__fundo')).toBeNull();
+  });
+
+  it('botão de fechar da sidebar deve fechar a navegação', () => {
+    abrirMenuNavegacao();
+
+    fixture.nativeElement.querySelector('.sidebar__fechar').click();
+    fixture.detectChanges();
+
+    expect(sidebar().classList).not.toContain('sidebar--aberta');
+  });
+
+  it('tecla Escape deve fechar a navegação', () => {
+    abrirMenuNavegacao();
+
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(sidebar().classList).not.toContain('sidebar--aberta');
+  });
+
+  it('clicar em um item de navegação deve fechar o menu', () => {
+    abrirMenuNavegacao();
+
+    fixture.nativeElement.querySelector('.sidebar__nav-item').click();
+    fixture.detectChanges();
+
+    expect(sidebar().classList).not.toContain('sidebar--aberta');
+  });
+
+  it('trocar de rota deve fechar o menu de navegação', async () => {
+    abrirMenuNavegacao();
+
+    await TestBed.inject(Router).navigateByUrl('/');
+    fixture.detectChanges();
+
+    expect(sidebar().classList).not.toContain('sidebar--aberta');
   });
 });

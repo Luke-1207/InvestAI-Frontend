@@ -15,10 +15,13 @@
           <h1>{{ usuario()?.nome }}</h1>
           <p>{{ usuario()?.email }}</p>
         </div>
-        <a routerLink="/perfil/editar" class="perfil__botao-editar-dados">
-          <span class="material-symbols-outlined">edit</span>
-          Editar Dados Pessoais
-        </a>
+        <div class="perfil__identificacao-acoes">
+          <a routerLink="/perfil/editar" class="perfil__botao-editar-dados">
+            <span class="material-symbols-outlined">edit</span>
+            Editar Dados Pessoais
+          </a>
+          <app-botao-relatorio rotulo="Exportar perfil" icone="picture_as_pdf" [requisicao]="exportarPerfil" />
+        </div>
       </div>
 
       @if (!dados.perfilPreenchido) {

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RelatorioService } from '../shared/services/relatorio.service';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { RendaFixaComponent } from './renda-fixa.component';
@@ -15,6 +16,19 @@ function itemMock(overrides: Partial<RendaFixaListagem> = {}): RendaFixaListagem
 }
 
 describe('RendaFixaComponent', () => {
+  let relatorioService: jasmine.SpyObj<RelatorioService>;
+
+  beforeEach(() => {
+    relatorioService = jasmine.createSpyObj<RelatorioService>('RelatorioService', [
+      'baixarRelatorioAtivo',
+      'baixarRelatorioListagem',
+      'baixarRelatorioPerfil',
+    ]);
+    relatorioService.baixarRelatorioAtivo.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioListagem.and.returnValue(of('relatorio.pdf'));
+    relatorioService.baixarRelatorioPerfil.and.returnValue(of('relatorio.pdf'));
+  });
+
   let fixture: ComponentFixture<RendaFixaComponent>;
   let service: jasmine.SpyObj<RendaFixaService>;
   let router: Router;
@@ -28,7 +42,7 @@ describe('RendaFixaComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [RendaFixaComponent],
-      providers: [{ provide: RendaFixaService, useValue: service }, provideRouter([])],
+      providers: [{ provide: RendaFixaService, useValue: service }, provideRouter([]), { provide: RelatorioService, useValue: relatorioService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RendaFixaComponent);
@@ -125,5 +139,57 @@ describe('RendaFixaComponent', () => {
     fixture.nativeElement.querySelector('.rf__card').click();
 
     expect(navSpy).toHaveBeenCalledWith('/renda-fixa/99');
+  });
+
+  function irParaModoInteligente(): void {
+    const botaoInteligente = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('.rf__modo')).find(
+      (b) => b.textContent?.includes('Modo Inteligente'),
+    ) as HTMLButtonElement;
+    botaoInteligente.click();
+    fixture.detectChanges();
+  }
+
+  function listagemInteligente() {
+    return of([
+      itemMock({ id: 't1', codigo: 'SELIC2029', score: 60, compatibilidade: 'MEDIA' }),
+      itemMock({ id: 'uuid-cdb', categoria: 'CDB', nome: 'CDB Banco X', score: 74, compatibilidade: 'ALTA' }),
+    ]);
+  }
+
+  it('não deve mostrar "Exportar PDF" no Modo Livre', () => {
+    expect(fixture.nativeElement.querySelector('app-botao-relatorio')).toBeNull();
+  });
+
+  it('"Exportar PDF" no Modo Inteligente deve enviar código do Tesouro e id do título privado', () => {
+    service.listar.and.returnValue(listagemInteligente());
+    irParaModoInteligente();
+
+    const botao: HTMLButtonElement = fixture.nativeElement.querySelector('app-botao-relatorio button');
+    expect(botao.textContent).toContain('Exportar PDF');
+    botao.click();
+
+    expect(relatorioService.baixarRelatorioListagem).toHaveBeenCalledOnceWith({
+      modulo: 'FIXA',
+      filtros: { Modo: 'Inteligente', Categoria: 'Tudo' },
+      ativos: ['SELIC2029', 'uuid-cdb'],
+    });
+  });
+
+  it('"Exportar PDF" deve respeitar o filtro de categoria aplicado na tela', () => {
+    service.listar.and.returnValue(listagemInteligente());
+    irParaModoInteligente();
+    const filtroCdb = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('.rf__filtro')).find(
+      (b) => b.textContent?.includes('CDBs'),
+    ) as HTMLButtonElement;
+    filtroCdb.click();
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('app-botao-relatorio button') as HTMLButtonElement).click();
+
+    expect(relatorioService.baixarRelatorioListagem).toHaveBeenCalledOnceWith({
+      modulo: 'FIXA',
+      filtros: { Modo: 'Inteligente', Categoria: 'CDBs' },
+      ativos: ['uuid-cdb'],
+    });
   });
 });

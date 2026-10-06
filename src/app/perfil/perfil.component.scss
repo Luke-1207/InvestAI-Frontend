@@ -56,6 +56,17 @@
   }
 }
 
+.perfil__identificacao-acoes {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+
+  @include ate-celular {
+    flex: 1 1 100%;
+  }
+}
+
 .perfil__botao-editar-dados {
   flex-shrink: 0;
   display: flex;

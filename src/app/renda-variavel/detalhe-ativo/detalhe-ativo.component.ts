@@ -3,6 +3,8 @@ import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AcaoService } from '../../shared/services/acao.service';
 import { ToastService } from '../../shared/services/toast.service';
+import { RelatorioService } from '../../shared/services/relatorio.service';
+import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
 import { AcaoDetalhe } from '../../shared/models/acao';
 import { SugestaoAtivoItem } from '../../shared/models/dashboard';
 import { CORES_COMPATIBILIDADE, Compatibilidade } from '../../shared/models/compatibilidade';
@@ -37,6 +39,7 @@ const NOTA_RISCO: Record<Compatibilidade, string> = {
     SkeletonDetalheComponent,
     ErroServidorComponent,
     GraficoLinhaPrecoComponent,
+    BotaoRelatorioComponent,
   ],
   templateUrl: './detalhe-ativo.component.html',
   styleUrl: './detalhe-ativo.component.scss',
@@ -46,6 +49,7 @@ export class DetalheAtivoComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly acaoService = inject(AcaoService);
   private readonly toastService = inject(ToastService);
+  private readonly relatorioService = inject(RelatorioService);
 
   protected readonly PERIODOS = PERIODOS;
   protected readonly corCompatibilidade = CORES_COMPATIBILIDADE;
@@ -62,6 +66,8 @@ export class DetalheAtivoComponent implements OnInit {
   protected readonly sugestaoIA = signal<SugestaoAtivoItem | null>(null);
 
   protected readonly favoritado = signal(false);
+
+  protected readonly baixarRelatorio = () => this.relatorioService.baixarRelatorioAtivo(this.codigo, 'VARIAVEL');
 
   ngOnInit(): void {
     this.carregarDetalhe();
