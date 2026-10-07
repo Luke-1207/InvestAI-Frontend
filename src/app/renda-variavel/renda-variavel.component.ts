@@ -9,7 +9,8 @@ import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-s
 import { CartaoSugestaoAtivoComponent } from '../shared/components/cartao-sugestao-ativo/cartao-sugestao-ativo.component';
 import { RelatorioService } from '../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
-import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
 
 type Modo = 'livre' | 'inteligente';
 type FiltroTipo = 'TODOS' | TipoAtivo;
@@ -26,6 +27,7 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
   selector: 'app-renda-variavel',
   standalone: true,
   imports: [
+    RotuloPipe,
     DecimalPipe,
     SkeletonCardComponent,
     ErroServidorComponent,

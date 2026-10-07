@@ -105,6 +105,10 @@ describe('RendaVariavelComponent', () => {
     );
   });
 
+  it('deve mostrar o tipo do ativo com texto legível no card', () => {
+    expect(fixture.nativeElement.querySelector('.rv__card-tipo').textContent.trim()).toBe('Ação');
+  });
+
   it('deve navegar pro detalhe do ativo ao clicar num card do Modo Livre', () => {
     const navSpy = spyOn(router, 'navigateByUrl');
 

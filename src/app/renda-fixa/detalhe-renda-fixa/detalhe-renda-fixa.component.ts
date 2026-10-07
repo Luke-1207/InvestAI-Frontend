@@ -16,14 +16,16 @@ import { SkeletonDetalheComponent } from '../../shared/components/ui/skeleton-de
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
 import { GraficoBarrasComponent, BarraDado } from '../../shared/components/ui/grafico-barras/grafico-barras.component';
 import { RelatorioService } from '../../shared/services/relatorio.service';
-import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
+import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
+import { RotuloPipe } from '../../shared/pipes/rotulo.pipe';
+import { rotulo } from '../../shared/utils/rotulos.util';
 
 function normalizarPrivado(dto: TituloPrivadoDetalhe): DetalheRendaFixaNormalizado {
   return {
     identificador: dto.id,
     categoria: dto.tipo,
     nomeOuEmissor: dto.emissor,
-    indexadorOuTipo: dto.indexador,
+    indexadorOuTipo: rotulo(dto.indexador),
     taxaBrutaAnual: dto.rentabilidadeEstimada.taxaBrutaAnual,
     aliquotaIR: dto.rentabilidadeEstimada.aliquotaIR,
     taxaLiquidaAnual: dto.rentabilidadeEstimada.taxaLiquidaAnual,
@@ -59,6 +61,7 @@ function normalizarTesouro(dto: TituloTesouroDetalhe): DetalheRendaFixaNormaliza
   selector: 'app-detalhe-renda-fixa',
   standalone: true,
   imports: [
+    RotuloPipe,
     DecimalPipe,
     DatePipe,
     SkeletonDetalheComponent,

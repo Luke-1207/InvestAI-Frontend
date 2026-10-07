@@ -73,6 +73,7 @@ describe('ComparacaoService', () => {
       expect(itens[0].identificador).toBe('PETR4');
       expect(itens[1].tipo).toBe('TESOURO');
       expect(itens[1].identificador).toBe('tesouro-selic-2029');
+      expect(itens[1].subRotulo).toBe('Selic');
       done();
     });
   });
@@ -93,6 +94,7 @@ describe('ComparacaoService', () => {
     service.carregarItemComparacao('ACAO', 'PETR4').subscribe((item) => {
       expect(item.rotulo).toContain('PETR4');
       expect(item.metricas.length).toBe(4);
+      expect(item.metricas.map((metrica) => metrica.valor)).toEqual(['R$ 38,00', '+1,50%', '8,00%', '1,20']);
       expect(item.score).toBe(70);
       expect(item.compatibilidade).toBe('ALTA');
       done();
@@ -113,6 +115,7 @@ describe('ComparacaoService', () => {
     service.carregarItemComparacao('TESOURO', 'tesouro-selic-2029').subscribe((item) => {
       expect(rendaFixaService.obterDetalhePrivado).not.toHaveBeenCalled();
       expect(item.categoria).toBe('TESOURO');
+      expect(item.metricas.map((metrica) => metrica.valor)).toEqual(['11,00% a.a.', '01/01/2029', 'R$ 150,00', 'Diária']);
       expect(item.score).toBe(60);
       done();
     });
@@ -131,6 +134,7 @@ describe('ComparacaoService', () => {
     service.carregarItemComparacao('CDB', '123e4567-e89b-12d3-a456-426614174000').subscribe((item) => {
       expect(rendaFixaService.obterDetalheTesouro).not.toHaveBeenCalled();
       expect(item.rotulo).toBe('Banco Inter');
+      expect(item.metricas.map((metrica) => metrica.valor)).toEqual(['10,00% a.a.', '01/01/2027', 'R$ 500,00', 'Diária']);
       expect(item.score).toBeNull();
       done();
     });

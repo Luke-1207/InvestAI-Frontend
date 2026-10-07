@@ -58,6 +58,7 @@ describe('ComparacaoComponent', () => {
 
     expect(fixture.nativeElement.querySelectorAll('.comparacao__slot--vazio').length).toBe(1);
     expect(fixture.nativeElement.textContent).toContain('PETR4 — Petrobras');
+    expect(fixture.nativeElement.querySelector('.comparacao__slot-tipo').textContent.trim()).toBe('Ação');
   });
 
   it('deve preencher o slot A primeiro e depois o slot B ao clicar em itens da lista', async () => {

@@ -7,7 +7,7 @@
     @if (detalhe(); as titulo) {
       <div class="detalhe-rf__cabecalho">
         <div>
-          <span class="detalhe-rf__categoria">{{ titulo.categoria }}</span>
+          <span class="detalhe-rf__categoria">{{ titulo.categoria | rotulo }}</span>
           <h1>{{ titulo.nomeOuEmissor }}</h1>
           <p>{{ titulo.indexadorOuTipo }}</p>
         </div>
@@ -56,7 +56,7 @@
           <div><span>Investimento mínimo</span><strong>R$ {{ titulo.investimentoMinimo | number: '1.2-2' }}</strong></div>
           <div>
             <span>Liquidez</span>
-            <strong>{{ titulo.liquidez === 'DIARIA' ? 'Diária' : 'No vencimento' }}</strong>
+            <strong>{{ titulo.liquidez | rotulo }}</strong>
           </div>
         </div>
       </div>

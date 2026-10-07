@@ -5,7 +5,8 @@ import { ComparacaoService } from '../shared/services/comparacao.service';
 import { ItemComparacao, ItemSelecionavel, TipoItemComparacao } from '../shared/models/comparacao';
 import { CORES_COMPATIBILIDADE } from '../shared/models/compatibilidade';
 import { SkeletonCardComponent } from '../shared/components/ui/skeleton-card/skeleton-card.component';
-import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
+import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
+import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
 
 type Etapa = 'selecao' | 'resultado';
 type Slot = 'A' | 'B';
@@ -13,7 +14,7 @@ type Slot = 'A' | 'B';
 @Component({
   selector: 'app-comparacao',
   standalone: true,
-  imports: [SkeletonCardComponent, ErroServidorComponent],
+  imports: [RotuloPipe, SkeletonCardComponent, ErroServidorComponent],
   templateUrl: './comparacao.component.html',
   styleUrl: './comparacao.component.scss',
 })
