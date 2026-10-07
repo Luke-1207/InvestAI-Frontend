@@ -9,7 +9,7 @@
           @if (slotA(); as item) {
             <div class="comparacao__slot-preenchido">
               <div>
-                <span class="comparacao__slot-tipo">{{ item.tipo }}</span>
+                <span class="comparacao__slot-tipo">{{ item.tipo | rotulo }}</span>
                 <p>{{ item.rotulo }}</p>
               </div>
               <button type="button" (click)="removerSlot('A')" aria-label="Remover">
@@ -28,7 +28,7 @@
           @if (slotB(); as item) {
             <div class="comparacao__slot-preenchido">
               <div>
-                <span class="comparacao__slot-tipo">{{ item.tipo }}</span>
+                <span class="comparacao__slot-tipo">{{ item.tipo | rotulo }}</span>
                 <p>{{ item.rotulo }}</p>
               </div>
               <button type="button" (click)="removerSlot('B')" aria-label="Remover">
@@ -62,7 +62,7 @@
         <div class="comparacao__lista">
           @for (item of itensFiltrados(); track item.tipo + item.identificador) {
             <button type="button" class="comparacao__item-lista" (click)="selecionarItem(item)">
-              <span class="comparacao__item-tipo">{{ item.tipo }}</span>
+              <span class="comparacao__item-tipo">{{ item.tipo | rotulo }}</span>
               <div>
                 <p class="comparacao__item-rotulo">{{ item.rotulo }}</p>
                 <p class="comparacao__item-sub">{{ item.subRotulo }}</p>
@@ -97,7 +97,7 @@
           @for (item of [itemResultadoA(), itemResultadoB()]; track $index) {
             @if (item) {
               <div class="comparacao__cartao">
-                <span class="comparacao__cartao-categoria">{{ item.categoria }}</span>
+                <span class="comparacao__cartao-categoria">{{ item.categoria | rotulo }}</span>
                 <h3>{{ item.rotulo }}</h3>
 
                 <div class="comparacao__metricas">

@@ -7,7 +7,8 @@ import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-s
 import { DonutChartComponent, SegmentoDonut } from '../shared/components/ui/donut-chart/donut-chart.component';
 import { CORES_COMPATIBILIDADE } from '../shared/models/compatibilidade';
 import { SugestaoAtivoItem } from '../shared/models/dashboard';
-import { CartaoSugestaoAtivoComponent } from '../shared/components/cartao-sugestao-ativo/cartao-sugestao-ativo.component';
+import { CartaoSugestaoAtivoComponent } from '../shared/components/cartao-sugestao-ativo/cartao-sugestao-ativo.component';
+import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
 
 const ORDEM_RISCO = ['CONSERVADOR', 'MODERADO', 'ARROJADO'];
 const ORDEM_HORIZONTE = ['CURTO_PRAZO', 'MEDIO_PRAZO', 'LONGO_PRAZO'];
@@ -21,7 +22,7 @@ const ALOCACAO_POR_RISCO: Record<string, { rv: number; rf: number }> = {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, SpinnerComponent, ErroServidorComponent, DonutChartComponent, CartaoSugestaoAtivoComponent],
+  imports: [RotuloPipe, CommonModule, RouterLink, SpinnerComponent, ErroServidorComponent, DonutChartComponent, CartaoSugestaoAtivoComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

@@ -8,7 +8,8 @@ import { SkeletonCardComponent } from '../shared/components/ui/skeleton-card/ske
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
 import { RelatorioService } from '../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
-import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
 
 type Modo = 'livre' | 'inteligente';
 type FiltroCategoria = 'TODOS' | 'TESOURO' | 'CDB';
@@ -23,7 +24,7 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 @Component({
   selector: 'app-renda-fixa',
   standalone: true,
-  imports: [DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent, BotaoRelatorioComponent],
+  imports: [RotuloPipe, DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent, BotaoRelatorioComponent],
   templateUrl: './renda-fixa.component.html',
   styleUrl: './renda-fixa.component.scss',
 })

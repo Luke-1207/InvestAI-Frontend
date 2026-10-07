@@ -6,6 +6,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppShellComponent } from './app-shell.component';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
+import { DashboardService } from '../../services/dashboard.service';
+import { DashboardResponse } from '../../models/dashboard';
 
 describe('AppShellComponent', () => {
   let fixture: ComponentFixture<AppShellComponent>;
@@ -35,6 +37,23 @@ describe('AppShellComponent', () => {
   function dropdown(): HTMLElement | null {
     return fixture.nativeElement.querySelector('.header__dropdown');
   }
+
+  it('deve mostrar os indicadores de mercado no padrão brasileiro', () => {
+    TestBed.inject(DashboardService).dashboard.set({
+      indicadoresMercado: {
+        ibovespaPontos: 134820.5, ibovespaVariacaoDia: 0.4,
+        dolarValor: 5.14, dolarVariacaoDia: -0.2,
+        euroValor: 6.02, euroVariacaoDia: 0.1,
+        selicAtual: 13.75, ipcaAcumulado12m: 4.22,
+      },
+    } as DashboardResponse);
+    fixture.detectChanges();
+
+    const valores = Array.from(fixture.nativeElement.querySelectorAll('.header__ticker-valor'))
+      .map((elemento) => (elemento as HTMLElement).textContent!.trim());
+
+    expect(valores).toEqual(['134.821', 'R$ 5,14', 'R$ 6,02', '13,75%', '4,22%']);
+  });
 
   it('deve abrir o menu de usuário ao clicar no avatar', () => {
     expect(dropdown()).toBeNull();

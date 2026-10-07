@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { IndicadorTicker } from '../../models/indicador-mercado';
 import {FotoPerfilService} from '../../services/foto-perfil.service';
+import { formatarMoeda, formatarNumero, formatarPercentual } from '../../utils/formatacao.util';
 
 interface ItemNav {
   rota: string;
@@ -60,11 +61,11 @@ export class AppShellComponent implements OnInit {
     }
 
     return [
-      { label: 'IBOVESPA', valor: dados.ibovespaPontos.toLocaleString('pt-BR'), positivo: dados.ibovespaVariacaoDia >= 0 },
-      { label: 'DÓLAR', valor: `R$ ${dados.dolarValor.toFixed(2)}`, positivo: dados.dolarVariacaoDia >= 0 },
-      { label: 'EURO', valor: `R$ ${dados.euroValor.toFixed(2)}`, positivo: dados.euroVariacaoDia >= 0 },
-      { label: 'SELIC', valor: `${dados.selicAtual.toFixed(2)}%` },
-      { label: 'IPCA', valor: `${dados.ipcaAcumulado12m.toFixed(2)}%` },
+      { label: 'IBOVESPA', valor: formatarNumero(dados.ibovespaPontos, 0), positivo: dados.ibovespaVariacaoDia >= 0 },
+      { label: 'DÓLAR', valor: formatarMoeda(dados.dolarValor), positivo: dados.dolarVariacaoDia >= 0 },
+      { label: 'EURO', valor: formatarMoeda(dados.euroValor), positivo: dados.euroVariacaoDia >= 0 },
+      { label: 'SELIC', valor: formatarPercentual(dados.selicAtual) },
+      { label: 'IPCA', valor: formatarPercentual(dados.ipcaAcumulado12m) },
     ];
   });
 

@@ -56,7 +56,7 @@
         <div class="rf__card" (click)="abrirDetalhe(item)">
           <div class="rf__card-cabecalho">
             <div>
-              <span class="rf__categoria">{{ item.categoria }}</span>
+              <span class="rf__categoria">{{ item.categoria | rotulo }}</span>
               <h4>{{ item.nome }}</h4>
             </div>
             @if (item.score !== null) {
@@ -78,7 +78,7 @@
           }
 
           <div class="rf__card-metricas">
-            <span class="rf__taxa">{{ item.taxa | number: '1.2-2' }}% {{ item.indexador }}</span>
+            <span class="rf__taxa">{{ item.taxa | number: '1.2-2' }}% {{ item.indexador | rotulo }}</span>
             <span>Vence em {{ item.vencimento | date: 'dd/MM/yyyy' }}</span>
           </div>
 

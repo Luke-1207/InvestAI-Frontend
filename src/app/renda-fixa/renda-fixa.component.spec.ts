@@ -55,6 +55,16 @@ describe('RendaFixaComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('.rf__card').length).toBe(2);
   });
 
+  it('deve mostrar categoria e indexador com texto legível, não o código da API', () => {
+    const cartoes: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('.rf__card'));
+
+    expect(cartoes[0].querySelector('.rf__categoria')!.textContent!.trim()).toBe('Tesouro Direto');
+    expect(cartoes[0].querySelector('.rf__taxa')!.textContent).toContain('Selic');
+    expect(cartoes[0].textContent).not.toContain('TESOURO');
+    expect(cartoes[0].textContent).not.toContain('SELIC');
+    expect(cartoes[1].querySelector('.rf__categoria')!.textContent!.trim()).toBe('CDB');
+  });
+
   it('não deve mostrar o círculo de score no Modo Livre (score vem null)', () => {
     expect(fixture.nativeElement.querySelector('.rf__score')).toBeNull();
   });

@@ -61,7 +61,7 @@
                   <h4>{{ item.codigo }}</h4>
                   <p>{{ item.nome }}</p>
                 </div>
-                <span class="rv__card-tipo">{{ item.tipo }}</span>
+                <span class="rv__card-tipo">{{ item.tipo | rotulo }}</span>
               </div>
 
               @if (item.cotacaoDisponivel) {
