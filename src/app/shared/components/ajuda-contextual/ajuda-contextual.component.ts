@@ -1,0 +1,122 @@
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  Injector,
+  afterNextRender,
+  computed,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { PosicaoBalao, calcularPosicaoBalao } from './posicao-balao';
+
+let contador = 0;
+
+@Component({
+  selector: 'app-ajuda',
+  standalone: true,
+  templateUrl: './ajuda-contextual.component.html',
+  styleUrl: './ajuda-contextual.component.scss',
+})
+export class AjudaContextualComponent {
+  readonly texto = input.required<string>();
+  readonly termo = input('');
+
+  private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+  private readonly injector = inject(Injector);
+  private readonly botao = viewChild.required<ElementRef<HTMLButtonElement>>('botao');
+  private readonly balao = viewChild<ElementRef<HTMLElement>>('balao');
+
+  protected readonly idBalao = `ajuda-contextual-${++contador}`;
+  protected readonly aberto = signal(false);
+  protected readonly posicao = signal<PosicaoBalao | null>(null);
+  protected readonly rotuloBotao = computed(() => (this.termo() ? `O que é ${this.termo()}?` : 'Ajuda'));
+
+  private ponteiroPressionado = false;
+  private readonly reposicionar = () => this.posicionar();
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.pararDeAcompanhar());
+  }
+
+  abrir(): void {
+    if (this.aberto()) return;
+    this.posicao.set(null);
+    this.aberto.set(true);
+    document.addEventListener('scroll', this.reposicionar, true);
+    window.addEventListener('resize', this.reposicionar);
+    afterNextRender(() => this.posicionar(), { injector: this.injector });
+  }
+
+  fechar(): void {
+    if (!this.aberto()) return;
+    this.aberto.set(false);
+    this.posicao.set(null);
+    this.pararDeAcompanhar();
+  }
+
+  protected aoPressionar(): void {
+    this.ponteiroPressionado = true;
+  }
+
+  protected aoFocar(): void {
+    if (!this.ponteiroPressionado) {
+      this.abrir();
+    }
+    this.ponteiroPressionado = false;
+  }
+
+  protected aoClicar(evento: MouseEvent): void {
+    this.ponteiroPressionado = false;
+    const veioDoTeclado = evento.detail === 0;
+    if (veioDoTeclado || !this.aberto()) {
+      this.abrir();
+    } else {
+      this.fechar();
+    }
+  }
+
+  @HostListener('keydown.escape', ['$event'])
+  protected aoApertarEsc(evento: Event): void {
+    if (!this.aberto()) return;
+    evento.stopPropagation();
+    this.fechar();
+    this.botao().nativeElement.focus();
+  }
+
+  @HostListener('focusout', ['$event'])
+  protected aoPerderFoco(evento: FocusEvent): void {
+    const destino = evento.relatedTarget as Node | null;
+    if (destino && this.host.nativeElement.contains(destino)) return;
+    this.fechar();
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected aoClicarNaPagina(evento: MouseEvent): void {
+    if (!this.host.nativeElement.contains(evento.target as Node)) {
+      this.fechar();
+    }
+  }
+
+  private posicionar(): void {
+    const balao = this.balao()?.nativeElement;
+    if (!this.aberto() || !balao) return;
+
+    const ancora = this.botao().nativeElement.getBoundingClientRect();
+    this.posicao.set(
+      calcularPosicaoBalao(
+        ancora,
+        { width: balao.offsetWidth, height: balao.offsetHeight },
+        { width: document.documentElement.clientWidth, height: window.innerHeight },
+      ),
+    );
+  }
+
+  private pararDeAcompanhar(): void {
+    document.removeEventListener('scroll', this.reposicionar, true);
+    window.removeEventListener('resize', this.reposicionar);
+  }
+}

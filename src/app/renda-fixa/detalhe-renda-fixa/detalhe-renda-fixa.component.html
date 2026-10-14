@@ -55,7 +55,7 @@
           <div><span>Vencimento</span><strong>{{ titulo.vencimento | date: 'dd/MM/yyyy' }}</strong></div>
           <div><span>Investimento mínimo</span><strong>R$ {{ titulo.investimentoMinimo | number: '1.2-2' }}</strong></div>
           <div>
-            <span>Liquidez</span>
+            <span>Liquidez <app-ajuda termo="Liquidez" [texto]="ajuda.liquidez" /></span>
             <strong>{{ titulo.liquidez | rotulo }}</strong>
           </div>
         </div>
@@ -75,7 +75,7 @@
           </p>
         } @else {
           <div class="detalhe-rf__tributacao-grid">
-            <div><span>Alíquota de IR aplicável</span><strong>{{ titulo.aliquotaIR | number: '1.2-2' }}%</strong></div>
+            <div><span>Alíquota de IR aplicável <app-ajuda termo="Alíquota de IR" [texto]="ajuda.aliquotaIR" /></span><strong>{{ titulo.aliquotaIR | number: '1.2-2' }}%</strong></div>
             <div><span>Rentabilidade líquida estimada</span><strong>{{ titulo.taxaLiquidaAnual | number: '1.2-2' }}% a.a.</strong></div>
           </div>
         }
