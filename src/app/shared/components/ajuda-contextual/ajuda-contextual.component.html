@@ -1,0 +1,33 @@
+<button
+  #botao
+  type="button"
+  class="ajuda__botao"
+  [attr.aria-label]="rotuloBotao()"
+  [attr.aria-expanded]="aberto()"
+  [attr.aria-controls]="idBalao"
+  (pointerdown)="aoPressionar()"
+  (focus)="aoFocar()"
+  (click)="aoClicar($event)"
+>
+  <span class="ajuda__icone" aria-hidden="true">?</span>
+</button>
+
+<span class="ajuda__anuncio" role="status">
+  @if (aberto()) {
+    <span
+      #balao
+      class="ajuda__balao"
+      [id]="idBalao"
+      [class.ajuda__balao--cima]="posicao()?.lado === 'cima'"
+      [class.ajuda__balao--posicionado]="posicao() !== null"
+      [style.top.px]="posicao()?.top ?? 0"
+      [style.left.px]="posicao()?.left ?? 0"
+    >
+      <span class="ajuda__seta" aria-hidden="true" [style.left.px]="posicao()?.seta ?? 0"></span>
+      @if (termo()) {
+        <strong class="ajuda__termo">{{ termo() }}</strong>
+      }
+      <span class="ajuda__texto">{{ texto() }}</span>
+    </span>
+  }
+</span>

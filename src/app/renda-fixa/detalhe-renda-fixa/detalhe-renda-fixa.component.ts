@@ -18,6 +18,7 @@ import { GraficoBarrasComponent, BarraDado } from '../../shared/components/ui/gr
 import { RelatorioService } from '../../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
 import { RotuloPipe } from '../../shared/pipes/rotulo.pipe';
+import { AjudaContextualComponent } from '../../shared/components/ajuda-contextual/ajuda-contextual.component';
 import { rotulo } from '../../shared/utils/rotulos.util';
 
 function normalizarPrivado(dto: TituloPrivadoDetalhe): DetalheRendaFixaNormalizado {
@@ -57,6 +58,13 @@ function normalizarTesouro(dto: TituloTesouroDetalhe): DetalheRendaFixaNormaliza
   };
 }
 
+export const AJUDA_RENDA_FIXA = {
+  liquidez:
+    'É a facilidade de transformar o investimento de volta em dinheiro. Com liquidez diária você pode resgatar em qualquer dia útil. No vencimento, o dinheiro fica aplicado até a data final do título.',
+  aliquotaIR:
+    'O Imposto de Renda é cobrado só sobre o que o investimento rendeu, não sobre o valor aplicado. Na renda fixa a alíquota cai com o tempo: 22,5% até 180 dias, 20% até 360 dias, 17,5% até 720 dias e 15% acima disso.',
+};
+
 @Component({
   selector: 'app-detalhe-renda-fixa',
   standalone: true,
@@ -68,6 +76,7 @@ function normalizarTesouro(dto: TituloTesouroDetalhe): DetalheRendaFixaNormaliza
     ErroServidorComponent,
     GraficoBarrasComponent,
     BotaoRelatorioComponent,
+    AjudaContextualComponent,
   ],
   templateUrl: './detalhe-renda-fixa.component.html',
   styleUrl: './detalhe-renda-fixa.component.scss',
@@ -81,6 +90,7 @@ export class DetalheRendaFixaComponent implements OnInit {
 
   protected readonly identificador = this.route.snapshot.paramMap.get('id') ?? '';
   protected readonly corCompatibilidade = CORES_COMPATIBILIDADE;
+  protected readonly ajuda = AJUDA_RENDA_FIXA;
 
   protected readonly carregando = signal(true);
   protected readonly erro = signal(false);
