@@ -1,55 +1,28 @@
-@use '../../../styles/tokens' as *;
+@use '../../../styles/design-system' as *;
 
 .detalhe-rf {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  @include pagina;
 }
 
 .detalhe-rf__cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: $space-4;
+  @include cabecalho-pagina(flex-start);
 
   h1 {
-    font-family: $font-display;
-    font-size: 26px;
-    font-weight: 700;
-    margin: $space-2 0 0;
+    @include titulo-pagina(26px, $space-2 0 0);
   }
 
   p {
-    font-family: $font-body;
-    font-size: 14px;
-    color: var(--text-secondary);
+    @include texto-apoio;
     margin: $space-1 0 0;
   }
 }
 
 .detalhe-rf__categoria {
-  font-family: $font-mono;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  background: var(--bg-chip);
-  padding: 2px $space-2;
-  border-radius: $radius-sm;
+  @include selo;
 }
 
 .detalhe-rf__score {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: $radius-full;
-  border: 2px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: $font-mono;
-  font-size: 16px;
-  font-weight: 700;
+  @include circulo-score(48px, 16px);
 }
 
 .detalhe-rf__acoes {
@@ -65,17 +38,7 @@
 
 .detalhe-rf__favorito,
 .detalhe-rf__comparar {
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  padding: $space-2 $space-4;
-  border: 1px solid var(--border-strong);
-  border-radius: $radius-md;
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  font-family: $font-body;
-  font-size: 14px;
-  cursor: pointer;
+  @include botao-contorno;
 
   @include ate-tablet {
     min-height: 40px;
@@ -87,13 +50,7 @@
     white-space: nowrap;
   }
 
-  .material-symbols-outlined {
-    font-size: 18px;
-  }
-
-  &:hover {
-    border-color: var(--accent);
-  }
+  @include botao-contorno-icone;
 }
 
 .detalhe-rf__favorito--ativo {
@@ -102,13 +59,7 @@
 }
 
 .detalhe-rf__painel-dados {
-  padding: $space-6;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
+  @include cartao($space-6, $space-4);
 }
 
 .detalhe-rf__selo {
@@ -126,69 +77,24 @@
 }
 
 .detalhe-rf__grid-dados {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: $space-4;
-
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: $space-1;
-  }
-
-  span {
-    font-family: $font-mono;
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-  }
-
-  strong {
-    font-family: $font-body;
-    font-size: 16px;
-    color: var(--text-primary);
-  }
+  @include grid-cartoes(160px, auto-fit);
+  @include dados-rotulados;
 }
 
 .detalhe-rf__grafico-painel,
 .detalhe-rf__tributacao,
 .detalhe-rf__ia {
   padding: $space-6;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
+  @include superficie;
 
   h3 {
-    font-family: $font-display;
-    font-size: 16px;
-    font-weight: 700;
-    margin: 0 0 $space-4;
+    @include titulo-pagina(16px, 0 0 $space-4);
   }
 }
 
 .detalhe-rf__tributacao-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: $space-4;
-
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: $space-1;
-  }
-
-  span {
-    font-family: $font-mono;
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-  }
-
-  strong {
-    font-family: $font-body;
-    font-size: 18px;
-    color: var(--text-primary);
-  }
+  @include grid-cartoes(200px, auto-fit);
+  @include dados-rotulados(18px);
 }
 
 .detalhe-rf__isento {
@@ -211,18 +117,8 @@
 }
 
 .detalhe-rf__ia-etiqueta {
-  display: inline-flex;
-  align-items: center;
-  gap: $space-1;
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: var(--ai);
+  @include etiqueta-ia;
   margin-bottom: $space-3;
-
-  .material-symbols-outlined {
-    font-size: 16px;
-  }
 }
 
 .detalhe-rf__ia p {

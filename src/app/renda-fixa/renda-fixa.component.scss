@@ -1,23 +1,14 @@
-@use '../../styles/tokens' as *;
+@use '../../styles/design-system' as *;
 
 .rf {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  @include pagina;
 }
 
 .rf__cabecalho {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: $space-4;
+  @include cabecalho-pagina;
 
   h1 {
-    font-family: $font-display;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
+    @include titulo-pagina;
   }
 }
 
@@ -34,110 +25,53 @@
 }
 
 .rf__filtros-categoria {
-  display: flex;
-  gap: $space-1;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-full;
-  padding: 4px;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-x: auto;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  @include grupo-pilulas;
+  @include rolagem-horizontal-oculta;
 }
 
 .rf__filtro {
-  padding: $space-1 $space-4;
-  border: none;
-  background: none;
-  border-radius: $radius-full;
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  cursor: pointer;
+  @include pilula;
+  @include texto-etiqueta(12px);
   white-space: nowrap;
 
-  @include ate-tablet {
-    min-height: 36px;
-  }
-
   &--ativo {
-    background: var(--accent-strong);
-    color: var(--accent-on-accent);
-    font-weight: 700;
+    @include pilula-ativa;
   }
 }
 
 .rf__toggle-modo {
-  display: flex;
-  gap: $space-1;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-full;
-  padding: 4px;
+  @include grupo-pilulas;
 }
 
 .rf__modo {
   display: flex;
   align-items: center;
   gap: $space-1;
-  padding: $space-1 $space-4;
+  @include pilula;
   white-space: nowrap;
-
-  @include ate-tablet {
-    min-height: 36px;
-  }
-  border: none;
-  background: none;
-  border-radius: $radius-full;
   font-family: $font-body;
   font-size: 14px;
-  color: var(--text-secondary);
-  cursor: pointer;
 
   .material-symbols-outlined {
     font-size: 16px;
   }
 
   &--ativo {
-    background: var(--ai);
-    color: white;
-    font-weight: 700;
+    @include pilula-ativa(var(--ai), white);
   }
 }
 
 .rf__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: $space-4;
+  @include grid-cartoes(280px);
 }
 
 .rf__card {
-  padding: $space-5;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-  cursor: pointer;
-  transition: border-color 0.15s;
-
-  &:hover {
-    border-color: var(--accent);
-  }
+  @include cartao;
+  @include cartao-clicavel;
 }
 
 .rf__card-cabecalho {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: $space-3;
+  @include cabecalho-cartao;
 
   h4 {
     font-family: $font-display;
@@ -147,27 +81,11 @@
 }
 
 .rf__categoria {
-  font-family: $font-mono;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  background: var(--bg-chip);
-  padding: 2px $space-2;
-  border-radius: $radius-sm;
+  @include selo;
 }
 
 .rf__score {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: $radius-full;
-  border: 2px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: $font-mono;
-  font-size: 13px;
-  font-weight: 700;
+  @include circulo-score;
 }
 
 .rf__selo {
@@ -202,28 +120,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: $space-3;
-  font-family: $font-body;
-  font-size: 12px;
-  color: var(--text-secondary);
+  @include texto-apoio(12px);
 }
 
 .rf__justificativa {
-  font-family: $font-body;
-  font-size: 13px;
+  @include texto-apoio(13px);
   line-height: 1.5;
-  color: var(--text-secondary);
   margin: 0;
   padding-top: $space-2;
   border-top: 1px solid var(--border-default);
 }
 
 .rf__mensagem-vazia {
-  font-family: $font-body;
-  font-size: 14px;
-  color: var(--text-secondary);
-  padding: $space-6;
-  text-align: center;
-  background: var(--bg-surface);
-  border: 1px dashed var(--border-default);
-  border-radius: $radius-lg;
+  @include estado-vazio;
 }

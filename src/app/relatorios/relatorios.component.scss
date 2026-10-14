@@ -1,29 +1,18 @@
-@use '../../styles/tokens' as *;
+@use '../../styles/design-system' as *;
 
 .relatorios {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  @include pagina;
 }
 
 .relatorios__cabecalho {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: $space-4;
-  flex-wrap: wrap;
+  @include cabecalho-pagina(flex-end);
 
   h1 {
-    font-family: $font-display;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
+    @include titulo-pagina;
   }
 
   p {
-    font-family: $font-body;
-    font-size: 14px;
-    color: var(--text-secondary);
+    @include texto-apoio;
     margin: $space-2 0 0;
     max-width: 520px;
   }
@@ -40,19 +29,11 @@
 }
 
 .relatorios__estado {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 320px;
+  @include estado-centralizado;
 }
 
 .relatorios__lista {
-  display: flex;
-  flex-direction: column;
-  gap: $space-2;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  @include lista-limpa;
 }
 
 .relatorios__item {
@@ -60,9 +41,7 @@
   align-items: center;
   gap: $space-4;
   padding: $space-4 $space-5;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
+  @include superficie;
   font-family: $font-body;
 
   @include ate-celular {
@@ -124,19 +103,10 @@
 
 .relatorios__mais {
   align-self: center;
-  display: flex;
-  align-items: center;
+  @include botao-contorno;
   justify-content: center;
-  gap: $space-2;
   min-height: 40px;
   padding: $space-2 $space-6;
-  border: 1px solid var(--border-strong);
-  border-radius: $radius-md;
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  font-family: $font-body;
-  font-size: 14px;
-  cursor: pointer;
 
   @include ate-celular {
     align-self: stretch;

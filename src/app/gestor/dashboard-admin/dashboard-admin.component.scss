@@ -1,17 +1,11 @@
-@use '../../../styles/tokens' as *;
+@use '../../../styles/design-system' as *;
 
 .painel-gestor {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  @include pagina;
 }
 
 .painel-gestor__cabecalho {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: $space-4;
-  flex-wrap: wrap;
+  @include cabecalho-pagina(flex-end);
 }
 
 .painel-gestor__etiqueta {
@@ -21,9 +15,7 @@
   padding: 2px $space-2;
   border: 1px solid var(--border-ai);
   border-radius: $radius-full;
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  @include texto-etiqueta(12px);
   color: var(--ai);
 
   .material-symbols-outlined {
@@ -32,10 +24,7 @@
 }
 
 .painel-gestor__titulo {
-  font-family: $font-display;
-  font-size: 28px;
-  font-weight: 700;
-  margin: $space-2 0 0;
+  @include titulo-pagina(28px, $space-2 0 0);
 }
 
 .painel-gestor__atualizacao {
@@ -46,22 +35,15 @@
 }
 
 .painel-gestor__estado {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 320px;
+  @include estado-centralizado;
 }
 
 .painel-gestor__metricas {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: $space-4;
+  @include grid-cartoes(200px, auto-fit);
 }
 
 .painel-gestor__linha {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
-  gap: $space-4;
+  @include grid-cartoes(min(320px, 100%), auto-fit);
 }
 
 .painel-gestor__card {
@@ -69,9 +51,7 @@
   flex-direction: column;
   gap: $space-3;
   padding: $space-6;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
+  @include superficie;
   min-width: 0;
 }
 
@@ -82,10 +62,8 @@
   gap: $space-3;
 
   h2 {
-    font-family: $font-body;
-    font-size: 14px;
+    @include texto-apoio;
     font-weight: 600;
-    color: var(--text-secondary);
     margin: 0;
   }
 
@@ -117,9 +95,7 @@
 }
 
 .painel-gestor__apoio {
-  font-family: $font-body;
-  font-size: 13px;
-  color: var(--text-secondary);
+  @include texto-apoio(13px);
   margin: 0;
 
   &--discreto {
@@ -144,10 +120,7 @@
 }
 
 .painel-gestor__progresso {
-  height: 8px;
-  border-radius: $radius-full;
-  background: var(--bg-muted);
-  overflow: hidden;
+  @include trilho-barra;
 }
 
 .painel-gestor__progresso-preenchido {
@@ -224,9 +197,7 @@
 }
 
 .painel-gestor__vazio {
-  font-family: $font-body;
-  font-size: 14px;
-  color: var(--text-secondary);
+  @include texto-apoio;
   text-align: center;
   padding: $space-6;
   margin: 0;
@@ -235,12 +206,7 @@
 }
 
 .painel-gestor__categorias {
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  @include lista-limpa($space-3);
 }
 
 .painel-gestor__categoria {
@@ -257,10 +223,7 @@
 }
 
 .painel-gestor__categoria-trilho {
-  height: 8px;
-  border-radius: $radius-full;
-  background: var(--bg-muted);
-  overflow: hidden;
+  @include trilho-barra;
 }
 
 .painel-gestor__categoria-barra {
@@ -282,12 +245,7 @@
 }
 
 .painel-gestor__alertas {
-  display: flex;
-  flex-direction: column;
-  gap: $space-2;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  @include lista-limpa;
 }
 
 .painel-gestor__alerta {
