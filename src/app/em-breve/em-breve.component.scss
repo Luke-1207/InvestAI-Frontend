@@ -1,4 +1,4 @@
-@use '../../styles/tokens' as *;
+@use '../../styles/design-system' as *;
 
 .em-breve {
   display: flex;
@@ -11,9 +11,7 @@
   padding: 2px $space-3;
   border: 1px solid var(--border-ai);
   border-radius: $radius-full;
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  @include texto-etiqueta(12px);
   text-transform: uppercase;
   color: var(--ai);
 }

@@ -1,4 +1,4 @@
-@use '../../../../styles/tokens' as *;
+@use '../../../../styles/design-system' as *;
 
 .auth-form__titulo {
   font-family: $font-display;
@@ -26,11 +26,8 @@
 .auth-form__campo {
   label {
     display: block;
-    font-family: $font-mono;
-    font-size: 12px;
+    @include rotulo(12px);
     font-weight: 500;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
     margin-bottom: $space-2;
   }
 

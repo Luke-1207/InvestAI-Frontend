@@ -1,0 +1,283 @@
+@use 'tokens' as *;
+
+@mixin pagina($gap: $space-6) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin titulo-pagina($tamanho: 28px, $margem: 0) {
+  font-family: $font-display;
+  font-size: $tamanho;
+  font-weight: 700;
+  margin: $margem;
+}
+
+@mixin cabecalho-pagina($alinhamento: center) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: $alinhamento;
+  justify-content: space-between;
+  gap: $space-4;
+}
+
+@mixin superficie($raio: $radius-lg) {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: $raio;
+}
+
+@mixin cartao($padding: $space-5, $gap: $space-3) {
+  padding: $padding;
+  @include superficie;
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin cartao-clicavel {
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+@mixin grid-cartoes($minimo: 260px, $repeticao: auto-fill) {
+  display: grid;
+  grid-template-columns: repeat($repeticao, minmax($minimo, 1fr));
+  gap: $space-4;
+}
+
+@mixin cabecalho-cartao {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $space-3;
+}
+
+@mixin texto-etiqueta($tamanho: 11px) {
+  font-family: $font-mono;
+  font-size: $tamanho;
+  letter-spacing: 0.05em;
+}
+
+@mixin rotulo($tamanho: 11px) {
+  @include texto-etiqueta($tamanho);
+  color: var(--text-secondary);
+}
+
+@mixin selo {
+  @include rotulo;
+  background: var(--bg-chip);
+  padding: 2px $space-2;
+  border-radius: $radius-sm;
+}
+
+@mixin texto-apoio($tamanho: 14px) {
+  font-family: $font-body;
+  font-size: $tamanho;
+  color: var(--text-secondary);
+}
+
+@mixin estado-vazio {
+  @include texto-apoio;
+  padding: $space-6;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-default);
+  border-radius: $radius-lg;
+}
+
+@mixin estado-centralizado($altura: 320px) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: $altura;
+}
+
+@mixin circulo-score($tamanho: 36px, $fonte: 13px) {
+  flex-shrink: 0;
+  width: $tamanho;
+  height: $tamanho;
+  border-radius: $radius-full;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: $fonte;
+  font-weight: 700;
+}
+
+@mixin cores-variacao {
+  &--positiva {
+    color: var(--success-value);
+  }
+
+  &--negativa {
+    color: var(--danger);
+  }
+}
+
+@mixin grupo-pilulas($fundo: var(--bg-surface)) {
+  display: flex;
+  gap: $space-1;
+  background: $fundo;
+  border: 1px solid var(--border-default);
+  border-radius: $radius-full;
+  padding: 4px;
+}
+
+@mixin rolagem-horizontal-oculta {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin pilula {
+  padding: $space-1 $space-4;
+  border: none;
+  background: none;
+  border-radius: $radius-full;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  @include ate-tablet {
+    min-height: 36px;
+  }
+}
+
+@mixin pilula-ativa($fundo: var(--accent-strong), $cor: var(--accent-on-accent)) {
+  background: $fundo;
+  color: $cor;
+  font-weight: 700;
+}
+
+@mixin botao-contorno($fundo: var(--bg-surface), $cursor: pointer) {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: 1px solid var(--border-strong);
+  border-radius: $radius-md;
+  background: $fundo;
+  color: var(--text-primary);
+  font-family: $font-body;
+  font-size: 14px;
+  cursor: $cursor;
+}
+
+@mixin botao-contorno-icone {
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+@mixin botao-texto($tamanho: 14px) {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: $font-body;
+  font-size: $tamanho;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+@mixin painel-ia {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(192, 193, 255, 0.06));
+  border: 1px solid var(--border-ai);
+  border-radius: $radius-lg;
+}
+
+@mixin etiqueta-ia {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  @include texto-etiqueta(12px);
+  color: var(--ai);
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+@mixin aviso-atencao {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-5;
+
+  @include ate-celular {
+    flex-wrap: wrap;
+  }
+
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: $radius-lg;
+
+  .material-symbols-outlined {
+    font-size: 32px;
+    color: var(--warning);
+    flex-shrink: 0;
+  }
+}
+
+@mixin botao-atencao {
+  flex-shrink: 0;
+  padding: $space-2 $space-4;
+  background: var(--warning);
+  color: #1a1200;
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: $radius-md;
+  white-space: nowrap;
+}
+
+@mixin trilho-barra($raio: $radius-full) {
+  height: 8px;
+  border-radius: $raio;
+  background: var(--bg-muted);
+  overflow: hidden;
+}
+
+@mixin lista-limpa($gap: $space-2) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@mixin dados-rotulados($tamanho-valor: 16px) {
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  span {
+    @include rotulo;
+  }
+
+  strong {
+    font-family: $font-body;
+    font-size: $tamanho-valor;
+    color: var(--text-primary);
+  }
+}

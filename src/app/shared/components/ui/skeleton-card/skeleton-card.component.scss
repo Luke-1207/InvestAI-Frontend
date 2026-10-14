@@ -1,13 +1,7 @@
-@use '../../../../../styles/tokens' as *;
+@use '../../../../../styles/design-system' as *;
 
 .skeleton-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
-  padding: $space-5;
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
+  @include cartao($gap: $space-4);
 }
 
 .skeleton-card__cabecalho {
