@@ -65,6 +65,26 @@ describe('RendaFixaComponent', () => {
     expect(cartoes[1].querySelector('.rf__categoria')!.textContent!.trim()).toBe('CDB');
   });
 
+  it('deve explicar a categoria e o indexador de cada título com o glossário', () => {
+    const rotulos = Array.from(fixture.nativeElement.querySelectorAll('.rf__card')[0].querySelectorAll('.ajuda__botao')).map(
+      (botao) => (botao as HTMLElement).getAttribute('aria-label'),
+    );
+
+    expect(rotulos).toEqual(['O que é Tesouro Direto?', 'O que é Selic?']);
+  });
+
+  it('abrir a ajuda dentro do card não deve abrir o detalhe do título', () => {
+    const navSpy = spyOn(router, 'navigateByUrl');
+
+    fixture.nativeElement.querySelector('.rf__card .ajuda__botao').dispatchEvent(
+      new MouseEvent('click', { bubbles: true, detail: 1 }),
+    );
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.ajuda__balao')).not.toBeNull();
+    expect(navSpy).not.toHaveBeenCalled();
+  });
+
   it('não deve mostrar o círculo de score no Modo Livre (score vem null)', () => {
     expect(fixture.nativeElement.querySelector('.rf__score')).toBeNull();
   });

@@ -206,8 +206,13 @@
   }
 }
 
-.comparacao__cartao-categoria {
+.comparacao__cartao-tipo {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+}
+
+.comparacao__cartao-categoria {
   @include selo;
 }
 

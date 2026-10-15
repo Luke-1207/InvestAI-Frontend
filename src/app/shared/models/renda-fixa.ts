@@ -57,6 +57,7 @@ export interface DetalheRendaFixaNormalizado {
   categoria: CategoriaRendaFixa;
   nomeOuEmissor: string;
   indexadorOuTipo: string;
+  indexador: string;
   taxaBrutaAnual: number;
   aliquotaIR: number;
   taxaLiquidaAnual: number;

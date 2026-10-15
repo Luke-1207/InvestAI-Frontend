@@ -290,6 +290,8 @@
 }
 
 .header__ticker-label {
+  display: inline-flex;
+  align-items: center;
   @include rotulo(12px);
 }
 

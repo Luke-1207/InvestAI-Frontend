@@ -10,6 +10,7 @@ import { RelatorioService } from '../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
 import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
 import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
+import { AjudaGlossarioComponent } from '../shared/components/ajuda-glossario/ajuda-glossario.component';
 
 type Modo = 'livre' | 'inteligente';
 type FiltroCategoria = 'TODOS' | 'TESOURO' | 'CDB';
@@ -24,7 +25,7 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 @Component({
   selector: 'app-renda-fixa',
   standalone: true,
-  imports: [RotuloPipe, DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent, BotaoRelatorioComponent],
+  imports: [RotuloPipe, AjudaGlossarioComponent, DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent, BotaoRelatorioComponent],
   templateUrl: './renda-fixa.component.html',
   styleUrl: './renda-fixa.component.scss',
 })

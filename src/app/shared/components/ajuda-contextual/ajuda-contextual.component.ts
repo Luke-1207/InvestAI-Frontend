@@ -14,6 +14,7 @@ import {
 import { PosicaoBalao, calcularPosicaoBalao } from './posicao-balao';
 
 let contador = 0;
+let ajudaAberta: AjudaContextualComponent | null = null;
 
 @Component({
   selector: 'app-ajuda',
@@ -25,6 +26,7 @@ export class AjudaContextualComponent {
   readonly texto = input.required<string>();
   readonly termo = input('');
   readonly rotulo = input('');
+  readonly importancia = input('');
 
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly injector = inject(Injector);
@@ -42,11 +44,20 @@ export class AjudaContextualComponent {
   private readonly reposicionar = () => this.posicionar();
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => this.pararDeAcompanhar());
+    inject(DestroyRef).onDestroy(() => {
+      this.pararDeAcompanhar();
+      if (ajudaAberta === this) {
+        ajudaAberta = null;
+      }
+    });
   }
 
   abrir(): void {
     if (this.aberto()) return;
+    if (ajudaAberta && ajudaAberta !== this) {
+      ajudaAberta.fechar();
+    }
+    ajudaAberta = this;
     this.posicao.set(null);
     this.aberto.set(true);
     document.addEventListener('scroll', this.reposicionar, true);
@@ -56,6 +67,9 @@ export class AjudaContextualComponent {
 
   fechar(): void {
     if (!this.aberto()) return;
+    if (ajudaAberta === this) {
+      ajudaAberta = null;
+    }
     this.aberto.set(false);
     this.posicao.set(null);
     this.pararDeAcompanhar();
@@ -80,6 +94,11 @@ export class AjudaContextualComponent {
     } else {
       this.fechar();
     }
+  }
+
+  @HostListener('click', ['$event'])
+  protected aoClicarDentro(evento: MouseEvent): void {
+    evento.stopPropagation();
   }
 
   @HostListener('keydown.escape', ['$event'])

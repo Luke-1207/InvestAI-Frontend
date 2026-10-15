@@ -7,6 +7,7 @@ import { CORES_COMPATIBILIDADE } from '../shared/models/compatibilidade';
 import { SkeletonCardComponent } from '../shared/components/ui/skeleton-card/skeleton-card.component';
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
 import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
+import { AjudaGlossarioComponent } from '../shared/components/ajuda-glossario/ajuda-glossario.component';
 
 type Etapa = 'selecao' | 'resultado';
 type Slot = 'A' | 'B';
@@ -14,7 +15,7 @@ type Slot = 'A' | 'B';
 @Component({
   selector: 'app-comparacao',
   standalone: true,
-  imports: [RotuloPipe, SkeletonCardComponent, ErroServidorComponent],
+  imports: [RotuloPipe, AjudaGlossarioComponent, SkeletonCardComponent, ErroServidorComponent],
   templateUrl: './comparacao.component.html',
   styleUrl: './comparacao.component.scss',
 })

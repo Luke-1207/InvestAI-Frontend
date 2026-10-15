@@ -1,0 +1,41 @@
+<div class="glossario">
+  <header class="glossario__cabecalho">
+    <h1>Glossário</h1>
+    <p>
+      Os {{ totalTermos }} termos que aparecem no InvestAI, explicados em linguagem simples e com o motivo de cada um
+      importar na hora de investir.
+    </p>
+  </header>
+
+  <label class="glossario__busca">
+    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+    <span class="glossario__busca-rotulo">Buscar termo</span>
+    <input
+      type="search"
+      placeholder="Buscar termo, por exemplo CDI ou dividendos"
+      [value]="busca()"
+      (input)="aoBuscar($event)"
+    />
+  </label>
+
+  @for (secao of secoes(); track secao.categoria) {
+    <section class="glossario__secao" [attr.aria-labelledby]="'secao-' + $index">
+      <h2 [id]="'secao-' + $index">{{ secao.categoria }}</h2>
+
+      <div class="glossario__termos">
+        @for (item of secao.termos; track item.chave) {
+          <article class="glossario__termo" [id]="'termo-' + item.chave">
+            <h3>{{ item.termo }}</h3>
+            <p>{{ item.definicao }}</p>
+            <p class="glossario__importancia"><strong>Por que importa:</strong> {{ item.importancia }}</p>
+          </article>
+        }
+      </div>
+    </section>
+  } @empty {
+    <div class="glossario__vazio">
+      <p>Nenhum termo encontrado para "{{ busca() }}".</p>
+      <button type="button" (click)="limparBusca()">Ver todos os termos</button>
+    </div>
+  }
+</div>

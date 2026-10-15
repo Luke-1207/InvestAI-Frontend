@@ -28,6 +28,9 @@
         <strong class="ajuda__termo">{{ termo() }}</strong>
       }
       <span class="ajuda__texto">{{ texto() }}</span>
+      @if (importancia()) {
+        <span class="ajuda__importancia"><strong>Por que importa:</strong> {{ importancia() }}</span>
+      }
     </span>
   }
 </span>

@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { IndicadorTicker } from '../../models/indicador-mercado';
 import {FotoPerfilService} from '../../services/foto-perfil.service';
+import { AjudaGlossarioComponent } from '../ajuda-glossario/ajuda-glossario.component';
 import { formatarMoeda, formatarNumero, formatarPercentual } from '../../utils/formatacao.util';
 
 interface ItemNav {
@@ -18,7 +19,7 @@ interface ItemNav {
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AjudaGlossarioComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
@@ -43,6 +44,7 @@ export class AppShellComponent implements OnInit {
     { rota: '/favoritos', rotulo: 'Favoritos', icone: 'star' },
     { rota: '/notificacoes', rotulo: 'Notificações', icone: 'notifications' },
     { rota: '/relatorios', rotulo: 'Relatórios', icone: 'description' },
+    { rota: '/glossario', rotulo: 'Glossário', icone: 'menu_book' },
     { rota: '/perfil', rotulo: 'Perfil', icone: 'person' },
   ];
 
@@ -52,20 +54,20 @@ export class AppShellComponent implements OnInit {
     const dados = this.dashboardService.dashboard()?.indicadoresMercado;
     if (!dados) {
       return [
-        { label: 'IBOVESPA', valor: '—' },
-        { label: 'DÓLAR', valor: '—' },
-        { label: 'EURO', valor: '—' },
-        { label: 'SELIC', valor: '—' },
-        { label: 'IPCA', valor: '—' },
+        { label: 'IBOVESPA', chave: 'IBOVESPA', valor: '—' },
+        { label: 'DÓLAR', chave: 'DOLAR', valor: '—' },
+        { label: 'EURO', chave: 'EURO', valor: '—' },
+        { label: 'SELIC', chave: 'SELIC', valor: '—' },
+        { label: 'IPCA', chave: 'IPCA', valor: '—' },
       ];
     }
 
     return [
-      { label: 'IBOVESPA', valor: formatarNumero(dados.ibovespaPontos, 0), positivo: dados.ibovespaVariacaoDia >= 0 },
-      { label: 'DÓLAR', valor: formatarMoeda(dados.dolarValor), positivo: dados.dolarVariacaoDia >= 0 },
-      { label: 'EURO', valor: formatarMoeda(dados.euroValor), positivo: dados.euroVariacaoDia >= 0 },
-      { label: 'SELIC', valor: formatarPercentual(dados.selicAtual) },
-      { label: 'IPCA', valor: formatarPercentual(dados.ipcaAcumulado12m) },
+      { label: 'IBOVESPA', chave: 'IBOVESPA', valor: formatarNumero(dados.ibovespaPontos, 0), positivo: dados.ibovespaVariacaoDia >= 0 },
+      { label: 'DÓLAR', chave: 'DOLAR', valor: formatarMoeda(dados.dolarValor), positivo: dados.dolarVariacaoDia >= 0 },
+      { label: 'EURO', chave: 'EURO', valor: formatarMoeda(dados.euroValor), positivo: dados.euroVariacaoDia >= 0 },
+      { label: 'SELIC', chave: 'SELIC', valor: formatarPercentual(dados.selicAtual) },
+      { label: 'IPCA', chave: 'IPCA', valor: formatarPercentual(dados.ipcaAcumulado12m) },
     ];
   });
 
