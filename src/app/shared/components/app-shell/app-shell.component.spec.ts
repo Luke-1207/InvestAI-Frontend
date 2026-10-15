@@ -6,8 +6,6 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppShellComponent } from './app-shell.component';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
-import { DashboardService } from '../../services/dashboard.service';
-import { DashboardResponse } from '../../models/dashboard';
 
 describe('AppShellComponent', () => {
   let fixture: ComponentFixture<AppShellComponent>;
@@ -38,21 +36,8 @@ describe('AppShellComponent', () => {
     return fixture.nativeElement.querySelector('.header__dropdown');
   }
 
-  it('deve mostrar os indicadores de mercado no padrão brasileiro', () => {
-    TestBed.inject(DashboardService).dashboard.set({
-      indicadoresMercado: {
-        ibovespaPontos: 134820.5, ibovespaVariacaoDia: 0.4,
-        dolarValor: 5.14, dolarVariacaoDia: -0.2,
-        euroValor: 6.02, euroVariacaoDia: 0.1,
-        selicAtual: 13.75, ipcaAcumulado12m: 4.22,
-      },
-    } as DashboardResponse);
-    fixture.detectChanges();
-
-    const valores = Array.from(fixture.nativeElement.querySelectorAll('.header__ticker-grupo:first-child .header__ticker-valor'))
-      .map((elemento) => (elemento as HTMLElement).textContent!.trim());
-
-    expect(valores).toEqual(['134.821', 'R$ 5,14', 'R$ 6,02', '13,75%', '4,22%']);
+  it('deve exibir o carrossel de indicadores de mercado no topo', () => {
+    expect(fixture.nativeElement.querySelector('.header app-ticker-mercado')).not.toBeNull();
   });
 
   it('deve abrir o menu de usuário ao clicar no avatar', () => {
@@ -116,39 +101,6 @@ describe('AppShellComponent', () => {
     ) as HTMLAnchorElement;
 
     expect(glossario.getAttribute('href')).toBe('/glossario');
-  });
-
-  it('cada indicador do topo deve ter a ajuda do glossário', () => {
-    const rotulos = Array.from(
-      fixture.nativeElement.querySelectorAll('.header__ticker-grupo:first-child .header__ticker-label .ajuda__botao'),
-    ).map(
-      (botao) => (botao as HTMLElement).getAttribute('aria-label'),
-    );
-
-    expect(rotulos).toEqual(['O que é Ibovespa?', 'O que é Dólar?', 'O que é Euro?', 'O que é Selic?', 'O que é IPCA?']);
-  });
-
-  it('o carrossel do topo deve repetir os indicadores numa segunda cópia escondida de leitores de tela e do Tab', () => {
-    const grupos: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('.header__ticker-grupo'));
-
-    expect(grupos.length).toBe(2);
-    expect(grupos[0].hasAttribute('aria-hidden')).toBeFalse();
-    expect(grupos[1].getAttribute('aria-hidden')).toBe('true');
-    expect(grupos[1].querySelectorAll('.header__ticker-item').length).toBe(5);
-    grupos[1].querySelectorAll('.ajuda__botao').forEach((botao) => expect(botao.getAttribute('tabindex')).toBe('-1'));
-  });
-
-  it('o carrossel deve ficar parado enquanto a ajuda de um indicador está aberta', () => {
-    const ticker: HTMLElement = fixture.nativeElement.querySelector('.header__ticker');
-    const ajuda: HTMLButtonElement = ticker.querySelector('.ajuda__botao')!;
-
-    ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
-    fixture.detectChanges();
-    expect(ticker.classList).toContain('header__ticker--pausado');
-
-    ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
-    fixture.detectChanges();
-    expect(ticker.classList).not.toContain('header__ticker--pausado');
   });
 
   it('deve renderizar todos os itens de navegação configurados', () => {

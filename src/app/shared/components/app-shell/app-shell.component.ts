@@ -5,10 +5,8 @@ import { filter } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
-import { IndicadorTicker } from '../../models/indicador-mercado';
 import {FotoPerfilService} from '../../services/foto-perfil.service';
-import { AjudaGlossarioComponent } from '../ajuda-glossario/ajuda-glossario.component';
-import { formatarMoeda, formatarNumero, formatarPercentual } from '../../utils/formatacao.util';
+import { TickerMercadoComponent } from '../ticker-mercado/ticker-mercado.component';
 
 interface ItemNav {
   rota: string;
@@ -19,7 +17,7 @@ interface ItemNav {
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AjudaGlossarioComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TickerMercadoComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
@@ -49,30 +47,6 @@ export class AppShellComponent implements OnInit {
   ];
 
   readonly ehGestor = computed(() => this.authService.role() === 'GESTOR');
-
-  protected readonly copiasTicker = [0, 1];
-  protected readonly ajudaDoTickerAberta = signal(false);
-
-  readonly indicadores = computed<IndicadorTicker[]>(() => {
-    const dados = this.dashboardService.dashboard()?.indicadoresMercado;
-    if (!dados) {
-      return [
-        { label: 'IBOVESPA', chave: 'IBOVESPA', valor: '—' },
-        { label: 'DÓLAR', chave: 'DOLAR', valor: '—' },
-        { label: 'EURO', chave: 'EURO', valor: '—' },
-        { label: 'SELIC', chave: 'SELIC', valor: '—' },
-        { label: 'IPCA', chave: 'IPCA', valor: '—' },
-      ];
-    }
-
-    return [
-      { label: 'IBOVESPA', chave: 'IBOVESPA', valor: formatarNumero(dados.ibovespaPontos, 0), positivo: dados.ibovespaVariacaoDia >= 0 },
-      { label: 'DÓLAR', chave: 'DOLAR', valor: formatarMoeda(dados.dolarValor), positivo: dados.dolarVariacaoDia >= 0 },
-      { label: 'EURO', chave: 'EURO', valor: formatarMoeda(dados.euroValor), positivo: dados.euroVariacaoDia >= 0 },
-      { label: 'SELIC', chave: 'SELIC', valor: formatarPercentual(dados.selicAtual) },
-      { label: 'IPCA', chave: 'IPCA', valor: formatarPercentual(dados.ipcaAcumulado12m) },
-    ];
-  });
 
   constructor() {
     this.router.events

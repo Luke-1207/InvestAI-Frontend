@@ -1,0 +1,19 @@
+<div class="ticker-mercado__trilho">
+  @for (copia of copias; track copia) {
+    <div class="ticker-mercado__grupo" [attr.aria-hidden]="copia === 0 ? null : 'true'">
+      @for (indicador of indicadores(); track indicador.label) {
+        <div class="ticker-mercado__item">
+          <span class="ticker-mercado__rotulo">
+            {{ indicador.label }}
+            <app-ajuda-glossario
+              [chave]="indicador.chave"
+              [focavel]="copia === 0"
+              (alternado)="ajudaAberta.set($event)"
+            />
+          </span>
+          <span class="ticker-mercado__valor">{{ indicador.valor }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -255,9 +255,6 @@
 
 .header__ticker {
   flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, #000 $space-6, #000 calc(100% - #{$space-6}), transparent);
 
   @include ate-celular {
     order: 1;
@@ -268,76 +265,6 @@
     box-sizing: border-box;
     border-top: 1px solid var(--border-default);
   }
-}
-
-.header__ticker-trilho {
-  display: flex;
-  width: max-content;
-  animation: header-ticker-rolar 40s linear infinite;
-
-  .header__ticker:hover &,
-  .header__ticker:focus-within &,
-  .header__ticker--pausado & {
-    animation-play-state: paused;
-  }
-}
-
-.header__ticker-grupo {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  gap: $space-6;
-  padding-right: $space-6;
-
-  @include ate-celular {
-    gap: $space-5;
-    padding-right: $space-5;
-  }
-}
-
-@keyframes header-ticker-rolar {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .header__ticker {
-    overflow-x: auto;
-    scrollbar-width: none;
-    mask-image: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  .header__ticker-trilho {
-    animation: none;
-  }
-
-  .header__ticker-grupo[aria-hidden='true'] {
-    display: none;
-  }
-}
-
-.header__ticker-item {
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  white-space: nowrap;
-}
-
-.header__ticker-label {
-  display: inline-flex;
-  align-items: center;
-  @include rotulo(12px);
-}
-
-.header__ticker-valor {
-  font-family: $font-body;
-  font-size: 14px;
-  color: var(--text-primary);
 }
 
 .header__acoes {
