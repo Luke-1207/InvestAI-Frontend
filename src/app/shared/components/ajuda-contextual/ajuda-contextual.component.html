@@ -5,6 +5,7 @@
   [attr.aria-label]="rotuloBotao()"
   [attr.aria-expanded]="aberto()"
   [attr.aria-controls]="idBalao"
+  [attr.tabindex]="focavel() ? null : -1"
   (pointerdown)="aoPressionar()"
   (focus)="aoFocar()"
   (click)="aoClicar($event)"
@@ -14,9 +15,16 @@
 
 <span class="ajuda__anuncio" role="status">
   @if (aberto()) {
+    <span class="ajuda__leitor">
+      {{ termo() }} {{ texto() }}
+      @if (importancia()) {
+        Por que importa: {{ importancia() }}
+      }
+    </span>
     <span
       #balao
       class="ajuda__balao"
+      aria-hidden="true"
       [id]="idBalao"
       [class.ajuda__balao--cima]="posicao()?.lado === 'cima'"
       [class.ajuda__balao--posicionado]="posicao() !== null"

@@ -28,7 +28,7 @@ describe('AjudaGlossarioComponent', () => {
       .querySelector('.ajuda__botao')
       .dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
     fixture.detectChanges();
-    return fixture.nativeElement.querySelector('.ajuda__balao');
+    return document.querySelector<HTMLElement>('.ajuda__balao')!;
   }
 
   it('deve abrir a explicação do catálogo com o motivo de importar', () => {

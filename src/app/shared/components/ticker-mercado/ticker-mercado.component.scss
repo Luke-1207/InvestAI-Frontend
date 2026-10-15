@@ -1,0 +1,78 @@
+@use '../../../../styles/design-system' as *;
+
+:host {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 $space-6, #000 calc(100% - #{$space-6}), transparent);
+}
+
+.ticker-mercado__trilho {
+  display: flex;
+  width: max-content;
+  animation: ticker-mercado-rolar 40s linear infinite;
+
+  :host(:hover) &,
+  :host(:focus-within) &,
+  :host(.ticker-mercado--pausado) & {
+    animation-play-state: paused;
+  }
+}
+
+.ticker-mercado__grupo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: $space-6;
+  padding-right: $space-6;
+
+  @include ate-celular {
+    gap: $space-5;
+    padding-right: $space-5;
+  }
+}
+
+.ticker-mercado__item {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  white-space: nowrap;
+}
+
+.ticker-mercado__rotulo {
+  display: inline-flex;
+  align-items: center;
+  @include rotulo(12px);
+}
+
+.ticker-mercado__valor {
+  font-family: $font-body;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+@keyframes ticker-mercado-rolar {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .ticker-mercado__trilho {
+    animation: none;
+  }
+
+  .ticker-mercado__grupo[aria-hidden='true'] {
+    display: none;
+  }
+}

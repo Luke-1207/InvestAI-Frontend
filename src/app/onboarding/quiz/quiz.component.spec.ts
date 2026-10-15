@@ -77,7 +77,7 @@ describe('QuizComponent', () => {
     ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain(
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')!.textContent).toContain(
       'É o tempo que o dinheiro pode ficar aplicado.',
     );
   });
@@ -95,7 +95,7 @@ describe('QuizComponent', () => {
     ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain(
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')!.textContent).toContain(
       'Para dinheiro que pode ser usado logo.',
     );
     expect(opcoes()[0].classList).not.toContain('quiz__opcao--selecionada');

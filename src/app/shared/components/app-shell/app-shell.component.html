@@ -67,17 +67,7 @@
         <span>InvestAI</span>
       </a>
 
-      <div class="header__ticker">
-        @for (indicador of indicadores(); track indicador.label) {
-          <div class="header__ticker-item">
-            <span class="header__ticker-label">
-              {{ indicador.label }}
-              <app-ajuda-glossario [chave]="indicador.chave" />
-            </span>
-            <span class="header__ticker-valor">{{ indicador.valor }}</span>
-          </div>
-        }
-      </div>
+      <app-ticker-mercado class="header__ticker" />
 
       <div class="header__acoes">
         <div class="header__busca">

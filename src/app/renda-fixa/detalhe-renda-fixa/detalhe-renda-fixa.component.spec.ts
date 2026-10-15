@@ -117,7 +117,7 @@ describe('DetalheRendaFixaComponent', () => {
     botoes[1].dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain('22,5% até 180 dias');
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')!.textContent).toContain('22,5% até 180 dias');
   });
 
   it('deve explicar a categoria e o indexador do título no cabeçalho', async () => {

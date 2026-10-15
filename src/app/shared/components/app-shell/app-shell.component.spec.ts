@@ -6,8 +6,6 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppShellComponent } from './app-shell.component';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
-import { DashboardService } from '../../services/dashboard.service';
-import { DashboardResponse } from '../../models/dashboard';
 
 describe('AppShellComponent', () => {
   let fixture: ComponentFixture<AppShellComponent>;
@@ -38,21 +36,8 @@ describe('AppShellComponent', () => {
     return fixture.nativeElement.querySelector('.header__dropdown');
   }
 
-  it('deve mostrar os indicadores de mercado no padrão brasileiro', () => {
-    TestBed.inject(DashboardService).dashboard.set({
-      indicadoresMercado: {
-        ibovespaPontos: 134820.5, ibovespaVariacaoDia: 0.4,
-        dolarValor: 5.14, dolarVariacaoDia: -0.2,
-        euroValor: 6.02, euroVariacaoDia: 0.1,
-        selicAtual: 13.75, ipcaAcumulado12m: 4.22,
-      },
-    } as DashboardResponse);
-    fixture.detectChanges();
-
-    const valores = Array.from(fixture.nativeElement.querySelectorAll('.header__ticker-valor'))
-      .map((elemento) => (elemento as HTMLElement).textContent!.trim());
-
-    expect(valores).toEqual(['134.821', 'R$ 5,14', 'R$ 6,02', '13,75%', '4,22%']);
+  it('deve exibir o carrossel de indicadores de mercado no topo', () => {
+    expect(fixture.nativeElement.querySelector('.header app-ticker-mercado')).not.toBeNull();
   });
 
   it('deve abrir o menu de usuário ao clicar no avatar', () => {
@@ -116,14 +101,6 @@ describe('AppShellComponent', () => {
     ) as HTMLAnchorElement;
 
     expect(glossario.getAttribute('href')).toBe('/glossario');
-  });
-
-  it('cada indicador do topo deve ter a ajuda do glossário', () => {
-    const rotulos = Array.from(fixture.nativeElement.querySelectorAll('.header__ticker-label .ajuda__botao')).map(
-      (botao) => (botao as HTMLElement).getAttribute('aria-label'),
-    );
-
-    expect(rotulos).toEqual(['O que é Ibovespa?', 'O que é Dólar?', 'O que é Euro?', 'O que é Selic?', 'O que é IPCA?']);
   });
 
   it('deve renderizar todos os itens de navegação configurados', () => {

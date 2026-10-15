@@ -65,11 +65,11 @@
 
       <div class="detalhe-ativo__metricas-secundarias">
         <div>
-          <span>DY <app-ajuda-glossario chave="DY" [definicao]="ativo.glossario?.['DY']" /></span>
+          <span>DY <app-ajuda-glossario chave="DY" [definicao]="ativo.glossario['DY']" /></span>
           <strong>{{ ativo.dividendYield | number: '1.2-2' }}%</strong>
         </div>
         <div>
-          <span>P/L <app-ajuda-glossario chave="PL" [definicao]="ativo.glossario?.['P/L']" /></span>
+          <span>P/L <app-ajuda-glossario chave="PL" [definicao]="ativo.glossario['P/L']" /></span>
           <strong>
             @if (ativo.precoLucro !== null && ativo.precoLucro !== undefined) {
               {{ ativo.precoLucro | number: '1.2-2' }}
@@ -79,19 +79,19 @@
           </strong>
         </div>
         <div>
-          <span>P/VP <app-ajuda-glossario chave="PVP" [definicao]="ativo.glossario?.['P/VP']" /></span>
+          <span>P/VP <app-ajuda-glossario chave="PVP" [definicao]="ativo.glossario['P/VP']" /></span>
           <strong>{{ ativo.precoValorPatrimonial | number: '1.2-2' }}</strong>
         </div>
         <div>
-          <span>Mín. 52 sem. <app-ajuda-glossario chave="FAIXA_52_SEMANAS" [definicao]="ativo.glossario?.['Mín/Máx 52 semanas']" /></span>
+          <span>Mín. 52 sem. <app-ajuda-glossario chave="FAIXA_52_SEMANAS" [definicao]="ativo.glossario['Mín/Máx 52 semanas']" /></span>
           <strong>R$ {{ ativo.minimo52Semanas | number: '1.2-2' }}</strong>
         </div>
         <div>
-          <span>Máx. 52 sem. <app-ajuda-glossario chave="FAIXA_52_SEMANAS" [definicao]="ativo.glossario?.['Mín/Máx 52 semanas']" /></span>
+          <span>Máx. 52 sem. <app-ajuda-glossario chave="FAIXA_52_SEMANAS" [definicao]="ativo.glossario['Mín/Máx 52 semanas']" /></span>
           <strong>R$ {{ ativo.maximo52Semanas | number: '1.2-2' }}</strong>
         </div>
         <div>
-          <span>Volume <app-ajuda-glossario chave="VOLUME" [definicao]="ativo.glossario?.['Volume']" /></span>
+          <span>Volume <app-ajuda-glossario chave="VOLUME" [definicao]="ativo.glossario['Volume']" /></span>
           <strong>{{ ativo.volume | number: '1.0-0' }}</strong>
         </div>
       </div>
