@@ -1,16 +1,20 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PerfilService } from '../../shared/services/perfil.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { SpinnerComponent } from '../../shared/components/ui/spinner/spinner.component';
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
 import { QuizPergunta, RespostaQuiz } from '../../shared/models/quiz';
+import { AjudaContextualComponent } from '../../shared/components/ajuda-contextual/ajuda-contextual.component';
+
+const MENSAGEM_ERRO_ENVIO = 'Não foi possível salvar suas respostas. Tente novamente.';
 
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [ButtonComponent, SpinnerComponent, ErroServidorComponent],
+  imports: [ButtonComponent, SpinnerComponent, ErroServidorComponent, AjudaContextualComponent],
   templateUrl: './quiz.component.html',
   styleUrl: './quiz.component.scss',
 })
@@ -123,9 +127,10 @@ export class QuizComponent implements OnInit {
         this.toastService.sucesso('Perfil configurado com sucesso!');
         this.router.navigateByUrl('/dashboard');
       },
-      error: () => {
+      error: (erro: HttpErrorResponse) => {
         this.enviando.set(false);
-        this.toastService.erro('Não foi possível salvar suas respostas. Tente novamente.');
+        const mensagem = erro.status === 422 ? erro.error?.erro : null;
+        this.toastService.erro(mensagem || MENSAGEM_ERRO_ENVIO);
       },
     });
   }

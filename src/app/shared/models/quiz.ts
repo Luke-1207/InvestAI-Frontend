@@ -4,11 +4,13 @@ export interface QuizOpcao {
   id: string;
   texto: string;
   emoji: string;
+  explicacao?: string | null;
 }
 
 export interface QuizPergunta {
   id: string;
   texto: string;
+  apoio?: string | null;
   tipo: TipoPergunta;
   obrigatoria: boolean;
   opcoes: QuizOpcao[];
