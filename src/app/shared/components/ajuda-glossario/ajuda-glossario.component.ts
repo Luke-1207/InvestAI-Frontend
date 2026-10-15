@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { AjudaContextualComponent } from '../ajuda-contextual/ajuda-contextual.component';
 import { termoGlossario } from '../../glossario/glossario';
 
@@ -8,7 +8,13 @@ import { termoGlossario } from '../../glossario/glossario';
   imports: [AjudaContextualComponent],
   template: `
     @if (termo(); as item) {
-      <app-ajuda [termo]="item.termo" [texto]="definicao() || item.definicao" [importancia]="item.importancia" />
+      <app-ajuda
+        [termo]="item.termo"
+        [texto]="definicao() || item.definicao"
+        [importancia]="item.importancia"
+        [focavel]="focavel()"
+        (alternado)="alternado.emit($event)"
+      />
     }
   `,
   styles: `
@@ -21,6 +27,9 @@ import { termoGlossario } from '../../glossario/glossario';
 export class AjudaGlossarioComponent {
   readonly chave = input.required<string | null | undefined>();
   readonly definicao = input<string | null | undefined>('');
+  readonly focavel = input(true);
+
+  readonly alternado = output<boolean>();
 
   protected readonly termo = computed(() => termoGlossario(this.chave()));
 }

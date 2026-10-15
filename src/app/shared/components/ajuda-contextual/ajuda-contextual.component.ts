@@ -8,6 +8,7 @@ import {
   computed,
   inject,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -27,6 +28,9 @@ export class AjudaContextualComponent {
   readonly termo = input('');
   readonly rotulo = input('');
   readonly importancia = input('');
+  readonly focavel = input(true);
+
+  readonly alternado = output<boolean>();
 
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly injector = inject(Injector);
@@ -46,6 +50,7 @@ export class AjudaContextualComponent {
   constructor() {
     inject(DestroyRef).onDestroy(() => {
       this.pararDeAcompanhar();
+      this.balao()?.nativeElement.remove();
       if (ajudaAberta === this) {
         ajudaAberta = null;
       }
@@ -60,9 +65,10 @@ export class AjudaContextualComponent {
     ajudaAberta = this;
     this.posicao.set(null);
     this.aberto.set(true);
+    this.alternado.emit(true);
     document.addEventListener('scroll', this.reposicionar, true);
     window.addEventListener('resize', this.reposicionar);
-    afterNextRender(() => this.posicionar(), { injector: this.injector });
+    afterNextRender(() => this.levarBalaoParaOTopo(), { injector: this.injector });
   }
 
   fechar(): void {
@@ -73,6 +79,7 @@ export class AjudaContextualComponent {
     this.aberto.set(false);
     this.posicao.set(null);
     this.pararDeAcompanhar();
+    this.alternado.emit(false);
   }
 
   protected aoPressionar(): void {
@@ -112,15 +119,28 @@ export class AjudaContextualComponent {
   @HostListener('focusout', ['$event'])
   protected aoPerderFoco(evento: FocusEvent): void {
     const destino = evento.relatedTarget as Node | null;
-    if (destino && this.host.nativeElement.contains(destino)) return;
+    if (destino && this.estaDentro(destino)) return;
     this.fechar();
   }
 
   @HostListener('document:click', ['$event'])
   protected aoClicarNaPagina(evento: MouseEvent): void {
-    if (!this.host.nativeElement.contains(evento.target as Node)) {
+    if (!this.estaDentro(evento.target as Node)) {
       this.fechar();
     }
+  }
+
+  private estaDentro(alvo: Node): boolean {
+    return this.host.nativeElement.contains(alvo) || !!this.balao()?.nativeElement.contains(alvo);
+  }
+
+  private levarBalaoParaOTopo(): void {
+    const balao = this.balao()?.nativeElement;
+    if (!this.aberto() || !balao) return;
+    if (balao.parentElement !== document.body) {
+      document.body.appendChild(balao);
+    }
+    this.posicionar();
   }
 
   private posicionar(): void {

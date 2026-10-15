@@ -100,7 +100,7 @@ describe('DetalheAtivoComponent', () => {
     metricas()['DY'].querySelector('.ajuda__botao')!.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
     fixture.detectChanges();
 
-    const balao: HTMLElement = fixture.nativeElement.querySelector('.ajuda__balao');
+    const balao: HTMLElement = document.querySelector<HTMLElement>('.ajuda__balao')!;
     expect(balao.textContent).toContain('Texto do DY vindo da API.');
     expect(balao.textContent).toContain('Por que importa:');
   });

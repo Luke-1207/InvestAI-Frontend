@@ -9,12 +9,16 @@ import { AjudaContextualComponent } from './ajuda-contextual.component';
     <p (click)="cliquesNoParagrafo = cliquesNoParagrafo + 1">
       Liquidez <app-ajuda termo="Liquidez" texto="Facilidade de resgatar o dinheiro." importancia="Mostra quando você pode sacar." />
     </p>
-    <p>Pergunta <app-ajuda rotulo="Entenda esta pergunta" texto="Texto de apoio." /></p>
+    <p>
+      Pergunta
+      <app-ajuda rotulo="Entenda esta pergunta" texto="Texto de apoio." [focavel]="false" (alternado)="eventos.push($event)" />
+    </p>
     <button type="button" class="fora">Fora</button>
   `,
 })
 class HostTesteComponent {
   cliquesNoParagrafo = 0;
+  eventos: boolean[] = [];
 }
 
 describe('AjudaContextualComponent', () => {
@@ -33,7 +37,7 @@ describe('AjudaContextualComponent', () => {
   }
 
   function balao(): HTMLElement | null {
-    return fixture.nativeElement.querySelector('.ajuda__balao');
+    return document.querySelector<HTMLElement>('.ajuda__balao');
   }
 
   function clicarComPonteiro(): void {
@@ -186,10 +190,28 @@ describe('AjudaContextualComponent', () => {
     segundo.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
     fixture.detectChanges();
 
-    const baloes = fixture.nativeElement.querySelectorAll('.ajuda__balao');
+    const baloes = document.querySelectorAll('.ajuda__balao');
     expect(baloes.length).toBe(1);
     expect(baloes[0].textContent).toContain('Texto de apoio.');
     expect(botao().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('por padrão o ícone deve receber foco pelo teclado, e não quando marcado como não focável', () => {
+    const botoes: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.ajuda__botao'));
+
+    expect(botoes[0].hasAttribute('tabindex')).toBeFalse();
+    expect(botoes[1].getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('deve avisar quando abre e quando fecha', () => {
+    const segundo = fixture.nativeElement.querySelectorAll('.ajuda__botao')[1] as HTMLButtonElement;
+
+    segundo.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+    segundo.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.eventos).toEqual([true, false]);
   });
 
   it('rótulo informado deve substituir o rótulo acessível padrão', () => {
@@ -198,9 +220,51 @@ describe('AjudaContextualComponent', () => {
     expect(botoes[1].getAttribute('aria-label')).toBe('Entenda esta pergunta');
   });
 
-  it('o balão deve ficar dentro de uma região de status para leitores de tela', () => {
+  it('deve continuar dentro da tela quando estiver dentro de um elemento com transform', async () => {
+    const paragrafo: HTMLElement = fixture.nativeElement.querySelector('p');
+    paragrafo.style.transform = 'translateX(-60px)';
+    clicarComPonteiro();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const area = balao()!.getBoundingClientRect();
+    const ancora = botao().getBoundingClientRect();
+    expect(area.left).toBeGreaterThanOrEqual(8 - 0.5);
+    expect(area.top).toBeCloseTo(ancora.bottom + 8, 0);
+  });
+
+  it('a explicação deve ser anunciada numa região de status para leitores de tela', () => {
     clicarComPonteiro();
 
-    expect(balao()!.parentElement!.getAttribute('role')).toBe('status');
+    const status: HTMLElement = fixture.nativeElement.querySelector('[role="status"]');
+    expect(status.querySelector('.ajuda__leitor')!.textContent).toContain('Facilidade de resgatar o dinheiro.');
+    expect(status.querySelector('.ajuda__leitor')!.textContent).toContain('Por que importa:');
+    expect(balao()!.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('o balão deve ser desenhado direto no body para não ser cortado por nenhum container', async () => {
+    clicarComPonteiro();
+    await fixture.whenStable();
+
+    expect(balao()!.parentElement).toBe(document.body);
+  });
+
+  it('clicar dentro do balão já movido para o body não deve fechar', async () => {
+    clicarComPonteiro();
+    await fixture.whenStable();
+
+    balao()!.click();
+    fixture.detectChanges();
+
+    expect(balao()).not.toBeNull();
+  });
+
+  it('ao destruir o componente com o balão aberto, o balão deve sair do body', async () => {
+    clicarComPonteiro();
+    await fixture.whenStable();
+
+    fixture.destroy();
+
+    expect(document.querySelector('.ajuda__balao')).toBeNull();
   });
 });

@@ -118,7 +118,7 @@ describe('RendaVariavelComponent', () => {
     ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain('pedacinho de uma empresa');
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')!.textContent).toContain('pedacinho de uma empresa');
     expect(navSpy).not.toHaveBeenCalled();
   });
 

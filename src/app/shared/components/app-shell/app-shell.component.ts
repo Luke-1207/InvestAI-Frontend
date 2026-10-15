@@ -50,6 +50,9 @@ export class AppShellComponent implements OnInit {
 
   readonly ehGestor = computed(() => this.authService.role() === 'GESTOR');
 
+  protected readonly copiasTicker = [0, 1];
+  protected readonly ajudaDoTickerAberta = signal(false);
+
   readonly indicadores = computed<IndicadorTicker[]>(() => {
     const dados = this.dashboardService.dashboard()?.indicadoresMercado;
     if (!dados) {

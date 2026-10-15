@@ -81,7 +81,7 @@ describe('RendaFixaComponent', () => {
     );
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.ajuda__balao')).not.toBeNull();
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')).not.toBeNull();
     expect(navSpy).not.toHaveBeenCalled();
   });
 

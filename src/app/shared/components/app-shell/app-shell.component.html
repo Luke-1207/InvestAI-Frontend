@@ -67,16 +67,31 @@
         <span>InvestAI</span>
       </a>
 
-      <div class="header__ticker">
-        @for (indicador of indicadores(); track indicador.label) {
-          <div class="header__ticker-item">
-            <span class="header__ticker-label">
-              {{ indicador.label }}
-              <app-ajuda-glossario [chave]="indicador.chave" />
-            </span>
-            <span class="header__ticker-valor">{{ indicador.valor }}</span>
-          </div>
-        }
+      <div
+        class="header__ticker"
+        role="region"
+        aria-label="Indicadores de mercado"
+        [class.header__ticker--pausado]="ajudaDoTickerAberta()"
+      >
+        <div class="header__ticker-trilho">
+          @for (copia of copiasTicker; track copia) {
+            <div class="header__ticker-grupo" [attr.aria-hidden]="copia === 0 ? null : 'true'">
+              @for (indicador of indicadores(); track indicador.label) {
+                <div class="header__ticker-item">
+                  <span class="header__ticker-label">
+                    {{ indicador.label }}
+                    <app-ajuda-glossario
+                      [chave]="indicador.chave"
+                      [focavel]="copia === 0"
+                      (alternado)="ajudaDoTickerAberta.set($event)"
+                    />
+                  </span>
+                  <span class="header__ticker-valor">{{ indicador.valor }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
       </div>
 
       <div class="header__acoes">
