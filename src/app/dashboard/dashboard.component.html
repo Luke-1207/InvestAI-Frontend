@@ -64,7 +64,10 @@
                 <div class="dashboard__card-cabecalho">
                   <div>
                     <h4>{{ item.nome }}</h4>
-                    <p>{{ item.categoria | rotulo }}</p>
+                    <p>
+                      {{ item.categoria | rotulo }}
+                      <app-ajuda-glossario [chave]="item.categoria" />
+                    </p>
                   </div>
                   <span
                     class="dashboard__score-circulo"

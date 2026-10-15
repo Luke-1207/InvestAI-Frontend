@@ -19,6 +19,7 @@ import { RelatorioService } from '../../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
 import { RotuloPipe } from '../../shared/pipes/rotulo.pipe';
 import { AjudaContextualComponent } from '../../shared/components/ajuda-contextual/ajuda-contextual.component';
+import { AjudaGlossarioComponent } from '../../shared/components/ajuda-glossario/ajuda-glossario.component';
 import { rotulo } from '../../shared/utils/rotulos.util';
 
 function normalizarPrivado(dto: TituloPrivadoDetalhe): DetalheRendaFixaNormalizado {
@@ -27,6 +28,7 @@ function normalizarPrivado(dto: TituloPrivadoDetalhe): DetalheRendaFixaNormaliza
     categoria: dto.tipo,
     nomeOuEmissor: dto.emissor,
     indexadorOuTipo: rotulo(dto.indexador),
+    indexador: dto.indexador,
     taxaBrutaAnual: dto.rentabilidadeEstimada.taxaBrutaAnual,
     aliquotaIR: dto.rentabilidadeEstimada.aliquotaIR,
     taxaLiquidaAnual: dto.rentabilidadeEstimada.taxaLiquidaAnual,
@@ -46,6 +48,7 @@ function normalizarTesouro(dto: TituloTesouroDetalhe): DetalheRendaFixaNormaliza
     categoria: 'TESOURO',
     nomeOuEmissor: dto.nome,
     indexadorOuTipo: dto.tipo.descricao,
+    indexador: dto.tipo.valor,
     taxaBrutaAnual: dto.taxaAnual,
     aliquotaIR,
     taxaLiquidaAnual: calcularTaxaLiquida(dto.taxaAnual, aliquotaIR),
@@ -77,6 +80,7 @@ export const AJUDA_RENDA_FIXA = {
     GraficoBarrasComponent,
     BotaoRelatorioComponent,
     AjudaContextualComponent,
+    AjudaGlossarioComponent,
   ],
   templateUrl: './detalhe-renda-fixa.component.html',
   styleUrl: './detalhe-renda-fixa.component.scss',

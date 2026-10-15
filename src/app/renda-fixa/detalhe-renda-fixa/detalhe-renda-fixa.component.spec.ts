@@ -106,7 +106,9 @@ describe('DetalheRendaFixaComponent', () => {
   it('deve oferecer ajuda contextual para liquidez e alíquota de IR', async () => {
     await montar('123e4567-e89b-12d3-a456-426614174000');
 
-    const botoes: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('app-ajuda .ajuda__botao'));
+    const botoes: HTMLButtonElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.detalhe-rf__grid-dados .ajuda__botao, .detalhe-rf__tributacao .ajuda__botao'),
+    );
     expect(botoes.map((botao) => botao.getAttribute('aria-label'))).toEqual([
       'O que é Liquidez?',
       'O que é Alíquota de IR?',
@@ -118,12 +120,32 @@ describe('DetalheRendaFixaComponent', () => {
     expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain('22,5% até 180 dias');
   });
 
+  it('deve explicar a categoria e o indexador do título no cabeçalho', async () => {
+    await montar('123e4567-e89b-12d3-a456-426614174000');
+
+    const rotulos = Array.from(fixture.nativeElement.querySelectorAll('.detalhe-rf__cabecalho .ajuda__botao')).map(
+      (botao) => (botao as HTMLElement).getAttribute('aria-label'),
+    );
+
+    expect(rotulos).toEqual(['O que é CDB (Certificado de Depósito Bancário)?', 'O que é CDI?']);
+  });
+
+  it('no Tesouro, deve explicar o indexador a partir do tipo do título', async () => {
+    await montar('tesouro-selic-2029');
+
+    const rotulos = Array.from(fixture.nativeElement.querySelectorAll('.detalhe-rf__cabecalho .ajuda__botao')).map(
+      (botao) => (botao as HTMLElement).getAttribute('aria-label'),
+    );
+
+    expect(rotulos).toEqual(['O que é Tesouro Direto?', 'O que é Selic?']);
+  });
+
   it('não deve mostrar a ajuda de IR quando o título é isento', async () => {
     await montar('123e4567-e89b-12d3-a456-426614174000');
     fixture.componentInstance['detalhe'].update((detalhe) => (detalhe ? { ...detalhe, isentoIr: true } : detalhe));
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelectorAll('app-ajuda').length).toBe(1);
+    expect(fixture.nativeElement.querySelectorAll('.detalhe-rf__tributacao app-ajuda').length).toBe(0);
   });
 
   it('deve mostrar o score quando encontra o identificador na listagem inteligente', async () => {

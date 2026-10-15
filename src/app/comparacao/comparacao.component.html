@@ -97,7 +97,10 @@
           @for (item of [itemResultadoA(), itemResultadoB()]; track $index) {
             @if (item) {
               <div class="comparacao__cartao">
-                <span class="comparacao__cartao-categoria">{{ item.categoria | rotulo }}</span>
+                <span class="comparacao__cartao-tipo">
+                  <span class="comparacao__cartao-categoria">{{ item.categoria | rotulo }}</span>
+                  <app-ajuda-glossario [chave]="item.categoria" />
+                </span>
                 <h3>{{ item.rotulo }}</h3>
 
                 <div class="comparacao__metricas">

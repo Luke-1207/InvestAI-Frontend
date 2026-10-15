@@ -8,8 +8,12 @@
       <div class="detalhe-rf__cabecalho">
         <div>
           <span class="detalhe-rf__categoria">{{ titulo.categoria | rotulo }}</span>
+          <app-ajuda-glossario [chave]="titulo.categoria" />
           <h1>{{ titulo.nomeOuEmissor }}</h1>
-          <p>{{ titulo.indexadorOuTipo }}</p>
+          <p>
+            {{ titulo.indexadorOuTipo }}
+            <app-ajuda-glossario [chave]="titulo.indexador" />
+          </p>
         </div>
 
         @if (!carregandoScore() && score() !== null) {

@@ -110,6 +110,22 @@ describe('AppShellComponent', () => {
     document.body.removeChild(inputQualquer);
   });
 
+  it('deve ter o link do Glossário na navegação', () => {
+    const glossario = Array.from(fixture.nativeElement.querySelectorAll('.sidebar__nav-item')).find((link) =>
+      (link as HTMLElement).textContent!.includes('Glossário'),
+    ) as HTMLAnchorElement;
+
+    expect(glossario.getAttribute('href')).toBe('/glossario');
+  });
+
+  it('cada indicador do topo deve ter a ajuda do glossário', () => {
+    const rotulos = Array.from(fixture.nativeElement.querySelectorAll('.header__ticker-label .ajuda__botao')).map(
+      (botao) => (botao as HTMLElement).getAttribute('aria-label'),
+    );
+
+    expect(rotulos).toEqual(['O que é Ibovespa?', 'O que é Dólar?', 'O que é Euro?', 'O que é Selic?', 'O que é IPCA?']);
+  });
+
   it('deve renderizar todos os itens de navegação configurados', () => {
     const links = fixture.nativeElement.querySelectorAll('.sidebar__nav-item');
     expect(links.length).toBe(fixture.componentInstance.itensNav.length);

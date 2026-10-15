@@ -85,6 +85,12 @@
   }
 }
 
+.rv__tipo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .rv__card-tipo {
   @include selo;
   flex-shrink: 0;

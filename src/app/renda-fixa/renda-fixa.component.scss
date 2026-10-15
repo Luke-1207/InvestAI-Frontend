@@ -80,6 +80,11 @@
   }
 }
 
+.rf__tipo {
+  display: inline-flex;
+  align-items: center;
+}
+
 .rf__categoria {
   @include selo;
 }

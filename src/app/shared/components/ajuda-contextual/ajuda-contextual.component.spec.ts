@@ -6,12 +6,16 @@ import { AjudaContextualComponent } from './ajuda-contextual.component';
   standalone: true,
   imports: [AjudaContextualComponent],
   template: `
-    <p>Liquidez <app-ajuda termo="Liquidez" texto="Facilidade de resgatar o dinheiro." /></p>
+    <p (click)="cliquesNoParagrafo = cliquesNoParagrafo + 1">
+      Liquidez <app-ajuda termo="Liquidez" texto="Facilidade de resgatar o dinheiro." importancia="Mostra quando você pode sacar." />
+    </p>
     <p>Pergunta <app-ajuda rotulo="Entenda esta pergunta" texto="Texto de apoio." /></p>
     <button type="button" class="fora">Fora</button>
   `,
 })
-class HostTesteComponent {}
+class HostTesteComponent {
+  cliquesNoParagrafo = 0;
+}
 
 describe('AjudaContextualComponent', () => {
   let fixture: ComponentFixture<HostTesteComponent>;
@@ -150,6 +154,42 @@ describe('AjudaContextualComponent', () => {
     expect(balao()!.classList).toContain('ajuda__balao--posicionado');
     expect(area.left).toBeGreaterThanOrEqual(8);
     expect(area.right).toBeLessThanOrEqual(document.documentElement.clientWidth - 8 + 0.5);
+  });
+
+  it('deve mostrar o motivo de importar quando informado', () => {
+    clicarComPonteiro();
+
+    expect(balao()!.querySelector('.ajuda__importancia')!.textContent).toContain(
+      'Por que importa: Mostra quando você pode sacar.',
+    );
+  });
+
+  it('não deve mostrar o bloco de importância quando não informado', () => {
+    const segundo = fixture.nativeElement.querySelectorAll('.ajuda__botao')[1] as HTMLButtonElement;
+    segundo.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.ajuda__importancia')).toBeNull();
+  });
+
+  it('clicar na ajuda não deve acionar o clique do elemento em volta', () => {
+    clicarComPonteiro();
+    balao()!.click();
+
+    expect(fixture.componentInstance.cliquesNoParagrafo).toBe(0);
+  });
+
+  it('abrir outra ajuda deve fechar a que estava aberta', () => {
+    clicarComPonteiro();
+    const segundo = fixture.nativeElement.querySelectorAll('.ajuda__botao')[1] as HTMLButtonElement;
+
+    segundo.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    const baloes = fixture.nativeElement.querySelectorAll('.ajuda__balao');
+    expect(baloes.length).toBe(1);
+    expect(baloes[0].textContent).toContain('Texto de apoio.');
+    expect(botao().getAttribute('aria-expanded')).toBe('false');
   });
 
   it('rótulo informado deve substituir o rótulo acessível padrão', () => {

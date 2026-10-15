@@ -109,6 +109,19 @@ describe('RendaVariavelComponent', () => {
     expect(fixture.nativeElement.querySelector('.rv__card-tipo').textContent.trim()).toBe('Ação');
   });
 
+  it('deve explicar o tipo do ativo com o glossário sem abrir o detalhe', () => {
+    const navSpy = spyOn(router, 'navigateByUrl');
+    const ajuda: HTMLButtonElement = fixture.nativeElement.querySelector('.rv__card .ajuda__botao');
+
+    expect(ajuda.getAttribute('aria-label')).toBe('O que é Ação?');
+
+    ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain('pedacinho de uma empresa');
+    expect(navSpy).not.toHaveBeenCalled();
+  });
+
   it('deve navegar pro detalhe do ativo ao clicar num card do Modo Livre', () => {
     const navSpy = spyOn(router, 'navigateByUrl');
 
