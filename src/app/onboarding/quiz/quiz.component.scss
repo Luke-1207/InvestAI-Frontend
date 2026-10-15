@@ -61,7 +61,23 @@
   margin-bottom: $space-10;
 }
 
+.quiz__ajuda-pergunta {
+  margin-left: $space-1;
+}
+
+.quiz__opcao-item {
+  position: relative;
+  display: flex;
+}
+
+.quiz__opcao-ajuda {
+  position: absolute;
+  top: $space-3;
+  right: $space-3;
+}
+
 .quiz__opcao {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -83,6 +99,10 @@
   &--selecionada {
     border-color: var(--accent);
     background: rgba(192, 193, 255, 0.08);
+  }
+
+  &--com-ajuda {
+    padding-right: $space-10;
   }
 }
 

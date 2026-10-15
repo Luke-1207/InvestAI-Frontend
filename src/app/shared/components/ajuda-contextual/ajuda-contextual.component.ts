@@ -24,6 +24,7 @@ let contador = 0;
 export class AjudaContextualComponent {
   readonly texto = input.required<string>();
   readonly termo = input('');
+  readonly rotulo = input('');
 
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly injector = inject(Injector);
@@ -33,7 +34,9 @@ export class AjudaContextualComponent {
   protected readonly idBalao = `ajuda-contextual-${++contador}`;
   protected readonly aberto = signal(false);
   protected readonly posicao = signal<PosicaoBalao | null>(null);
-  protected readonly rotuloBotao = computed(() => (this.termo() ? `O que é ${this.termo()}?` : 'Ajuda'));
+  protected readonly rotuloBotao = computed(
+    () => this.rotulo() || (this.termo() ? `O que é ${this.termo()}?` : 'Ajuda'),
+  );
 
   private ponteiroPressionado = false;
   private readonly reposicionar = () => this.posicionar();

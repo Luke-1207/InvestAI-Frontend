@@ -7,6 +7,7 @@ import { AjudaContextualComponent } from './ajuda-contextual.component';
   imports: [AjudaContextualComponent],
   template: `
     <p>Liquidez <app-ajuda termo="Liquidez" texto="Facilidade de resgatar o dinheiro." /></p>
+    <p>Pergunta <app-ajuda rotulo="Entenda esta pergunta" texto="Texto de apoio." /></p>
     <button type="button" class="fora">Fora</button>
   `,
 })
@@ -149,6 +150,12 @@ describe('AjudaContextualComponent', () => {
     expect(balao()!.classList).toContain('ajuda__balao--posicionado');
     expect(area.left).toBeGreaterThanOrEqual(8);
     expect(area.right).toBeLessThanOrEqual(document.documentElement.clientWidth - 8 + 0.5);
+  });
+
+  it('rótulo informado deve substituir o rótulo acessível padrão', () => {
+    const botoes: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.ajuda__botao'));
+
+    expect(botoes[1].getAttribute('aria-label')).toBe('Entenda esta pergunta');
   });
 
   it('o balão deve ficar dentro de uma região de status para leitores de tela', () => {

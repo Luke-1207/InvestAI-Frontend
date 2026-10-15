@@ -4,16 +4,18 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { QuizComponent } from './quiz.component';
 import { environment } from '../../../environments/environment';
+import { ToastService } from '../../shared/services/toast.service';
 
 const QUIZ_MOCK = {
   perguntas: [
     {
       id: 'p1',
       texto: 'Qual seu horizonte?',
+      apoio: 'É o tempo que o dinheiro pode ficar aplicado.',
       tipo: 'UNICA_ESCOLHA',
       obrigatoria: true,
       opcoes: [
-        { id: 'o1', texto: 'Curto prazo', emoji: '⏱️' },
+        { id: 'o1', texto: 'Curto prazo', emoji: '⏱️', explicacao: 'Para dinheiro que pode ser usado logo.' },
         { id: 'o2', texto: 'Longo prazo', emoji: '🌳' },
       ],
     },
@@ -65,6 +67,47 @@ describe('QuizComponent', () => {
       'Qual seu horizonte?',
     );
     expect(opcoes().length).toBe(2);
+  });
+
+  it('deve mostrar a ajuda da pergunta ao lado do título', () => {
+    const ajuda = fixture.nativeElement.querySelector('.quiz__pergunta .ajuda__botao');
+
+    expect(ajuda.getAttribute('aria-label')).toBe('Entenda esta pergunta');
+
+    ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain(
+      'É o tempo que o dinheiro pode ficar aplicado.',
+    );
+  });
+
+  it('deve mostrar a ajuda só nas opções que têm explicação', () => {
+    const itens: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('.quiz__opcao-item'));
+
+    expect(itens[0].querySelector('.ajuda__botao')!.getAttribute('aria-label')).toBe('Saiba mais sobre: Curto prazo');
+    expect(itens[1].querySelector('app-ajuda')).toBeNull();
+  });
+
+  it('abrir a ajuda de uma opção não deve selecionar a opção', () => {
+    const ajuda = fixture.nativeElement.querySelector('.quiz__opcao-item .ajuda__botao');
+
+    ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.ajuda__balao').textContent).toContain(
+      'Para dinheiro que pode ser usado logo.',
+    );
+    expect(opcoes()[0].classList).not.toContain('quiz__opcao--selecionada');
+    expect(botaoContinuar().disabled).toBe(true);
+  });
+
+  it('opção selecionada deve ficar marcada com aria-pressed', () => {
+    opcoes()[1].click();
+    fixture.detectChanges();
+
+    expect(opcoes()[1].getAttribute('aria-pressed')).toBe('true');
+    expect(opcoes()[0].getAttribute('aria-pressed')).toBe('false');
   });
 
   it('botão Continuar deve começar desabilitado até selecionar uma opção', () => {
@@ -138,5 +181,37 @@ describe('QuizComponent', () => {
     });
 
     expect(navSpy).toHaveBeenCalledWith('/dashboard');
+  });
+
+  function responderTudoEEnviar() {
+    opcoes()[0].click();
+    fixture.detectChanges();
+    botaoContinuar().click();
+    fixture.detectChanges();
+    opcoes()[0].click();
+    fixture.detectChanges();
+    botaoContinuar().click();
+    return httpMock.expectOne(`${environment.apiUrl}/perfil/quiz`);
+  }
+
+  it('quando o backend recusa as respostas (422), deve mostrar a mensagem dele', () => {
+    const toast = spyOn(TestBed.inject(ToastService), 'erro');
+
+    responderTudoEEnviar().flush(
+      { status: 422, erro: 'Você marcou o setor Tecnologia para ver com destaque e para evitar ao mesmo tempo.' },
+      { status: 422, statusText: 'Unprocessable Entity' },
+    );
+
+    expect(toast).toHaveBeenCalledWith(
+      'Você marcou o setor Tecnologia para ver com destaque e para evitar ao mesmo tempo.',
+    );
+  });
+
+  it('em outros erros, deve mostrar a mensagem genérica', () => {
+    const toast = spyOn(TestBed.inject(ToastService), 'erro');
+
+    responderTudoEEnviar().flush({ erro: 'NullPointerException' }, { status: 500, statusText: 'Server Error' });
+
+    expect(toast).toHaveBeenCalledWith('Não foi possível salvar suas respostas. Tente novamente.');
   });
 });

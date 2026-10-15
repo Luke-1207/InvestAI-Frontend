@@ -15,23 +15,40 @@
         <p class="quiz__contador">
           Pergunta {{ etapaAtual() + 1 }} de {{ perguntas().length }}
           @if (pergunta.tipo === 'MULTIPLA_ESCOLHA') {
-            <span class="quiz__dica">— selecione uma ou mais opções</span>
+            <span class="quiz__dica">· selecione uma ou mais opções</span>
           }
         </p>
 
-        <h2 class="quiz__pergunta">{{ pergunta.texto }}</h2>
+        <h2 class="quiz__pergunta">
+          {{ pergunta.texto }}
+          @if (pergunta.apoio) {
+            <app-ajuda class="quiz__ajuda-pergunta" rotulo="Entenda esta pergunta" [texto]="pergunta.apoio" />
+          }
+        </h2>
 
         <div class="quiz__opcoes">
           @for (opcao of pergunta.opcoes; track opcao.id) {
-            <button
-              type="button"
-              class="quiz__opcao"
-              [class.quiz__opcao--selecionada]="estaSelecionada(opcao.id)"
-              (click)="selecionarOpcao(opcao.id)"
-            >
-              <span class="quiz__opcao-emoji">{{ opcao.emoji }}</span>
-              <span class="quiz__opcao-texto">{{ opcao.texto }}</span>
-            </button>
+            <div class="quiz__opcao-item">
+              <button
+                type="button"
+                class="quiz__opcao"
+                [class.quiz__opcao--selecionada]="estaSelecionada(opcao.id)"
+                [class.quiz__opcao--com-ajuda]="!!opcao.explicacao"
+                [attr.aria-pressed]="estaSelecionada(opcao.id)"
+                (click)="selecionarOpcao(opcao.id)"
+              >
+                <span class="quiz__opcao-emoji">{{ opcao.emoji }}</span>
+                <span class="quiz__opcao-texto">{{ opcao.texto }}</span>
+              </button>
+              @if (opcao.explicacao) {
+                <app-ajuda
+                  class="quiz__opcao-ajuda"
+                  [termo]="opcao.texto"
+                  [rotulo]="'Saiba mais sobre: ' + opcao.texto"
+                  [texto]="opcao.explicacao"
+                />
+              }
+            </div>
           }
         </div>
 
