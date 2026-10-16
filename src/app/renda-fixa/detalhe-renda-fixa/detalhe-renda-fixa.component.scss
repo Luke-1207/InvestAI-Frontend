@@ -62,6 +62,10 @@
   @include cartao($space-6, $space-4);
 }
 
+.detalhe-rf__score-painel {
+  @include cartao($space-6, $space-4);
+}
+
 .detalhe-rf__selo {
   display: inline-flex;
   align-items: center;

@@ -54,6 +54,12 @@ describe('DashboardComponent', () => {
 
   afterEach(() => httpMock.verify());
 
+  it('deve avisar que as sugestões são conteúdo educativo', async () => {
+    await montar(mockDashboard());
+
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).not.toBeNull();
+  });
+
   it('Dica do Dia deve escolher o item de MAIOR score, não o primeiro do array', async () => {
     await montar(mockDashboard());
 

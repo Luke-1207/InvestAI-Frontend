@@ -1,0 +1,80 @@
+<div class="conformidade">
+  <header class="conformidade__cabecalho">
+    <h1>Conformidade e transparência</h1>
+    <p>
+      O InvestAI foi criado para ajudar você a entender investimentos. Aqui explicamos o que a plataforma faz, o que ela
+      não faz e como as sugestões são calculadas.
+    </p>
+  </header>
+
+  <section class="conformidade__secao">
+    <h2>Conteúdo educativo, não recomendação</h2>
+    <p>
+      As sugestões, pontuações, resumos e vereditos do InvestAI têm caráter exclusivamente informativo e educacional.
+      Eles não são recomendação, oferta ou pedido de compra ou venda de valores mobiliários e não substituem a orientação
+      de um consultor ou analista de valores mobiliários autorizado pela Comissão de Valores Mobiliários (CVM).
+    </p>
+    <p>
+      Rentabilidade passada não garante rentabilidade futura. Toda decisão de investimento é de responsabilidade de quem
+      investe.
+    </p>
+  </section>
+
+  <section class="conformidade__secao">
+    <h2>Como o score é calculado</h2>
+    <p>
+      O score vai de 0 a 100 e mostra o quanto um ativo combina com o perfil que você informou no quiz. Ele não diz se o
+      ativo vai subir ou cair. A compatibilidade é <strong>Alta</strong> a partir de 80, <strong>Média</strong> de 50 a 79
+      e <strong>Baixa</strong> abaixo de 50.
+    </p>
+
+    <div class="conformidade__tabelas">
+      <div>
+        <h3>Ações, FIIs e ETFs</h3>
+        <dl class="conformidade__pesos">
+          @for (item of pesosRendaVariavel; track item.criterio) {
+            <div>
+              <dt>{{ item.criterio }}</dt>
+              <dd>{{ item.pontos }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+
+      <div>
+        <h3>Tesouro Direto, CDB, LCI e LCA</h3>
+        <dl class="conformidade__pesos">
+          @for (item of pesosRendaFixa; track item.criterio) {
+            <div>
+              <dt>{{ item.criterio }}</dt>
+              <dd>{{ item.pontos }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+    </div>
+
+    <p>
+      O melhor caso de cada critério soma exatamente 100. No detalhe de cada ativo e de cada título você vê quais
+      critérios somaram e quais tiraram pontos do seu score.
+    </p>
+  </section>
+
+  <section class="conformidade__secao">
+    <h2>Uso de inteligência artificial</h2>
+    <p>
+      Os resumos dos ativos, o veredito da comparação e o resumo do seu perfil são escritos por um modelo de inteligência
+      artificial a partir dos dados de mercado e do seu perfil. A IA pode errar ou simplificar demais, então use esses
+      textos como ponto de partida para estudar, não como conclusão.
+    </p>
+    <p>O score não é gerado pela IA: ele segue as regras fixas descritas acima, iguais para todos os usuários.</p>
+  </section>
+
+  <section class="conformidade__secao">
+    <h2>Dados de mercado</h2>
+    <p>
+      Cotações, indicadores e taxas vêm de fontes públicas e podem ter atraso ou ficar indisponíveis por alguns momentos.
+      Confira sempre os valores na sua corretora antes de investir.
+    </p>
+  </section>
+</div>

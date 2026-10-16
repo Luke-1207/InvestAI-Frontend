@@ -24,6 +24,10 @@ function sugestaoMock(): SugestaoAtivoItem {
   return {
     codigo: 'PETR4', nome: 'Petrobras', tipo: 'ACAO', setor: 'Energia',
     preco: 38, variacaoDia: 1.5, dy: 8, score: 65, compatibilidade: 'MEDIA', justificativa: 'teste',
+    criterios: [
+      { chave: 'dy_renda_passiva', descricao: 'Paga bons dividendos', pontos: 25 },
+      { chave: 'setor_evitado', descricao: 'Setor está entre os que você prefere evitar', pontos: -20 },
+    ],
   };
 }
 
@@ -128,6 +132,15 @@ describe('DetalheAtivoComponent', () => {
     botao6M.click();
 
     expect(acaoService.obterDetalhe).toHaveBeenCalledWith('PETR4', '6M');
+  });
+
+  it('deve mostrar os critérios do score e o aviso educativo na análise', async () => {
+    await montar();
+
+    const painel: HTMLElement = fixture.nativeElement.querySelector('.detalhe-ativo__ia');
+    expect(painel.querySelector('app-criterios-score')!.textContent).toContain('+25');
+    expect(painel.querySelector('app-criterios-score')!.textContent).toContain('prefere evitar');
+    expect(painel.querySelector('app-aviso-educativo')).not.toBeNull();
   });
 
   it('deve mostrar o painel de Análise da IA quando a sugestão vem preenchida', async () => {

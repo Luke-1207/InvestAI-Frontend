@@ -51,6 +51,9 @@
   } @else if (erro()) {
     <app-erro-servidor (tentarNovamente)="carregar()" />
   } @else if (itensFiltrados().length > 0) {
+    @if (modo() === 'inteligente') {
+      <app-aviso-educativo />
+    }
     <div class="rf__grid">
       @for (item of itensFiltrados(); track item.id) {
         <div class="rf__card" (click)="abrirDetalhe(item)">

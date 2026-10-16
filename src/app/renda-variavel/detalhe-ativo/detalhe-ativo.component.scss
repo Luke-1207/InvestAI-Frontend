@@ -139,6 +139,16 @@
   margin: 0 0 $space-2;
 }
 
+.detalhe-ativo__criterios {
+  margin-top: $space-5;
+  padding-top: $space-4;
+  border-top: 1px solid var(--border-ai);
+}
+
+.detalhe-ativo__aviso {
+  margin-top: $space-4;
+}
+
 .detalhe-ativo__ia-risco {
   @include texto-apoio(13px);
   margin: 0;

@@ -87,6 +87,7 @@ describe('RendaFixaComponent', () => {
 
   it('não deve mostrar o círculo de score no Modo Livre (score vem null)', () => {
     expect(fixture.nativeElement.querySelector('.rf__score')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).toBeNull();
   });
 
   it('deve trocar pro Modo Inteligente e chamar o serviço de novo', () => {
@@ -103,6 +104,7 @@ describe('RendaFixaComponent', () => {
     expect(service.listar).toHaveBeenCalledWith('inteligente');
     expect(fixture.nativeElement.querySelector('.rf__score').textContent.trim()).toBe('72');
     expect(fixture.nativeElement.querySelector('.rf__justificativa').textContent).toContain('Boa opção');
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).not.toBeNull();
   });
 
   it('filtro de categoria deve ser aplicado no cliente, sem chamar o serviço de novo', () => {

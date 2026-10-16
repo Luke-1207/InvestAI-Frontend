@@ -76,6 +76,11 @@ describe('RendaVariavelComponent', () => {
 
     expect(acaoService.listarSugestoes).toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('app-cartao-sugestao-ativo')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).toBeTruthy();
+  });
+
+  it('não deve mostrar o aviso de sugestão no Modo Livre, que não tem score', () => {
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).toBeNull();
   });
 
   it('deve resetar pra página 1 ao trocar o filtro de tipo', () => {

@@ -152,7 +152,10 @@ describe('DetalheRendaFixaComponent', () => {
     service = jasmine.createSpyObj('RendaFixaService', ['obterDetalhePrivado', 'obterDetalheTesouro', 'listar']);
     service.obterDetalhePrivado.and.returnValue(of(PRIVADO_MOCK));
     service.listar.and.returnValue(of([
-      itemListagemMock({ id: '123e4567-e89b-12d3-a456-426614174000', score: 78, compatibilidade: 'ALTA' }),
+      itemListagemMock({
+        id: '123e4567-e89b-12d3-a456-426614174000', score: 78, compatibilidade: 'ALTA',
+        criterios: [{ chave: 'garantia_fgc', descricao: 'Garantido pelo FGC', pontos: 5 }],
+      }),
     ]));
 
     await TestBed.configureTestingModule({
@@ -168,12 +171,17 @@ describe('DetalheRendaFixaComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.detalhe-rf__score').textContent.trim()).toBe('78');
+    const painel: HTMLElement = fixture.nativeElement.querySelector('.detalhe-rf__score-painel');
+    expect(painel.textContent).toContain('Como chegamos a 78 pontos');
+    expect(painel.textContent).toContain('Garantido pelo FGC');
+    expect(painel.querySelector('app-aviso-educativo')).not.toBeNull();
   });
 
   it('não deve mostrar score quando o identificador não aparece na listagem inteligente', async () => {
     await montar('123e4567-e89b-12d3-a456-426614174000'); // service.listar mockado como [] no helper montar()
 
     expect(fixture.nativeElement.querySelector('.detalhe-rf__score')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.detalhe-rf__score-painel')).toBeNull();
   });
 
   it('deve alternar o favorito localmente e mostrar um toast', async () => {

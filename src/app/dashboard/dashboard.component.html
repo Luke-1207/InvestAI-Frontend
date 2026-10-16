@@ -8,6 +8,7 @@
   } @else {
     @if (dashboardService.dashboard(); as dados) {
       <h1 class="dashboard__titulo">Visão Geral</h1>
+      <app-aviso-educativo />
 
       @if (!dados.perfil.perfilPreenchido) {
         <div class="dashboard__perfil-incompleto">

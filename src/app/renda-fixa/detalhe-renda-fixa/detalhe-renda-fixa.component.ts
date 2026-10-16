@@ -9,7 +9,7 @@ import {
   TituloPrivadoDetalhe,
   TituloTesouroDetalhe,
 } from '../../shared/models/renda-fixa';
-import { CORES_COMPATIBILIDADE, Compatibilidade } from '../../shared/models/compatibilidade';
+import { CORES_COMPATIBILIDADE, Compatibilidade, CriterioScore } from '../../shared/models/compatibilidade';
 import { ehUuid } from '../../shared/utils/uuid.util';
 import { calcularAliquotaIR, calcularTaxaLiquida } from '../../shared/utils/ir-regressivo.util';
 import { SkeletonDetalheComponent } from '../../shared/components/ui/skeleton-detalhe/skeleton-detalhe.component';
@@ -20,6 +20,8 @@ import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio
 import { RotuloPipe } from '../../shared/pipes/rotulo.pipe';
 import { AjudaContextualComponent } from '../../shared/components/ajuda-contextual/ajuda-contextual.component';
 import { AjudaGlossarioComponent } from '../../shared/components/ajuda-glossario/ajuda-glossario.component';
+import { AvisoEducativoComponent } from '../../shared/components/aviso-educativo/aviso-educativo.component';
+import { CriteriosScoreComponent } from '../../shared/components/criterios-score/criterios-score.component';
 import { rotulo } from '../../shared/utils/rotulos.util';
 
 function normalizarPrivado(dto: TituloPrivadoDetalhe): DetalheRendaFixaNormalizado {
@@ -81,6 +83,8 @@ export const AJUDA_RENDA_FIXA = {
     BotaoRelatorioComponent,
     AjudaContextualComponent,
     AjudaGlossarioComponent,
+    AvisoEducativoComponent,
+    CriteriosScoreComponent,
   ],
   templateUrl: './detalhe-renda-fixa.component.html',
   styleUrl: './detalhe-renda-fixa.component.scss',
@@ -102,6 +106,7 @@ export class DetalheRendaFixaComponent implements OnInit {
 
   protected readonly carregandoScore = signal(true);
   protected readonly score = signal<number | null>(null);
+  protected readonly criterios = signal<CriterioScore[]>([]);
   protected readonly compatibilidade = signal<Compatibilidade | null>(null);
 
   protected readonly favoritado = signal(false);
@@ -159,6 +164,7 @@ export class DetalheRendaFixaComponent implements OnInit {
         if (item?.score != null) {
           this.score.set(item.score);
           this.compatibilidade.set(item.compatibilidade);
+          this.criterios.set(item.criterios ?? []);
         }
         this.carregandoScore.set(false);
       },

@@ -1,0 +1,68 @@
+@use '../../../../styles/design-system' as *;
+
+:host {
+  display: block;
+}
+
+.criterios-score {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.criterios-score__titulo {
+  @include titulo-pagina(15px);
+}
+
+.criterios-score__grupos {
+  @include grid-cartoes(240px, auto-fit);
+}
+
+.criterios-score__grupo {
+  h4 {
+    @include rotulo;
+    font-weight: 400;
+    margin: 0 0 $space-2;
+  }
+
+  ul {
+    @include lista-limpa;
+  }
+
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: $space-2;
+    font-family: $font-body;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-primary);
+  }
+}
+
+.criterios-score__pontos {
+  flex-shrink: 0;
+  min-width: 34px;
+  font-family: $font-mono;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+
+  &--positivo {
+    color: var(--success-value);
+  }
+
+  &--negativo {
+    color: var(--danger);
+  }
+}
+
+.criterios-score__nota {
+  @include texto-apoio(12px);
+  line-height: 1.5;
+  margin: 0;
+
+  a {
+    color: var(--accent);
+  }
+}
