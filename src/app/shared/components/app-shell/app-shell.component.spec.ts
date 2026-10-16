@@ -103,6 +103,14 @@ describe('AppShellComponent', () => {
     expect(glossario.getAttribute('href')).toBe('/glossario');
   });
 
+  it('o link Conformidade do rodapé deve abrir a página de conformidade', () => {
+    const link = Array.from(fixture.nativeElement.querySelectorAll('.footer__links a')).find((a) =>
+      (a as HTMLElement).textContent!.includes('Conformidade'),
+    ) as HTMLAnchorElement;
+
+    expect(link.getAttribute('href')).toBe('/conformidade');
+  });
+
   it('deve renderizar todos os itens de navegação configurados', () => {
     const links = fixture.nativeElement.querySelectorAll('.sidebar__nav-item');
     expect(links.length).toBe(fixture.componentInstance.itensNav.length);

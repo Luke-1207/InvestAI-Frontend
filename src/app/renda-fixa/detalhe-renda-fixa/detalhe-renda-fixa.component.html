@@ -65,6 +65,13 @@
         </div>
       </div>
 
+      @if (!carregandoScore() && score() !== null) {
+        <div class="detalhe-rf__score-painel">
+          <app-criterios-score [criterios]="criterios()" [score]="score()!" />
+          <app-aviso-educativo />
+        </div>
+      }
+
       <div class="detalhe-rf__grafico-painel">
         <h3>Simulação de retorno (investindo o mínimo, 1 ano)</h3>
         <app-grafico-barras [barras]="barras()" />

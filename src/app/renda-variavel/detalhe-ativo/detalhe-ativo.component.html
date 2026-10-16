@@ -117,6 +117,9 @@
               <p class="detalhe-ativo__ia-risco">{{ notaRisco[ia.compatibilidade] }}</p>
             </div>
           </div>
+
+          <app-criterios-score class="detalhe-ativo__criterios" [criterios]="ia.criterios" [score]="ia.score" />
+          <app-aviso-educativo class="detalhe-ativo__aviso" />
         </div>
       }
     }

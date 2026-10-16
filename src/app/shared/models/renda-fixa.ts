@@ -1,4 +1,4 @@
-import { Compatibilidade } from './compatibilidade';
+import { Compatibilidade, CriterioScore } from './compatibilidade';
 
 export type CategoriaRendaFixa = 'TESOURO' | 'CDB' | 'LCI' | 'LCA';
 
@@ -17,6 +17,7 @@ export interface RendaFixaListagem {
   score: number | null;
   compatibilidade: Compatibilidade | null;
   justificativa: string | null;
+  criterios?: CriterioScore[];
 }
 
 export interface RentabilidadeEstimada {

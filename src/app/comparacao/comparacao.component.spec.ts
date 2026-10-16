@@ -120,6 +120,7 @@ describe('ComparacaoComponent', () => {
     expect(service.carregarItemComparacao).toHaveBeenCalledWith('TESOURO', 'tesouro-selic-2029');
     expect(service.obterVeredito).toHaveBeenCalledWith('ACAO', 'PETR4', 'TESOURO', 'tesouro-selic-2029');
     expect(fixture.nativeElement.textContent).toContain('PETR4 combina mais com você.');
+    expect(fixture.nativeElement.querySelector('.comparacao__resultado app-aviso-educativo')).not.toBeNull();
   });
 
   it('deve mostrar a barra de compatibilidade só quando o item tem score', async () => {

@@ -1,0 +1,46 @@
+<section class="criterios-score">
+  <h3 class="criterios-score__titulo">Como chegamos a {{ score() }} pontos</h3>
+
+  @if (temCriterios()) {
+    <div class="criterios-score__grupos">
+      @if (somaram().length > 0) {
+        <div class="criterios-score__grupo">
+          <h4>O que somou pontos</h4>
+          <ul>
+            @for (criterio of somaram(); track criterio.chave) {
+              <li>
+                <span class="criterios-score__pontos criterios-score__pontos--positivo">+{{ criterio.pontos }}</span>
+                <span>{{ criterio.descricao }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (tiraram().length > 0) {
+        <div class="criterios-score__grupo">
+          <h4>O que tirou pontos</h4>
+          <ul>
+            @for (criterio of tiraram(); track criterio.chave) {
+              <li>
+                <span class="criterios-score__pontos criterios-score__pontos--negativo">−{{ -criterio.pontos }}</span>
+                <span>{{ criterio.descricao }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+
+    @if (avisoLimite(); as aviso) {
+      <p class="criterios-score__nota">{{ aviso }}</p>
+    }
+  } @else {
+    <p class="criterios-score__nota">Os detalhes deste score não estão disponíveis no momento.</p>
+  }
+
+  <p class="criterios-score__nota">
+    O score vai de 0 a 100 e mede o quanto o ativo combina com o seu perfil: Alta a partir de 80, Média a partir de 50.
+    <a routerLink="/conformidade">Entenda o cálculo</a>
+  </p>
+</section>

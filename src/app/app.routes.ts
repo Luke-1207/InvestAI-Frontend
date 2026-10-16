@@ -53,6 +53,10 @@ export const routes: Routes = [
         loadChildren: () => import('./gestor/gestor.routes').then((m) => m.GESTOR_ROUTES),
       },
       {
+        path: 'conformidade',
+        loadChildren: () => import('./conformidade/conformidade.routes').then((m) => m.CONFORMIDADE_ROUTES),
+      },
+      {
         path: 'glossario',
         loadChildren: () => import('./glossario/glossario.routes').then((m) => m.GLOSSARIO_ROUTES),
       },

@@ -110,6 +110,7 @@
   } @else {
     @if (sugestoes(); as dados) {
       @if (dados.itens.length > 0) {
+        <app-aviso-educativo />
         <div class="rv__grid">
           @for (item of dados.itens; track item.codigo) {
             <app-cartao-sugestao-ativo [item]="item" (clique)="abrirDetalhe(item.codigo)" />

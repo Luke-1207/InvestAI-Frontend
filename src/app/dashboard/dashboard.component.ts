@@ -9,6 +9,7 @@ import { CORES_COMPATIBILIDADE } from '../shared/models/compatibilidade';
 import { SugestaoAtivoItem } from '../shared/models/dashboard';
 import { CartaoSugestaoAtivoComponent } from '../shared/components/cartao-sugestao-ativo/cartao-sugestao-ativo.component';
 import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
+import { AvisoEducativoComponent } from '../shared/components/aviso-educativo/aviso-educativo.component';
 import { AjudaGlossarioComponent } from '../shared/components/ajuda-glossario/ajuda-glossario.component';
 
 const ORDEM_RISCO = ['CONSERVADOR', 'MODERADO', 'ARROJADO'];
@@ -23,7 +24,7 @@ const ALOCACAO_POR_RISCO: Record<string, { rv: number; rf: number }> = {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RotuloPipe, AjudaGlossarioComponent, CommonModule, RouterLink, SpinnerComponent, ErroServidorComponent, DonutChartComponent, CartaoSugestaoAtivoComponent],
+  imports: [RotuloPipe, AjudaGlossarioComponent, AvisoEducativoComponent, CommonModule, RouterLink, SpinnerComponent, ErroServidorComponent, DonutChartComponent, CartaoSugestaoAtivoComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
