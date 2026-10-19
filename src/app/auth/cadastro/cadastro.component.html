@@ -46,8 +46,48 @@
         mensagemErro="As senhas não conferem."
       />
 
+      <div class="cadastro-foto">
+        @if (previaFoto(); as previa) {
+          <img class="cadastro-foto__previa" [src]="previa" alt="Prévia da sua foto de perfil" />
+        } @else {
+          <span class="cadastro-foto__previa cadastro-foto__previa--vazia" aria-hidden="true">
+            <span class="material-symbols-outlined">person</span>
+          </span>
+        }
+
+        <div class="cadastro-foto__conteudo">
+          <span class="cadastro-foto__titulo">FOTO DE PERFIL (OPCIONAL)</span>
+          <p class="cadastro-foto__dica" id="cadastro-foto-dica">JPG, PNG ou WEBP, até 2 MB. Dá para adicionar ou trocar depois, no seu perfil.</p>
+
+          <div class="cadastro-foto__acoes">
+            <label class="cadastro-foto__botao" [class.cadastro-foto__botao--desabilitado]="carregando()">
+              <span class="material-symbols-outlined" aria-hidden="true">add_a_photo</span>
+              {{ foto() ? 'Trocar foto' : 'Escolher foto' }}
+              <input
+                class="cadastro-foto__input"
+                type="file"
+                [accept]="aceiteFoto"
+                [disabled]="carregando()"
+                aria-describedby="cadastro-foto-dica"
+                (change)="aoEscolherFoto($event)"
+              />
+            </label>
+
+            @if (foto()) {
+              <button type="button" class="cadastro-foto__remover" [disabled]="carregando()" (click)="removerFoto()">
+                Remover
+              </button>
+            }
+          </div>
+
+          @if (erroFoto()) {
+            <p class="cadastro-foto__erro" role="alert">{{ erroFoto() }}</p>
+          }
+        </div>
+      </div>
+
       <app-button tipoHtml="submit" [carregando]="carregando()">
-        {{ carregando() ? 'Criando conta...' : 'Criar conta e responder o quiz' }}
+        {{ carregando() ? (enviandoFoto() ? 'Enviando sua foto...' : 'Criando conta...') : 'Criar conta e responder o quiz' }}
       </app-button>
 
       <div class="auth-form__links">
