@@ -3,6 +3,8 @@ import { AppShellComponent } from './shared/components/app-shell/app-shell.compo
 import { authGuard } from './shared/guards/auth.guard';
 import { gestorGuard } from './shared/guards/gestor.guard';
 import { ROTAS_EM_BREVE } from './em-breve/em-breve.routes';
+import { visitanteGuard } from './shared/guards/visitante.guard';
+import { INSTITUCIONAL_ROUTES } from './institucional/institucional.routes';
 
 export const routes: Routes = [
   {
@@ -13,6 +15,15 @@ export const routes: Routes = [
     path: 'onboarding',
     canActivate: [authGuard],
     loadChildren: () => import('./onboarding/onboarding.routes').then((m) => m.ONBOARDING_ROUTES),
+  },
+  {
+    path: '',
+    canMatch: [visitanteGuard],
+    loadComponent: () =>
+      import('./institucional/layout-institucional/layout-institucional.component').then(
+        (m) => m.LayoutInstitucionalComponent,
+      ),
+    children: INSTITUCIONAL_ROUTES,
   },
   {
     path: '',
@@ -52,10 +63,7 @@ export const routes: Routes = [
         canActivate: [gestorGuard],
         loadChildren: () => import('./gestor/gestor.routes').then((m) => m.GESTOR_ROUTES),
       },
-      {
-        path: 'conformidade',
-        loadChildren: () => import('./conformidade/conformidade.routes').then((m) => m.CONFORMIDADE_ROUTES),
-      },
+      ...INSTITUCIONAL_ROUTES,
       {
         path: 'glossario',
         loadChildren: () => import('./glossario/glossario.routes').then((m) => m.GLOSSARIO_ROUTES),

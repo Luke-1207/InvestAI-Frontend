@@ -1,0 +1,54 @@
+@use '../../styles/design-system' as *;
+
+@mixin documento {
+  @include pagina;
+  max-width: 880px;
+}
+
+@mixin documento-cabecalho {
+  h1 {
+    @include titulo-pagina;
+  }
+
+  p {
+    @include texto-apoio(15px);
+    line-height: 1.6;
+    margin: $space-2 0 0;
+  }
+}
+
+@mixin documento-secao {
+  @include cartao($space-6, $space-3);
+
+  h2 {
+    @include titulo-pagina(18px);
+  }
+
+  h3 {
+    @include titulo-pagina(15px, $space-2 0 0);
+  }
+
+  p,
+  li {
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  ul,
+  ol {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+    margin: 0;
+    padding-left: $space-5;
+  }
+
+  a {
+    color: var(--accent);
+  }
+}
+
+@mixin documento-atualizacao {
+  @include rotulo;
+}

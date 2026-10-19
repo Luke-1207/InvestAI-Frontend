@@ -81,6 +81,16 @@
   pointer-events: none;
 }
 
+.cadastro__aceite {
+  @include texto-apoio(13px);
+  line-height: 1.5;
+  margin: 0;
+
+  a {
+    color: var(--accent);
+  }
+}
+
 .cadastro-foto__erro {
   font-size: 13px;
   color: var(--danger);

@@ -1,0 +1,17 @@
+@use '../documento' as *;
+
+.documento {
+  @include documento;
+}
+
+.documento__cabecalho {
+  @include documento-cabecalho;
+}
+
+.documento__secao {
+  @include documento-secao;
+}
+
+.documento__atualizacao {
+  @include documento-atualizacao;
+}

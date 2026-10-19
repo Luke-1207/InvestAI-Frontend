@@ -103,12 +103,18 @@ describe('AppShellComponent', () => {
     expect(glossario.getAttribute('href')).toBe('/glossario');
   });
 
-  it('o link Conformidade do rodapé deve abrir a página de conformidade', () => {
-    const link = Array.from(fixture.nativeElement.querySelectorAll('.footer__links a')).find((a) =>
-      (a as HTMLElement).textContent!.includes('Conformidade'),
-    ) as HTMLAnchorElement;
+  it('os quatro links do rodapé devem abrir as páginas institucionais', () => {
+    const links = Array.from(fixture.nativeElement.querySelectorAll('.footer__links a')).map((a) => [
+      (a as HTMLElement).textContent!.trim(),
+      (a as HTMLAnchorElement).getAttribute('href'),
+    ]);
 
-    expect(link.getAttribute('href')).toBe('/conformidade');
+    expect(links).toEqual([
+      ['Termos de Uso', '/termos-de-uso'],
+      ['Privacidade', '/privacidade'],
+      ['Conformidade', '/conformidade'],
+      ['Regras da CVM', '/regras-cvm'],
+    ]);
   });
 
   it('deve renderizar todos os itens de navegação configurados', () => {

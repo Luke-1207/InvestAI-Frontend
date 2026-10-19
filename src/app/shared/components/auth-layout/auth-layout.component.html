@@ -18,15 +18,21 @@
       </div>
     </div>
 
-    <div class="auth-layout__cvm">
-      <span class="material-symbols-outlined">verified_user</span>
+    <a routerLink="/regras-cvm" class="auth-layout__cvm">
+      <span class="material-symbols-outlined" aria-hidden="true">verified_user</span>
       <span>Plataforma em conformidade com as regras da CVM</span>
-    </div>
+    </a>
   </div>
 
   <div class="auth-layout__formulario">
     <div class="auth-layout__formulario-wrapper">
       <ng-content />
+
+      <nav class="auth-layout__institucional-links" aria-label="Páginas institucionais">
+        @for (link of links; track link.rota) {
+          <a [routerLink]="link.rota">{{ link.rotulo }}</a>
+        }
+      </nav>
     </div>
   </div>
 </div>

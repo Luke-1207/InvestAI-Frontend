@@ -76,6 +76,19 @@ describe('CadastroComponent', () => {
     expect(el().querySelector('img.cadastro-foto__previa')).toBeNull();
   });
 
+  it('deve avisar que criar a conta é aceitar os Termos de Uso e a Política de Privacidade', () => {
+    const links = Array.from(el().querySelectorAll('.cadastro__aceite a')).map((a) => a.getAttribute('href'));
+
+    expect(links).toEqual(['/termos-de-uso', '/privacidade']);
+  });
+
+  it('as páginas institucionais devem estar ao alcance antes do login', () => {
+    const links = Array.from(el().querySelectorAll('.auth-layout__institucional-links a')).map((a) => a.getAttribute('href'));
+
+    expect(links).toEqual(['/termos-de-uso', '/privacidade', '/conformidade', '/regras-cvm']);
+    expect(el().querySelector('.auth-layout__cvm')!.getAttribute('href')).toBe('/regras-cvm');
+  });
+
   it('sem foto, deve cadastrar e ir para o quiz sem tentar enviar foto', () => {
     preencher();
     enviar();

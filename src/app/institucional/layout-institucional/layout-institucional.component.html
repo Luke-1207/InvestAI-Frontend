@@ -1,0 +1,33 @@
+<div class="institucional">
+  <header class="institucional__topo">
+    <a routerLink="/auth/login" class="institucional__marca">
+      <img src="logo.svg" alt="" width="32" height="32" />
+      InvestAI
+    </a>
+    <div class="institucional__acesso">
+      <a routerLink="/auth/login" class="institucional__entrar">Entrar</a>
+      <a routerLink="/auth/cadastro" class="institucional__cadastro">Criar conta</a>
+    </div>
+  </header>
+
+  <nav class="institucional__navegacao" aria-label="Páginas institucionais">
+    @for (link of links; track link.rota) {
+      <a
+        [routerLink]="link.rota"
+        routerLinkActive="institucional__aba--ativa"
+        ariaCurrentWhenActive="page"
+        class="institucional__aba"
+      >
+        {{ link.rotulo }}
+      </a>
+    }
+  </nav>
+
+  <main class="institucional__conteudo">
+    <router-outlet />
+  </main>
+
+  <footer class="institucional__rodape">
+    <p>© 2026 InvestAI. Todos os direitos reservados.</p>
+  </footer>
+</div>

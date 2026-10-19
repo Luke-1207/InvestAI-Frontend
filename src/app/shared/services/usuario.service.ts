@@ -21,6 +21,10 @@ export class UsuarioService {
     return this.http.patch<void>(`${this.baseUrl}/senha`, dados);
   }
 
+  excluirConta(senha: string): Observable<void> {
+    return this.http.delete<void>(this.baseUrl, { body: { senha } });
+  }
+
   obterFoto(): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/foto`, { responseType: 'blob' });
   }
