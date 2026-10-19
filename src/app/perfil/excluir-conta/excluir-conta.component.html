@@ -1,0 +1,39 @@
+<section class="excluir-conta" aria-labelledby="excluir-conta-titulo">
+  <h2 id="excluir-conta-titulo">Excluir conta</h2>
+  <p>
+    Ao excluir, você perde o acesso ao InvestAI na hora e é desconectado de todos os aparelhos. Sua foto é apagada e o
+    mesmo e-mail não pode ser usado em uma conta nova.
+    <a routerLink="/privacidade">Veja o que acontece com seus dados</a>.
+  </p>
+
+  @if (!confirmando()) {
+    <button type="button" class="excluir-conta__botao" (click)="abrir()">
+      <span class="material-symbols-outlined" aria-hidden="true">delete_forever</span>
+      Excluir minha conta
+    </button>
+  } @else {
+    <form class="excluir-conta__formulario" novalidate (submit)="confirmar($event)" (keydown.escape)="cancelar()">
+      <label for="excluir-conta-senha">Digite sua senha para confirmar</label>
+      <input
+        id="excluir-conta-senha"
+        type="password"
+        autocomplete="current-password"
+        [value]="senha()"
+        [attr.aria-invalid]="!!erro()"
+        [attr.aria-describedby]="erro() ? 'excluir-conta-erro' : null"
+        (input)="lerSenha($event)"
+      />
+
+      @if (erro()) {
+        <p id="excluir-conta-erro" class="excluir-conta__erro" role="alert">{{ erro() }}</p>
+      }
+
+      <div class="excluir-conta__acoes">
+        <button type="submit" class="excluir-conta__botao excluir-conta__botao--confirmar" [disabled]="excluindo()">
+          {{ excluindo() ? 'Excluindo...' : 'Confirmar exclusão' }}
+        </button>
+        <button type="button" class="excluir-conta__cancelar" [disabled]="excluindo()" (click)="cancelar()">Cancelar</button>
+      </div>
+    </form>
+  }
+</section>

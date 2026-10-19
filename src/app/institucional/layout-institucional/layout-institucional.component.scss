@@ -1,0 +1,104 @@
+@use '../../../styles/design-system' as *;
+
+.institucional {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+.institucional__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  padding: $space-4 $space-8;
+  border-bottom: 1px solid var(--border-default);
+
+  @include ate-celular {
+    padding: $space-3 $space-4;
+  }
+}
+
+.institucional__marca {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-display;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.institucional__acesso {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.institucional__entrar {
+  padding: $space-2 $space-3;
+  text-decoration: none;
+  @include botao-texto;
+}
+
+.institucional__cadastro {
+  padding: $space-2 $space-4;
+  border-radius: $radius-md;
+  background: var(--accent);
+  color: var(--accent-on-accent);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.institucional__navegacao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-1;
+  padding: $space-3 $space-8;
+
+  @include ate-celular {
+    padding: $space-3 $space-4;
+  }
+}
+
+.institucional__aba {
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &--ativa {
+    background: var(--bg-muted);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+}
+
+.institucional__conteudo {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  padding: $space-6 $space-8 $space-10;
+
+  @include ate-celular {
+    padding: $space-4 $space-4 $space-8;
+  }
+}
+
+.institucional__rodape {
+  padding: $space-5 $space-8;
+  border-top: 1px solid var(--border-default);
+  @include texto-apoio(13px);
+
+  p {
+    margin: 0;
+  }
+}

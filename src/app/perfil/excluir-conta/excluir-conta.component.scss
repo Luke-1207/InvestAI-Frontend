@@ -1,0 +1,87 @@
+@use '../../../styles/design-system' as *;
+
+.excluir-conta {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-6;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: $radius-lg;
+
+  h2 {
+    @include titulo-pagina(16px);
+    color: var(--danger);
+  }
+
+  p {
+    @include texto-apoio;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  a {
+    color: var(--accent);
+  }
+}
+
+.excluir-conta__botao,
+.excluir-conta__cancelar {
+  align-self: flex-start;
+  @include botao-contorno;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.excluir-conta__botao {
+  border-color: var(--danger);
+  color: var(--danger);
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &--confirmar {
+    background: var(--danger);
+    color: #fff;
+  }
+}
+
+.excluir-conta__formulario {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  max-width: 360px;
+
+  label {
+    @include rotulo(12px);
+  }
+
+  input {
+    padding: $space-3 $space-4;
+    background: var(--bg-input);
+    border: 1px solid var(--border-strong);
+    border-radius: $radius-md;
+    color: var(--text-primary);
+    font-size: 16px;
+
+    &:focus {
+      border-color: var(--danger);
+      outline: none;
+    }
+  }
+}
+
+.excluir-conta .excluir-conta__erro {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.excluir-conta__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+  margin-top: $space-2;
+}

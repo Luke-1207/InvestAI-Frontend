@@ -86,6 +86,11 @@
         </div>
       </div>
 
+      <p class="cadastro__aceite">
+        Ao criar a conta, você concorda com os <a routerLink="/termos-de-uso">Termos de Uso</a> e com a
+        <a routerLink="/privacidade">Política de Privacidade</a>.
+      </p>
+
       <app-button tipoHtml="submit" [carregando]="carregando()">
         {{ carregando() ? (enviandoFoto() ? 'Enviando sua foto...' : 'Criando conta...') : 'Criar conta e responder o quiz' }}
       </app-button>

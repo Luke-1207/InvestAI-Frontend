@@ -14,6 +14,7 @@ import { ErroServidorComponent } from '../../shared/components/erro-servidor/err
 import { trocaSenhaOpcionalValidator } from '../../shared/validators/troca-senha-opcional.validator';
 import { apenasDigitos, formatarTelefone, telefoneValidator } from '../../shared/utils/telefone.util';
 import { validarFotoPerfil } from '../../shared/utils/foto-perfil.util';
+import { ExcluirContaComponent } from '../excluir-conta/excluir-conta.component';
 
 interface Aviso {
   tipo: 'sucesso' | 'erro';
@@ -30,6 +31,7 @@ interface Aviso {
     ButtonComponent,
     SkeletonDetalheComponent,
     ErroServidorComponent,
+    ExcluirContaComponent,
   ],
   templateUrl: './editar-dados.component.html',
   styleUrl: './editar-dados.component.scss',

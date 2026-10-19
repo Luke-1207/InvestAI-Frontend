@@ -65,7 +65,12 @@
   display: flex;
   align-items: center;
   gap: $space-2;
+  text-decoration: none;
   @include rotulo(12px);
+
+  &:hover {
+    color: var(--text-primary);
+  }
 
   .material-symbols-outlined {
     font-size: 16px;
@@ -85,4 +90,22 @@
 .auth-layout__formulario-wrapper {
   width: 100%;
   max-width: 420px;
+}
+
+.auth-layout__institucional-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2 $space-4;
+  margin-top: $space-8;
+  padding-top: $space-4;
+  border-top: 1px solid var(--border-default);
+
+  a {
+    @include rotulo(11px);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
 }

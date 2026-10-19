@@ -23,69 +23,6 @@
   gap: $space-5;
 }
 
-.auth-form__campo {
-  label {
-    display: block;
-    @include rotulo(12px);
-    font-weight: 500;
-    margin-bottom: $space-2;
-  }
-
-  input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: $space-3 $space-4;
-    background: var(--bg-input);
-    border: 1px solid var(--border-strong);
-    border-radius: $radius-md;
-    color: var(--text-primary);
-    font-family: $font-body;
-    font-size: 16px;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s;
-
-    &:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(192, 193, 255, 0.2);
-    }
-  }
-
-  &.auth-form__campo--erro input {
-    border-color: var(--danger);
-  }
-}
-
-.auth-form__erro-campo {
-  font-family: $font-body;
-  font-size: 13px;
-  color: var(--danger);
-  margin-top: $space-1;
-}
-
-.auth-form__botao {
-  width: 100%;
-  padding: 14px $space-4;
-  background: var(--accent);
-  color: var(--accent-on-accent);
-  border: none;
-  border-radius: $radius-md;
-  font-family: $font-body;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform .15s, opacity .15s;
-  box-shadow: 0 0 15px rgba(192, 193, 255, 0.2);
-
-  &:active {
-    transform: scale(0.98);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
 .auth-form__links {
   display: flex;
   justify-content: space-between;

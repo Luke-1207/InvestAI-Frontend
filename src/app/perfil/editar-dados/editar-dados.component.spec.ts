@@ -76,6 +76,14 @@ describe('EditarDadosComponent', () => {
     expect(form().controls.telefone.value).toBe('(19) 99999-8888');
   });
 
+  it('deve oferecer a exclusão da conta no fim da página, fora do formulário de dados', async () => {
+    await montar();
+
+    const excluir = fixture.nativeElement.querySelector('app-excluir-conta');
+    expect(excluir).not.toBeNull();
+    expect(excluir.closest('form')).toBeNull();
+  });
+
   // ===== Troca de senha opcional =====
 
   it('deve abrir com a troca de senha fechada: sem campos de senha na tela e form válido', async () => {
