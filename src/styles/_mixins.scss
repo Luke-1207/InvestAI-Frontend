@@ -260,6 +260,15 @@
   overflow: hidden;
 }
 
+@mixin leitor-de-tela {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 @mixin lista-limpa($gap: $space-2) {
   display: flex;
   flex-direction: column;
