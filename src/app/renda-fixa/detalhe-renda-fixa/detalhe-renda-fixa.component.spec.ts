@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RelatorioService } from '../../shared/services/relatorio.service';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { DetalheRendaFixaComponent } from './detalhe-renda-fixa.component';
 import { RendaFixaService } from '../../shared/services/renda-fixa.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -52,11 +52,17 @@ describe('DetalheRendaFixaComponent', () => {
 
   async function montar(identificador: string) {
     service = jasmine.createSpyObj('RendaFixaService', [
-      'obterDetalhePrivado', 'obterDetalheTesouro', 'listar',
+      'obterDetalhePrivado', 'obterDetalheTesouro', 'listar', 'simular',
     ]);
     service.obterDetalhePrivado.and.returnValue(of(PRIVADO_MOCK));
     service.obterDetalheTesouro.and.returnValue(of(TESOURO_MOCK));
     service.listar.and.returnValue(of([]));
+    service.simular.and.returnValue(of({
+      valorInvestido: 1000, prazoMeses: 2, prazoDias: 61, dataResgate: '2026-12-19', taxaAnualEstimada: 15,
+      valorBruto: 1023.57, rendimentoBruto: 23.57, aliquotaIR: 22.5, impostoRenda: 5.3, valorLiquido: 1018.27,
+      rendimentoLiquido: 18.27, taxaAnualPoupanca: 6.17, valorPoupanca: 1010.03, rendimentoPoupanca: 10.03,
+      diferencaParaPoupanca: 8.24, premissas: [], avisos: [], indicadoresAtualizadosEm: null,
+    }));
 
     await TestBed.configureTestingModule({
       imports: [DetalheRendaFixaComponent],
@@ -149,8 +155,9 @@ describe('DetalheRendaFixaComponent', () => {
   });
 
   it('deve mostrar o score quando encontra o identificador na listagem inteligente', async () => {
-    service = jasmine.createSpyObj('RendaFixaService', ['obterDetalhePrivado', 'obterDetalheTesouro', 'listar']);
+    service = jasmine.createSpyObj('RendaFixaService', ['obterDetalhePrivado', 'obterDetalheTesouro', 'listar', 'simular']);
     service.obterDetalhePrivado.and.returnValue(of(PRIVADO_MOCK));
+    service.simular.and.returnValue(EMPTY);
     service.listar.and.returnValue(of([
       itemListagemMock({
         id: '123e4567-e89b-12d3-a456-426614174000', score: 78, compatibilidade: 'ALTA',
@@ -205,13 +212,17 @@ describe('DetalheRendaFixaComponent', () => {
     });
   });
 
-  it('gráfico de barras deve calcular valor inicial, retorno bruto e líquido a partir do investimento mínimo', async () => {
+  it('deve oferecer o simulador de rendimento com o título, o mínimo e o vencimento do detalhe', async () => {
     await montar('123e4567-e89b-12d3-a456-426614174000');
 
-    const valores = fixture.componentInstance['barras']();
-    expect(valores[0].valor).toBe(500);
-    expect(valores[1].valor).toBeCloseTo(550, 1);
-    expect(valores[2].valor).toBeCloseTo(541.25, 1);
+    expect(fixture.nativeElement.querySelector('app-simulador-rendimento')).not.toBeNull();
+    expect(service.simular).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', 1000, jasmine.any(Number));
+  });
+
+  it('no Tesouro, o simulador deve usar o código do título', async () => {
+    await montar('tesouro-selic-2029');
+
+    expect(service.simular).toHaveBeenCalledWith('tesouro-selic-2029', 1000, 12);
   });
 
   it('botão "Baixar relatório" deve pedir o relatório de renda fixa com o identificador da URL', async () => {

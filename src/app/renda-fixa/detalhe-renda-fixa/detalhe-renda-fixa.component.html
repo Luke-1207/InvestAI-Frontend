@@ -72,10 +72,11 @@
         </div>
       }
 
-      <div class="detalhe-rf__grafico-painel">
-        <h3>Simulação de retorno (investindo o mínimo, 1 ano)</h3>
-        <app-grafico-barras [barras]="barras()" />
-      </div>
+      <app-simulador-rendimento
+        [identificador]="identificador"
+        [investimentoMinimo]="titulo.investimentoMinimo"
+        [vencimento]="titulo.vencimento"
+      />
 
       <div class="detalhe-rf__tributacao">
         <h3>Tributação</h3>

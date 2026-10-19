@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {RendaFixaListagem, TituloPrivadoDetalhe, TituloTesouroDetalhe} from '../models/renda-fixa';
+import { RendaFixaListagem, SimulacaoRendimento, TituloPrivadoDetalhe, TituloTesouroDetalhe } from '../models/renda-fixa';
+import { ehUuid } from '../utils/uuid.util';
 
 @Injectable({ providedIn: 'root' })
 export class RendaFixaService {
@@ -20,5 +21,11 @@ export class RendaFixaService {
 
   obterDetalheTesouro(codigo: string): Observable<TituloTesouroDetalhe> {
     return this.http.get<TituloTesouroDetalhe>(`${this.baseUrl}/tesouro/${codigo}`);
+  }
+
+  simular(identificador: string, valor: number, prazoMeses: number): Observable<SimulacaoRendimento> {
+    const params = new HttpParams().set('valor', valor).set('prazoMeses', prazoMeses);
+    const recurso = ehUuid(identificador) ? 'titulos' : 'tesouro';
+    return this.http.get<SimulacaoRendimento>(`${this.baseUrl}/${recurso}/${identificador}/simulacao`, { params });
   }
 }

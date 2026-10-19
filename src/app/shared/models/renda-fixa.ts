@@ -53,6 +53,27 @@ export interface TituloTesouroDetalhe {
   resumoIA: string;
 }
 
+export interface SimulacaoRendimento {
+  valorInvestido: number;
+  prazoMeses: number;
+  prazoDias: number;
+  dataResgate: string;
+  taxaAnualEstimada: number;
+  valorBruto: number;
+  rendimentoBruto: number;
+  aliquotaIR: number;
+  impostoRenda: number;
+  valorLiquido: number;
+  rendimentoLiquido: number;
+  taxaAnualPoupanca: number;
+  valorPoupanca: number;
+  rendimentoPoupanca: number;
+  diferencaParaPoupanca: number;
+  premissas: string[];
+  avisos: string[];
+  indicadoresAtualizadosEm: string | null;
+}
+
 export interface DetalheRendaFixaNormalizado {
   identificador: string;
   categoria: CategoriaRendaFixa;

@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -14,7 +14,6 @@ import { ehUuid } from '../../shared/utils/uuid.util';
 import { calcularAliquotaIR, calcularTaxaLiquida } from '../../shared/utils/ir-regressivo.util';
 import { SkeletonDetalheComponent } from '../../shared/components/ui/skeleton-detalhe/skeleton-detalhe.component';
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
-import { GraficoBarrasComponent, BarraDado } from '../../shared/components/ui/grafico-barras/grafico-barras.component';
 import { RelatorioService } from '../../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
 import { RotuloPipe } from '../../shared/pipes/rotulo.pipe';
@@ -23,6 +22,7 @@ import { AjudaGlossarioComponent } from '../../shared/components/ajuda-glossario
 import { AvisoEducativoComponent } from '../../shared/components/aviso-educativo/aviso-educativo.component';
 import { CriteriosScoreComponent } from '../../shared/components/criterios-score/criterios-score.component';
 import { rotulo } from '../../shared/utils/rotulos.util';
+import { SimuladorRendimentoComponent } from './simulador-rendimento/simulador-rendimento.component';
 
 function normalizarPrivado(dto: TituloPrivadoDetalhe): DetalheRendaFixaNormalizado {
   return {
@@ -79,12 +79,12 @@ export const AJUDA_RENDA_FIXA = {
     DatePipe,
     SkeletonDetalheComponent,
     ErroServidorComponent,
-    GraficoBarrasComponent,
     BotaoRelatorioComponent,
     AjudaContextualComponent,
     AjudaGlossarioComponent,
     AvisoEducativoComponent,
     CriteriosScoreComponent,
+    SimuladorRendimentoComponent,
   ],
   templateUrl: './detalhe-renda-fixa.component.html',
   styleUrl: './detalhe-renda-fixa.component.scss',
@@ -112,21 +112,6 @@ export class DetalheRendaFixaComponent implements OnInit {
   protected readonly favoritado = signal(false);
 
   protected readonly baixarRelatorio = () => this.relatorioService.baixarRelatorioAtivo(this.identificador, 'FIXA');
-
-  protected readonly barras = computed<BarraDado[]>(() => {
-    const d = this.detalhe();
-    if (!d) return [];
-
-    const valorInicial = d.investimentoMinimo;
-    const retornoBruto = valorInicial * (1 + d.taxaBrutaAnual / 100);
-    const retornoLiquido = valorInicial * (1 + d.taxaLiquidaAnual / 100);
-
-    return [
-      { rotulo: 'Valor Inicial', valor: valorInicial, cor: 'var(--text-secondary)' },
-      { rotulo: 'Retorno Bruto (1 ano)', valor: retornoBruto, cor: 'var(--accent)' },
-      { rotulo: 'Retorno Líquido (1 ano)', valor: retornoLiquido, cor: 'var(--success-strong)' },
-    ];
-  });
 
   ngOnInit(): void {
     this.carregarDetalhe();
