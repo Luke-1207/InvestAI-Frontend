@@ -1,40 +1,68 @@
-<div class="donut-chart">
-  <svg
-    [attr.width]="tamanhoSvg()"
-    [attr.height]="tamanhoSvg()"
-    [attr.viewBox]="'0 0 ' + tamanhoSvg() + ' ' + tamanhoSvg()"
-  >
-    <circle
-      [attr.cx]="centro()"
-      [attr.cy]="centro()"
-      [attr.r]="raio()"
-      fill="none"
-      [attr.stroke-width]="espessura()"
-      stroke="var(--bg-muted)"
-    />
-    @for (arco of arcos(); track arco.rotulo) {
+<div class="donut-chart" (mouseleave)="destacar(null)">
+  <div class="donut-chart__grafico">
+    <svg
+      role="img"
+      [attr.aria-label]="descricao()"
+      [attr.width]="tamanhoSvg()"
+      [attr.height]="tamanhoSvg()"
+      [attr.viewBox]="'0 0 ' + tamanhoSvg() + ' ' + tamanhoSvg()"
+    >
       <circle
         [attr.cx]="centro()"
         [attr.cy]="centro()"
         [attr.r]="raio()"
         fill="none"
-        [attr.stroke]="arco.cor"
         [attr.stroke-width]="espessura()"
-        [attr.stroke-dasharray]="arco.dasharray"
-        [attr.stroke-dashoffset]="arco.dashoffset"
-        [attr.transform]="'rotate(-90 ' + centro() + ' ' + centro() + ')'"
-        stroke-linecap="butt"
+        stroke="var(--bg-muted)"
       />
-    }
-  </svg>
+      <g [attr.transform]="'rotate(-90 ' + centro() + ' ' + centro() + ')'">
+        @for (arco of arcos(); track arco.rotulo; let i = $index) {
+          <circle
+            class="donut-chart__arco"
+            [class.donut-chart__arco--apagado]="ativo() !== null && ativo() !== i"
+            [attr.cx]="centro()"
+            [attr.cy]="centro()"
+            [attr.r]="raio()"
+            fill="none"
+            [attr.stroke]="arco.cor"
+            [style.stroke-width.px]="ativo() === i ? espessuraDestaque() : espessura()"
+            [style.stroke-dasharray]="arco.comprimento + ' ' + (circunferencia() - arco.comprimento)"
+            [style.--circunferencia]="circunferencia()"
+            [style.animation-delay.ms]="i * 120"
+            [attr.stroke-dashoffset]="arco.dashoffset"
+            (mouseenter)="destacar(i)"
+            (click)="destacar(i)"
+          />
+        }
+      </g>
+    </svg>
 
-  <div class="donut-chart__legenda">
-    @for (arco of arcos(); track arco.rotulo) {
-      <div class="donut-chart__item">
-        <span class="donut-chart__ponto" [style.background]="arco.cor"></span>
-        <span class="donut-chart__rotulo">{{ arco.rotulo }}</span>
-        <span class="donut-chart__percentual">{{ arco.percentual }}%</span>
-      </div>
-    }
+    <div class="donut-chart__centro" aria-hidden="true" [style.padding.px]="espessuraDestaque()">
+      @if (arcoAtivo(); as arco) {
+        <span class="donut-chart__centro-percentual" [style.color]="arco.cor">{{ arco.percentual }}%</span>
+        <span class="donut-chart__centro-rotulo">{{ arco.rotulo }}</span>
+      }
+    </div>
   </div>
+
+  <ul class="donut-chart__legenda">
+    @for (arco of arcos(); track arco.rotulo; let i = $index) {
+      <li>
+        <button
+          type="button"
+          class="donut-chart__item"
+          [class.donut-chart__item--ativo]="ativo() === i"
+          [attr.aria-pressed]="ativo() === i"
+          (mouseenter)="destacar(i)"
+          (focus)="destacar(i)"
+          (blur)="destacar(null)"
+          (click)="destacar(i)"
+        >
+          <span class="donut-chart__ponto" [style.background]="arco.cor"></span>
+          <span class="donut-chart__rotulo">{{ arco.rotulo }}</span>
+          <span class="donut-chart__percentual">{{ arco.percentual }}%</span>
+        </button>
+      </li>
+    }
+  </ul>
 </div>

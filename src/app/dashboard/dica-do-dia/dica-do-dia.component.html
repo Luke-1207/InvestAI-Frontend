@@ -1,0 +1,31 @@
+<section class="dica-do-dia" aria-labelledby="dica-do-dia-titulo">
+  <span class="dica-do-dia__etiqueta">
+    <span class="material-symbols-outlined" aria-hidden="true">lightbulb</span>
+    Dica do Dia
+  </span>
+  <h2 id="dica-do-dia-titulo" class="dica-do-dia__titulo">{{ dica.titulo }}</h2>
+  <p class="dica-do-dia__texto">{{ dica.texto }}</p>
+
+  @if (destaque(); as ativo) {
+    <a class="dica-do-dia__destaque" [routerLink]="['/renda-variavel', ativo.codigo]">
+      <span class="dica-do-dia__destaque-rotulo">Ativo em destaque para o seu perfil</span>
+      <span class="dica-do-dia__destaque-nome">
+        <strong>{{ ativo.codigo }}</strong>
+        <span>{{ ativo.nome }}</span>
+      </span>
+      <span class="dica-do-dia__destaque-justificativa">{{ ativo.justificativa }}</span>
+      <span class="dica-do-dia__destaque-metricas">
+        <span class="dica-do-dia__preco">R$ {{ ativo.preco | number: '1.2-2' }}</span>
+        <span
+          class="dica-do-dia__variacao"
+          [class.dica-do-dia__variacao--positiva]="ativo.variacaoDia >= 0"
+          [class.dica-do-dia__variacao--negativa]="ativo.variacaoDia < 0"
+        >
+          {{ ativo.variacaoDia >= 0 ? '+' : '' }}{{ ativo.variacaoDia | number: '1.2-2' }}%
+        </span>
+        <span class="dica-do-dia__score">Score {{ ativo.score }}</span>
+      </span>
+      <span class="material-symbols-outlined dica-do-dia__seta" aria-hidden="true">arrow_forward</span>
+    </a>
+  }
+</section>

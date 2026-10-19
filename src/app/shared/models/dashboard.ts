@@ -30,6 +30,7 @@ export interface SugestaoAtivoItem {
 
 export interface SugestaoRendaFixaItem {
   id: string;
+  codigo?: string | null;
   categoria: 'TESOURO' | 'CDB' | 'LCI' | 'LCA';
   nome: string;
   taxa: number;

@@ -1,0 +1,134 @@
+@use '../../../styles/design-system' as *;
+
+:host {
+  display: block;
+}
+
+.dica-do-dia {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-6;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(78, 222, 163, 0.04));
+  border: 1px solid var(--border-success);
+  border-radius: $radius-lg;
+
+  @include ate-celular {
+    padding: $space-5;
+  }
+}
+
+.dica-do-dia__etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  @include texto-etiqueta(12px);
+  color: var(--success-text);
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.dica-do-dia__titulo {
+  font-family: $font-display;
+  font-size: 20px;
+  margin: 0;
+}
+
+.dica-do-dia__texto {
+  @include texto-apoio(15px);
+  line-height: 1.6;
+  max-width: 72ch;
+  margin: 0;
+}
+
+.dica-do-dia__destaque {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  margin-top: $space-2;
+  padding: $space-4 $space-12 $space-4 $space-4;
+  @include superficie($radius-md);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--success-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--success-strong);
+    outline-offset: 2px;
+  }
+
+  &:hover .dica-do-dia__seta {
+    transform: translate(4px, -50%);
+  }
+}
+
+.dica-do-dia__destaque-rotulo {
+  @include rotulo;
+}
+
+.dica-do-dia__destaque-nome {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: $space-1 $space-2;
+  @include texto-apoio(13px);
+
+  strong {
+    font-family: $font-display;
+    font-size: 17px;
+    color: var(--text-primary);
+  }
+}
+
+.dica-do-dia__destaque-justificativa {
+  @include texto-apoio(13px);
+  line-height: 1.5;
+}
+
+.dica-do-dia__destaque-metricas {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $space-1 $space-4;
+  font-size: 14px;
+}
+
+.dica-do-dia__preco {
+  font-weight: 700;
+}
+
+.dica-do-dia__variacao {
+  font-weight: 600;
+  @include cores-variacao;
+}
+
+.dica-do-dia__score {
+  @include rotulo(12px);
+}
+
+.dica-do-dia__seta {
+  position: absolute;
+  top: 50%;
+  right: $space-4;
+  transform: translateY(-50%);
+  color: var(--success-text);
+  transition: transform 0.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dica-do-dia__seta {
+    transition: none;
+  }
+
+  .dica-do-dia__destaque:hover .dica-do-dia__seta {
+    transform: translateY(-50%);
+  }
+}
