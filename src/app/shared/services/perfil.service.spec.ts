@@ -32,4 +32,17 @@ describe('PerfilService', () => {
     expect(req.request.method).toBe('PATCH');
     req.flush({});
   });
+
+  it('editarPerfil deve chamar PUT /perfil com o perfil completo', () => {
+    const requisicao = {
+      perfilRisco: 'MODERADO', objetivoFinanceiro: 'RENDA_PASSIVA', horizonteInvestimento: 'LONGO_PRAZO',
+      valorDisponivel: 5000, tiposAceitos: ['ACAO' as const], setoresPreferidos: [{ setor: 'Tecnologia', preferencia: 'EVITAR' as const }],
+    };
+    service.editarPerfil(requisicao).subscribe();
+
+    const req = httpMock.expectOne(baseUrl);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(requisicao);
+    req.flush({});
+  });
 });

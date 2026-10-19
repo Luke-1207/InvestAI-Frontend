@@ -18,7 +18,7 @@ function perfilMock(overrides: Partial<PerfilResponse> = {}): PerfilResponse {
     valorDisponivel: 5000,
     tiposAceitos: ['ACAO', 'FII'],
     setoresPreferidos: [
-      { setor: 'Energia', preferencia: 'PREFERIR' },
+      { setor: 'Energia Elétrica', preferencia: 'PREFERIR' },
       { setor: 'Mineração', preferencia: 'EVITAR' },
     ],
     perfilPreenchido: true,
@@ -50,7 +50,7 @@ describe('PerfilComponent', () => {
   const urlFoto = signal<string | null>(null);
 
   async function montar(perfil: PerfilResponse = perfilMock()) {
-    perfilService = jasmine.createSpyObj('PerfilService', ['obterPerfil', 'refazerQuiz']);
+    perfilService = jasmine.createSpyObj('PerfilService', ['obterPerfil', 'refazerQuiz', 'editarPerfil']);
     perfilService.obterPerfil.and.returnValue(of(perfil));
 
     authService = jasmine.createSpyObj('AuthService', ['carregarUsuarioAtual'], {
@@ -86,29 +86,34 @@ describe('PerfilComponent', () => {
 
   it('deve mostrar o card de perfil de risco com a descrição real', async () => {
     await montar();
-    expect(fixture.nativeElement.querySelector('.perfil__risco h2').textContent).toContain('Moderado');
+    expect(fixture.nativeElement.querySelector('.preferencias__risco-valor h2').textContent).toContain('Moderado');
   });
 
-  it('deve marcar como aceitos só os tipos presentes em tiposAceitos', async () => {
+  it('perfil preenchido: deve mostrar as preferências editáveis e o botão de refazer o quiz completo', async () => {
     await montar();
-    const tipos = fixture.nativeElement.querySelectorAll('.perfil__tipo-ativo');
-    expect(tipos[0].classList).toContain('perfil__tipo-ativo--aceito'); // Ações
-    expect(tipos[1].classList).toContain('perfil__tipo-ativo--aceito'); // FIIs
-    expect(tipos[2].classList).not.toContain('perfil__tipo-ativo--aceito'); // ETFs
+
+    expect(fixture.nativeElement.querySelector('app-preferencias-perfil')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.perfil__botao-refazer').textContent).toContain('Refazer o quiz completo');
   });
 
-  it('deve mostrar os setores com estilo diferente pra PREFERIR e EVITAR', async () => {
+  it('ao salvar uma preferência, deve mostrar o perfil devolvido pelo backend', async () => {
     await montar();
-    const tags = fixture.nativeElement.querySelectorAll('.perfil__tag');
-    expect(tags[0].classList).not.toContain('perfil__tag--evitar');
-    expect(tags[1].classList).toContain('perfil__tag--evitar');
+    perfilService.editarPerfil.and.returnValue(of(perfilMock({ perfilRisco: { valor: 'ARROJADO', descricao: 'Arrojado' } })));
+
+    fixture.nativeElement.querySelector('.campo-editavel__editar').click();
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('app-preferencias-perfil form').dispatchEvent(new Event('submit', { cancelable: true }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.preferencias__risco-valor h2').textContent).toContain('Arrojado');
   });
 
-  it('perfil incompleto: deve mostrar o CTA de responder o quiz, sem o card de risco', async () => {
+  it('perfil incompleto: deve mostrar o CTA de responder o quiz, sem as preferências', async () => {
     await montar(perfilMock({ perfilPreenchido: false }));
 
     expect(fixture.nativeElement.querySelector('.perfil__incompleto')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('.perfil__risco')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-preferencias-perfil')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.perfil__refazer')).toBeNull();
   });
 
   it('refazerQuiz: ao ter sucesso, deve navegar pro onboarding', async () => {
@@ -116,7 +121,7 @@ describe('PerfilComponent', () => {
     perfilService.refazerQuiz.and.returnValue(of(perfilMock()));
     const navSpy = spyOn(router, 'navigateByUrl');
 
-    fixture.nativeElement.querySelector('.perfil__cartao-cabecalho button').click();
+    fixture.nativeElement.querySelector('.perfil__botao-refazer').click();
 
     expect(navSpy).toHaveBeenCalledWith('/onboarding');
   });
@@ -126,7 +131,7 @@ describe('PerfilComponent', () => {
     perfilService.refazerQuiz.and.returnValue(throwError(() => new Error('falhou')));
     const navSpy = spyOn(router, 'navigateByUrl');
 
-    fixture.nativeElement.querySelector('.perfil__cartao-cabecalho button').click();
+    fixture.nativeElement.querySelector('.perfil__botao-refazer').click();
 
     expect(navSpy).not.toHaveBeenCalled();
     expect(toastService.toasts().length).toBe(1);
