@@ -1,0 +1,196 @@
+<app-campo-editavel
+  class="preferencias__risco"
+  titulo="Seu perfil de risco"
+  variante="destaque"
+  [editando]="emEdicao() === 'perfilRisco'"
+  [salvando]="salvando()"
+  [erro]="emEdicao() === 'perfilRisco' ? erro() : null"
+  (editar)="editar('perfilRisco')"
+  (cancelar)="cancelar()"
+  (salvar)="salvar()"
+>
+  <div valor class="preferencias__risco-valor">
+    <span class="material-symbols-outlined preferencias__risco-icone" aria-hidden="true">
+      {{ iconePerfilRisco[perfil().perfilRisco.valor] ?? 'balance' }}
+    </span>
+    <div>
+      <h2>{{ perfil().perfilRisco.descricao }}</h2>
+      @if (perfil().resumoIA) {
+        <p>{{ perfil().resumoIA }}</p>
+      }
+    </div>
+  </div>
+  <fieldset edicao class="preferencias__opcoes">
+    <legend>Como você lida com as oscilações do mercado?</legend>
+    @for (opcao of opcoesRisco; track opcao.valor) {
+      <label class="preferencias__opcao" [class.preferencias__opcao--marcada]="risco() === opcao.valor">
+        <input type="radio" name="perfilRisco" [value]="opcao.valor" [checked]="risco() === opcao.valor" (change)="risco.set(opcao.valor)" />
+        <strong>{{ opcao.rotulo }}</strong>
+        <small>{{ opcao.explicacao }}</small>
+      </label>
+    }
+  </fieldset>
+</app-campo-editavel>
+
+<div class="preferencias__grade">
+  <app-campo-editavel
+    titulo="Objetivo"
+    [editando]="emEdicao() === 'objetivoFinanceiro'"
+    [salvando]="salvando()"
+    [erro]="emEdicao() === 'objetivoFinanceiro' ? erro() : null"
+    (editar)="editar('objetivoFinanceiro')"
+    (cancelar)="cancelar()"
+    (salvar)="salvar()"
+  >
+    <strong valor class="preferencias__valor">{{ perfil().objetivoFinanceiro.descricao }}</strong>
+    <fieldset edicao class="preferencias__opcoes">
+      <legend>O que você quer com seus investimentos?</legend>
+      @for (opcao of opcoesObjetivo; track opcao.valor) {
+        <label class="preferencias__opcao" [class.preferencias__opcao--marcada]="objetivo() === opcao.valor">
+          <input type="radio" name="objetivoFinanceiro" [value]="opcao.valor" [checked]="objetivo() === opcao.valor" (change)="objetivo.set(opcao.valor)" />
+          <strong>{{ opcao.rotulo }}</strong>
+          <small>{{ opcao.explicacao }}</small>
+        </label>
+      }
+    </fieldset>
+  </app-campo-editavel>
+
+  <app-campo-editavel
+    titulo="Horizonte"
+    [editando]="emEdicao() === 'horizonteInvestimento'"
+    [salvando]="salvando()"
+    [erro]="emEdicao() === 'horizonteInvestimento' ? erro() : null"
+    (editar)="editar('horizonteInvestimento')"
+    (cancelar)="cancelar()"
+    (salvar)="salvar()"
+  >
+    <strong valor class="preferencias__valor">{{ perfil().horizonteInvestimento.descricao }}</strong>
+    <fieldset edicao class="preferencias__opcoes">
+      <legend>Quando você pretende usar esse dinheiro?</legend>
+      @for (opcao of opcoesHorizonte; track opcao.valor) {
+        <label class="preferencias__opcao" [class.preferencias__opcao--marcada]="horizonte() === opcao.valor">
+          <input type="radio" name="horizonteInvestimento" [value]="opcao.valor" [checked]="horizonte() === opcao.valor" (change)="horizonte.set(opcao.valor)" />
+          <strong>{{ opcao.rotulo }}</strong>
+          <small>{{ opcao.explicacao }}</small>
+        </label>
+      }
+    </fieldset>
+  </app-campo-editavel>
+
+  <app-campo-editavel
+    titulo="Valor disponível"
+    [editando]="emEdicao() === 'valorDisponivel'"
+    [salvando]="salvando()"
+    [erro]="emEdicao() === 'valorDisponivel' ? erro() : null"
+    (editar)="editar('valorDisponivel')"
+    (cancelar)="cancelar()"
+    (salvar)="salvar()"
+  >
+    <strong valor class="preferencias__valor">R$ {{ perfil().valorDisponivel | number: '1.2-2' }}</strong>
+    <div edicao class="preferencias__campo-valor">
+      <label for="preferencias-valor">Quanto você tem para investir agora (R$)</label>
+      <input
+        id="preferencias-valor"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        [value]="valor()"
+        (input)="valor.set(lerNumero($event))"
+      />
+    </div>
+  </app-campo-editavel>
+</div>
+
+<app-campo-editavel
+  titulo="Tipos de ativo permitidos"
+  [editando]="emEdicao() === 'tiposAceitos'"
+  [salvando]="salvando()"
+  [erro]="emEdicao() === 'tiposAceitos' ? erro() : null"
+  (editar)="editar('tiposAceitos')"
+  (cancelar)="cancelar()"
+  (salvar)="salvar()"
+>
+  <ul valor class="preferencias__tipos">
+    @for (opcao of opcoesTipoAtivo; track opcao.valor) {
+      <li class="preferencias__tipo" [class.preferencias__tipo--aceito]="perfil().tiposAceitos.includes(opcao.valor)">
+        <span class="material-symbols-outlined" aria-hidden="true">
+          {{ perfil().tiposAceitos.includes(opcao.valor) ? 'check_circle' : 'cancel' }}
+        </span>
+        {{ opcao.rotulo }}
+        <span class="preferencias__leitor">{{ perfil().tiposAceitos.includes(opcao.valor) ? 'permitido' : 'não permitido' }}</span>
+      </li>
+    }
+  </ul>
+  <fieldset edicao class="preferencias__opcoes">
+    <legend>Quais tipos de renda variável podem aparecer nas suas sugestões?</legend>
+    @for (opcao of opcoesTipoAtivo; track opcao.valor) {
+      <label class="preferencias__opcao" [class.preferencias__opcao--marcada]="tipos().includes(opcao.valor)">
+        <input
+          type="checkbox"
+          [value]="opcao.valor"
+          [checked]="tipos().includes(opcao.valor)"
+          (change)="alternarTipo(opcao.valor, $any($event.target).checked)"
+        />
+        <strong>{{ opcao.rotulo }}</strong>
+        <small>{{ opcao.explicacao }}</small>
+      </label>
+    }
+  </fieldset>
+</app-campo-editavel>
+
+<app-campo-editavel
+  titulo="Setores"
+  [editando]="emEdicao() === 'setores'"
+  [salvando]="salvando()"
+  [erro]="emEdicao() === 'setores' ? erro() : null"
+  (editar)="editar('setores')"
+  (cancelar)="cancelar()"
+  (salvar)="salvar()"
+>
+  <div valor class="preferencias__setores-valor">
+    @if (setoresDestacados().length === 0 && setoresEvitados().length === 0) {
+      <p class="preferencias__nota">Nenhum setor marcado. Todos têm o mesmo peso nas suas sugestões.</p>
+    }
+    @if (setoresDestacados().length > 0) {
+      <div class="preferencias__grupo-setores">
+        <span>Com destaque</span>
+        @for (setor of setoresDestacados(); track setor) {
+          <span class="preferencias__tag">{{ setor }}</span>
+        }
+      </div>
+    }
+    @if (setoresEvitados().length > 0) {
+      <div class="preferencias__grupo-setores">
+        <span>Evitar</span>
+        @for (setor of setoresEvitados(); track setor) {
+          <span class="preferencias__tag preferencias__tag--evitar">{{ setor }}</span>
+        }
+      </div>
+    }
+  </div>
+  <div edicao class="preferencias__edicao-setores">
+    <p class="preferencias__nota">
+      Setores com destaque ganham prioridade nas sugestões de ações e FIIs. Os que você evita perdem prioridade, sem sumir da plataforma.
+    </p>
+    @for (setor of listaSetores(); track setor) {
+      <div class="preferencias__setor" role="radiogroup" [attr.aria-labelledby]="idSetor(setor) + '-nome'">
+        <span [id]="idSetor(setor) + '-nome'">{{ setor }}</span>
+        <div class="preferencias__segmentos">
+          <label class="preferencias__segmento--destacar" [class.preferencias__segmento--marcado]="setores()[setor] === 'PREFERIR'">
+            <input type="radio" [name]="idSetor(setor)" [checked]="setores()[setor] === 'PREFERIR'" (change)="definirSetor(setor, 'PREFERIR')" />
+            Destacar
+          </label>
+          <label [class.preferencias__segmento--marcado]="!setores()[setor]">
+            <input type="radio" [name]="idSetor(setor)" [checked]="!setores()[setor]" (change)="definirSetor(setor, null)" />
+            Neutro
+          </label>
+          <label class="preferencias__segmento--evitar" [class.preferencias__segmento--marcado]="setores()[setor] === 'EVITAR'">
+            <input type="radio" [name]="idSetor(setor)" [checked]="setores()[setor] === 'EVITAR'" (change)="definirSetor(setor, 'EVITAR')" />
+            Evitar
+          </label>
+        </div>
+      </div>
+    }
+  </div>
+</app-campo-editavel>

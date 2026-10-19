@@ -1,0 +1,38 @@
+<div class="campo-editavel__cabecalho">
+  <h3 [id]="id + '-titulo'">{{ titulo() }}</h3>
+  @if (!editando()) {
+    <button
+      type="button"
+      class="campo-editavel__editar"
+      [attr.aria-label]="'Editar ' + titulo().toLowerCase()"
+      aria-expanded="false"
+      (click)="editar.emit()"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+      Editar
+    </button>
+  }
+</div>
+
+@if (editando()) {
+  <form
+    class="campo-editavel__formulario"
+    novalidate
+    [attr.aria-labelledby]="id + '-titulo'"
+    (submit)="aoEnviar($event)"
+    (keydown.escape)="cancelar.emit()"
+  >
+    <ng-content select="[edicao]" />
+
+    @if (erro()) {
+      <p class="campo-editavel__erro" role="alert">{{ erro() }}</p>
+    }
+
+    <div class="campo-editavel__acoes">
+      <app-button tipoHtml="submit" [carregando]="salvando()">Salvar</app-button>
+      <app-button variante="secundaria" [desabilitado]="salvando()" (click)="cancelar.emit()">Cancelar</app-button>
+    </div>
+  </form>
+} @else {
+  <ng-content select="[valor]" />
+}
