@@ -1,0 +1,143 @@
+<section class="simulador" aria-labelledby="simulador-titulo">
+  <div class="simulador__cabecalho">
+    <h3 id="simulador-titulo">Simulador de rendimento</h3>
+    <span class="simulador__selo">Estimativa</span>
+  </div>
+
+  @if (prazoMaximo() < 1) {
+    <p class="simulador__texto">Este título vence em menos de um mês, então não dá para simular um prazo.</p>
+  } @else {
+    <p class="simulador__texto">Informe quanto quer investir e por quanto tempo para ver quanto teria no final, já comparando com a poupança.</p>
+
+    <form class="simulador__formulario" novalidate (submit)="aoEnviar($event)">
+      <div class="simulador__campo" [class.simulador__campo--erro]="!!erroValor()">
+        <label for="simulador-valor">Valor investido (R$)</label>
+        <input
+          id="simulador-valor"
+          type="number"
+          inputmode="decimal"
+          step="0.01"
+          [min]="investimentoMinimo()"
+          [value]="valor()"
+          [attr.aria-invalid]="!!erroValor()"
+          aria-describedby="simulador-valor-ajuda"
+          (input)="valor.set(lerNumero($event))"
+        />
+        <span id="simulador-valor-ajuda" class="simulador__ajuda">
+          {{ erroValor() ?? 'Mínimo de R$ ' + (investimentoMinimo() | number: '1.2-2') + ' para este título.' }}
+        </span>
+      </div>
+
+      <div class="simulador__campo" [class.simulador__campo--erro]="!!erroPrazo()">
+        <label for="simulador-prazo">Prazo (meses)</label>
+        <input
+          id="simulador-prazo"
+          type="number"
+          inputmode="numeric"
+          step="1"
+          min="1"
+          [max]="prazoMaximo()"
+          [value]="prazoMeses()"
+          [attr.aria-invalid]="!!erroPrazo()"
+          aria-describedby="simulador-prazo-ajuda"
+          (input)="prazoMeses.set(lerNumero($event))"
+        />
+        <span id="simulador-prazo-ajuda" class="simulador__ajuda">
+          {{ erroPrazo() ?? 'Até ' + prazoMaximo() + (prazoMaximo() === 1 ? ' mês' : ' meses') + ', o título vence em ' + (vencimento() | date: 'dd/MM/yyyy') + '.' }}
+        </span>
+      </div>
+
+      <div class="simulador__atalhos" role="group" aria-label="Prazos sugeridos">
+        @for (atalho of atalhos(); track atalho.meses) {
+          <button
+            type="button"
+            class="simulador__atalho"
+            [class.simulador__atalho--ativo]="prazoMeses() === atalho.meses"
+            [attr.aria-pressed]="prazoMeses() === atalho.meses"
+            (click)="escolherPrazo(atalho.meses)"
+          >
+            {{ atalho.rotulo }}
+          </button>
+        }
+      </div>
+
+      <app-button tipoHtml="submit" [carregando]="carregando()" [desabilitado]="!!erroValor() || !!erroPrazo()">Simular</app-button>
+    </form>
+
+    @if (erro()) {
+      <p class="simulador__erro" role="alert">{{ erro() }}</p>
+    }
+
+    @if (resultado(); as r) {
+      <div class="simulador__resultado" [class.simulador__resultado--atualizando]="carregando()">
+        <p class="simulador__destaque" aria-live="polite">
+          Investindo R$ {{ r.valorInvestido | number: '1.2-2' }} por {{ r.prazoMeses }} {{ r.prazoMeses === 1 ? 'mês' : 'meses' }}, em
+          {{ r.dataResgate | date: 'dd/MM/yyyy' }} você teria cerca de
+          <strong>R$ {{ r.valorLiquido | number: '1.2-2' }}</strong>
+          {{ r.aliquotaIR > 0 ? 'já descontado o Imposto de Renda.' : 'sem pagar Imposto de Renda.' }}
+        </p>
+
+        <dl class="simulador__valores">
+          <div>
+            <dt>Valor bruto</dt>
+            <dd>R$ {{ r.valorBruto | number: '1.2-2' }} <small>rendeu R$ {{ r.rendimentoBruto | number: '1.2-2' }}</small></dd>
+          </div>
+          <div>
+            <dt>Imposto de Renda</dt>
+            @if (r.aliquotaIR > 0) {
+              <dd>−R$ {{ r.impostoRenda | number: '1.2-2' }} <small>{{ r.aliquotaIR | number: '1.0-1' }}% do rendimento</small></dd>
+            } @else {
+              <dd>Isento</dd>
+            }
+          </div>
+          <div class="simulador__valor-liquido">
+            <dt>Valor líquido</dt>
+            <dd>R$ {{ r.valorLiquido | number: '1.2-2' }} <small>rendeu R$ {{ r.rendimentoLiquido | number: '1.2-2' }}</small></dd>
+          </div>
+          <div>
+            <dt>Poupança no mesmo prazo</dt>
+            <dd>R$ {{ r.valorPoupanca | number: '1.2-2' }} <small>rendeu R$ {{ r.rendimentoPoupanca | number: '1.2-2' }}</small></dd>
+          </div>
+        </dl>
+
+        <p
+          class="simulador__comparacao"
+          [class.simulador__comparacao--positiva]="r.diferencaParaPoupanca >= 0"
+          [class.simulador__comparacao--negativa]="r.diferencaParaPoupanca < 0"
+        >
+          @if (r.diferencaParaPoupanca >= 0) {
+            R$ {{ r.diferencaParaPoupanca | number: '1.2-2' }} a mais do que na poupança.
+          } @else {
+            R$ {{ -r.diferencaParaPoupanca | number: '1.2-2' }} a menos do que na poupança.
+          }
+        </p>
+
+        <app-grafico-barras [barras]="barras()" />
+
+        @for (aviso of r.avisos; track aviso) {
+          <p class="simulador__aviso">
+            <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            {{ aviso }}
+          </p>
+        }
+
+        <details class="simulador__premissas">
+          <summary>Como esta estimativa foi calculada</summary>
+          <ul>
+            @for (premissa of r.premissas; track premissa) {
+              <li>{{ premissa }}</li>
+            }
+          </ul>
+          @if (r.indicadoresAtualizadosEm) {
+            <p>Indicadores atualizados em {{ r.indicadoresAtualizadosEm | date: "dd/MM/yyyy 'às' HH:mm" }}.</p>
+          }
+        </details>
+      </div>
+    }
+
+    <p class="simulador__estimativa">
+      <span class="material-symbols-outlined" aria-hidden="true">info</span>
+      Isto é uma estimativa feita com os indicadores de hoje. Selic, CDI e inflação mudam com o tempo, então o valor real no resgate pode ser maior ou menor.
+    </p>
+  }
+</section>
