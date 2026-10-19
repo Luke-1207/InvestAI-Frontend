@@ -3,21 +3,95 @@
 .donut-chart {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: $space-6;
+
+  @include ate-celular {
+    flex-direction: column;
+    gap: $space-4;
+  }
+}
+
+.donut-chart__grafico {
+  position: relative;
+  flex-shrink: 0;
+
+  svg {
+    display: block;
+  }
+}
+
+.donut-chart__arco {
+  cursor: pointer;
+  transition:
+    stroke-width 0.2s ease,
+    opacity 0.2s ease;
+  animation: donut-chart-entrada 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  &--apagado {
+    opacity: 0.35;
+  }
+}
+
+@keyframes donut-chart-entrada {
+  from {
+    stroke-dasharray: 0 var(--circunferencia);
+  }
+}
+
+.donut-chart__centro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-chart__centro-percentual {
+  font-family: $font-display;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.donut-chart__centro-rotulo {
+  @include texto-apoio(12px);
+  line-height: 1.3;
 }
 
 .donut-chart__legenda {
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
+  @include lista-limpa($space-1);
+  min-width: 180px;
 }
 
 .donut-chart__item {
   display: flex;
   align-items: center;
   gap: $space-2;
+  width: 100%;
+  padding: $space-2;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  color: inherit;
   font-family: $font-body;
   font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover,
+  &--ativo {
+    background: var(--bg-muted);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
 }
 
 .donut-chart__ponto {
@@ -35,4 +109,11 @@
   color: var(--text-primary);
   font-weight: 700;
   margin-left: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .donut-chart__arco {
+    animation: none;
+    transition: none;
+  }
 }

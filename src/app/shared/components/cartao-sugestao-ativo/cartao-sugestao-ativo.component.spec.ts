@@ -50,4 +50,16 @@ describe('CartaoSugestaoAtivoComponent', () => {
 
     expect(emitiu).toBe(true);
   });
+
+  it('deve funcionar pelo teclado: focável, anunciado como link e acionado com Enter', () => {
+    let emitiu = false;
+    fixture.componentInstance.clique.subscribe(() => (emitiu = true));
+    const cartao: HTMLElement = fixture.nativeElement.querySelector('.cartao-sugestao-ativo');
+
+    cartao.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+    expect(cartao.getAttribute('role')).toBe('link');
+    expect(cartao.tabIndex).toBe(0);
+    expect(emitiu).toBe(true);
+  });
 });

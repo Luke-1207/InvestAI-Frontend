@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 
 export interface SegmentoDonut {
   rotulo: string;
@@ -7,10 +7,12 @@ export interface SegmentoDonut {
 }
 
 interface ArcoCalculado extends SegmentoDonut {
-  dasharray: string;
+  comprimento: number;
   dashoffset: number;
   percentual: number;
 }
+
+const AUMENTO_DESTAQUE = 6;
 
 @Component({
   selector: 'app-donut-chart',
@@ -23,9 +25,12 @@ export class DonutChartComponent {
   readonly raio = input(70);
   readonly espessura = input(20);
 
+  protected readonly ativo = signal<number | null>(null);
+
   protected readonly tamanhoSvg = computed(() => (this.raio() + this.espessura()) * 2);
   protected readonly centro = computed(() => this.tamanhoSvg() / 2);
   protected readonly circunferencia = computed(() => 2 * Math.PI * this.raio());
+  protected readonly espessuraDestaque = computed(() => this.espessura() + AUMENTO_DESTAQUE);
 
   protected readonly arcos = computed<ArcoCalculado[]>(() => {
     const total = this.segmentos().reduce((soma, s) => soma + s.valor, 0);
@@ -40,11 +45,26 @@ export class DonutChartComponent {
       const arco: ArcoCalculado = {
         ...segmento,
         percentual: Math.round(fracao * 100),
-        dasharray: `${comprimento} ${circunferencia - comprimento}`,
+        comprimento,
         dashoffset: -acumulado,
       };
       acumulado += comprimento;
       return arco;
     });
   });
+
+  protected readonly arcoAtivo = computed(() => {
+    const indice = this.ativo();
+    return indice === null ? null : (this.arcos()[indice] ?? null);
+  });
+
+  protected readonly descricao = computed(() =>
+    this.arcos()
+      .map((arco) => `${arco.rotulo}: ${arco.percentual}%`)
+      .join(', '),
+  );
+
+  protected destacar(indice: number | null): void {
+    this.ativo.set(indice);
+  }
 }

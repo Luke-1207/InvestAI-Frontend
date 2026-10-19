@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { DashboardComponent } from './dashboard.component';
@@ -60,20 +60,51 @@ describe('DashboardComponent', () => {
     expect(fixture.nativeElement.querySelector('app-aviso-educativo')).not.toBeNull();
   });
 
-  it('Dica do Dia deve escolher o item de MAIOR score, não o primeiro do array', async () => {
+  it('o ativo em destaque da Dica do Dia deve ser o de MAIOR score, não o primeiro do array', async () => {
     await montar(mockDashboard());
 
-    const titulo = fixture.nativeElement.querySelector('.dashboard__dica-do-dia h2');
-    expect(titulo.textContent).toContain('VALE3'); // score 91, não PETR4 (72) que vem primeiro
+    const destaque: HTMLAnchorElement = fixture.nativeElement.querySelector('app-dica-do-dia .dica-do-dia__destaque');
+    expect(destaque.textContent).toContain('VALE3');
+    expect(destaque.getAttribute('href')).toBe('/renda-variavel/VALE3');
   });
 
-  it('não deve mostrar Dica do Dia quando não há sugestões de renda variável', async () => {
+  it('sem sugestões de renda variável, a Dica do Dia continua com a dica educativa, mas sem ativo em destaque', async () => {
     await montar(mockDashboard({ sugestoesRendaVariavel: { itens: [], mensagem: 'Complete seu perfil.' } }));
 
-    expect(fixture.nativeElement.querySelector('.dashboard__dica-do-dia')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-dica-do-dia .dica-do-dia__texto')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.dica-do-dia__destaque')).toBeNull();
     expect(fixture.nativeElement.querySelector('.dashboard__mensagem-vazia').textContent).toContain(
       'Complete seu perfil.',
     );
+  });
+
+  it('clicar em um card de renda variável deve abrir o detalhe do ativo', async () => {
+    await montar(mockDashboard());
+    const router = TestBed.inject(Router);
+    spyOn(router, 'navigateByUrl').and.resolveTo(true);
+
+    fixture.nativeElement.querySelectorAll('app-cartao-sugestao-ativo .cartao-sugestao-ativo')[1].click();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/renda-variavel/VALE3');
+  });
+
+  it('cards de renda fixa devem levar ao detalhe: Tesouro pelo código, título privado pelo id', async () => {
+    await montar(
+      mockDashboard({
+        sugestoesRendaFixa: {
+          itens: [
+            { id: 'aaaaaaaa-1111-4111-8111-111111111111', codigo: 'IPCA2035', categoria: 'TESOURO', nome: 'Tesouro IPCA+ 2035', taxa: 6.2, vencimento: '2035-05-15', score: 70, compatibilidade: 'MEDIA', justificativa: 'x' },
+            { id: 'bbbbbbbb-2222-4222-8222-222222222222', codigo: null, categoria: 'CDB', nome: 'CDB Banco Alfa', taxa: 110, vencimento: '2028-05-10', score: 60, compatibilidade: 'MEDIA', justificativa: 'y' },
+          ],
+          mensagem: null,
+        },
+      }),
+    );
+
+    const links = Array.from(fixture.nativeElement.querySelectorAll('.dashboard__card-link')).map((a) =>
+      (a as HTMLAnchorElement).getAttribute('href'),
+    );
+    expect(links).toEqual(['/renda-fixa/IPCA2035', '/renda-fixa/bbbbbbbb-2222-4222-8222-222222222222']);
   });
 
   it('perfil incompleto: deve mostrar o banner e ESCONDER o resumo de perfil/distribuição', async () => {

@@ -1,4 +1,4 @@
-<div class="cartao-sugestao-ativo" (click)="clique.emit()">
+<div class="cartao-sugestao-ativo" role="link" tabindex="0" (click)="clique.emit()" (keydown.enter)="clique.emit()">
   <div class="cartao-sugestao-ativo__cabecalho">
     <div>
       <h4>{{ item().codigo }}</h4>
