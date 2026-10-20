@@ -1,0 +1,182 @@
+<section class="gestao" aria-labelledby="gestao-usuarios-titulo">
+  <header class="gestao__cabecalho">
+    <div>
+      <h1 id="gestao-usuarios-titulo" class="gestao__titulo">Usuários</h1>
+      <p class="gestao__descricao">Quem usa a plataforma, com o papel de cada um e o status da conta.</p>
+    </div>
+  </header>
+
+  <app-filtros-gestao
+    rotuloBusca="Buscar usuários"
+    placeholder="Buscar por nome ou e-mail"
+    rotuloTipo="Filtrar por papel"
+    [opcoesTipo]="opcoesPapel"
+    [(termo)]="termo"
+    [(tipo)]="filtroPapel"
+    [(status)]="filtroStatus"
+  />
+
+  @if (carregando() && !resultado()) {
+    <div class="gestao__estado"><app-spinner tamanho="grande" rotulo="Carregando usuários" /></div>
+  } @else if (erro() && !resultado()) {
+    <app-erro-servidor (tentarNovamente)="tentarDeNovo()" />
+  } @else {
+    <p class="gestao__contagem" aria-live="polite">
+      {{ carregando() ? 'Atualizando a lista...' : contagem() }}
+    </p>
+
+    @if (erro()) {
+      <p class="usuarios__aviso" role="alert">
+        Não conseguimos atualizar a lista.
+        <button type="button" class="gestao__limpar" (click)="tentarDeNovo()">Tentar de novo</button>
+      </p>
+    }
+
+    @if (usuarios().length === 0) {
+      <div class="gestao__vazio">
+        <p>{{ temFiltro() ? 'Nenhum usuário encontrado com esses filtros.' : 'Nenhum usuário cadastrado ainda.' }}</p>
+        @if (temFiltro()) {
+          <button type="button" class="gestao__limpar" (click)="limparFiltros()">Limpar filtros</button>
+        }
+      </div>
+    } @else {
+      <app-tabela-gestao [class.usuarios--atualizando]="carregando()" [attr.aria-busy]="carregando()">
+        <table class="gestao__tabela">
+          <caption class="leitor-de-tela">Usuários cadastrados, página {{ pagina() + 1 }} de {{ totalPaginas() }}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Usuário</th>
+              <th scope="col">Papel</th>
+              <th scope="col">Perfil</th>
+              <th scope="col">Status</th>
+              <th scope="col">Desde</th>
+              <th scope="col"><span class="leitor-de-tela">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (usuario of usuarios(); track usuario.id) {
+              <tr [class.gestao__linha--inativa]="!usuario.ativo">
+                <th scope="row" data-rotulo="Usuário">
+                  <span class="usuarios__identificacao">
+                    <span class="gestao__selos">
+                      {{ usuario.nome }}
+                      @if (souEu(usuario)) {
+                        <span class="gestao__selo">Você</span>
+                      }
+                    </span>
+                    <span class="usuarios__email">{{ usuario.email }}</span>
+                  </span>
+                </th>
+                <td data-rotulo="Papel">
+                  <span class="gestao__selo" [class.usuarios__selo-gestor]="usuario.role === 'GESTOR'">
+                    {{ rotuloPapel[usuario.role] }}
+                  </span>
+                </td>
+                <td data-rotulo="Perfil">{{ usuario.perfilPreenchido ? 'Respondido' : 'Quiz pendente' }}</td>
+                <td data-rotulo="Status">
+                  <span class="gestao__selo" [class.gestao__selo--ativo]="usuario.ativo">
+                    {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td data-rotulo="Desde" class="gestao__sem-quebra">{{ usuario.criadoEm | date: 'dd/MM/yyyy' }}</td>
+                <td class="gestao__celula-acoes">
+                  <div class="gestao__acoes">
+                    <a
+                      class="gestao__acao"
+                      [routerLink]="['/gestor/usuarios', usuario.id]"
+                      [attr.aria-label]="'Ver perfil de ' + usuario.nome"
+                    >
+                      Ver perfil
+                    </a>
+                    @if (!souEu(usuario)) {
+                      @if (usuario.role === 'USUARIO') {
+                        <button
+                          type="button"
+                          class="gestao__acao"
+                          [attr.aria-label]="'Promover ' + usuario.nome + ' a gestor'"
+                          (click)="pedir('promover', usuario)"
+                        >
+                          Promover
+                        </button>
+                      } @else {
+                        <button
+                          type="button"
+                          class="gestao__acao"
+                          [attr.aria-label]="'Tornar ' + usuario.nome + ' investidor'"
+                          (click)="pedir('rebaixar', usuario)"
+                        >
+                          Tornar investidor
+                        </button>
+                      }
+                      @if (usuario.ativo) {
+                        <button
+                          type="button"
+                          class="gestao__acao gestao__acao--perigo"
+                          [attr.aria-label]="'Desativar a conta de ' + usuario.nome"
+                          (click)="pedir('desativar', usuario)"
+                        >
+                          Desativar
+                        </button>
+                      } @else {
+                        <button
+                          type="button"
+                          class="gestao__acao"
+                          [attr.aria-label]="'Ativar a conta de ' + usuario.nome"
+                          [disabled]="ativandoId() === usuario.id"
+                          (click)="ativar(usuario)"
+                        >
+                          {{ ativandoId() === usuario.id ? 'Ativando...' : 'Ativar' }}
+                        </button>
+                      }
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </app-tabela-gestao>
+
+      @if (totalPaginas() > 1) {
+        <nav class="usuarios__paginacao" aria-label="Páginas da lista de usuários">
+          <button type="button" class="gestao__acao" [disabled]="pagina() === 0" (click)="irParaPagina(pagina() - 1)">
+            Anterior
+          </button>
+          <span>Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
+          <button
+            type="button"
+            class="gestao__acao"
+            [disabled]="pagina() + 1 >= totalPaginas()"
+            (click)="irParaPagina(pagina() + 1)"
+          >
+            Próxima
+          </button>
+        </nav>
+      }
+    }
+  }
+</section>
+
+<app-dialogo-confirmacao
+  [titulo]="textosDialogo().titulo"
+  [textoConfirmar]="textosDialogo().confirmar"
+  [perigoso]="textosDialogo().perigoso"
+  [processando]="processando()"
+  (confirmado)="confirmar()"
+>
+  @if (pendente(); as acao) {
+    @switch (acao.tipo) {
+      @case ('promover') {
+        <p>{{ acao.usuario.nome }} passa a ter acesso ao Painel do Gestor: cadastro de ativos e títulos, indicadores e gestão de usuários.</p>
+        <p>O menu do gestor aparece para essa pessoa no próximo acesso.</p>
+      }
+      @case ('rebaixar') {
+        <p>{{ acao.usuario.nome }} volta a ser investidor e perde o acesso ao Painel do Gestor na hora.</p>
+      }
+      @case ('desativar') {
+        <p>{{ acao.usuario.nome }} é desconectado e não consegue mais entrar até a conta ser ativada de novo.</p>
+        <p>Os dados e o perfil de investidor continuam guardados.</p>
+      }
+    }
+  }
+</app-dialogo-confirmacao>

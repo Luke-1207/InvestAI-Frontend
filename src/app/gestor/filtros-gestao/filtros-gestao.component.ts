@@ -16,6 +16,7 @@ export class FiltrosGestaoComponent {
   readonly rotuloBusca = input.required<string>();
   readonly placeholder = input('');
   readonly opcoesTipo = input.required<OpcaoFiltro[]>();
+  readonly rotuloTipo = input('Filtrar por tipo');
   readonly termo = model('');
   readonly tipo = model('TODOS');
   readonly status = model<FiltroStatus>('TODOS');

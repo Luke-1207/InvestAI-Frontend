@@ -49,6 +49,10 @@ describe('FiltrosGestaoComponent', () => {
     expect(host.termo()).toBe('hglg');
   });
 
+  it('o grupo de botões deve usar o rótulo padrão quando não é informado', () => {
+    expect(fixture.nativeElement.querySelector('[role="group"]').getAttribute('aria-label')).toBe('Filtrar por tipo');
+  });
+
   it('os botões de tipo devem indicar qual está escolhido e trocar o filtro', () => {
     const botoes: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('[role="group"] button'));
     expect(botoes.map((b) => b.getAttribute('aria-pressed'))).toEqual(['true', 'false']);

@@ -12,6 +12,11 @@ router-outlet {
   align-self: flex-start;
   @include grupo-pilulas;
   @include rolagem-horizontal-oculta;
+
+  @include ate-tablet {
+    flex-wrap: wrap;
+    border-radius: $radius-lg;
+  }
 }
 
 .gestor-nav__item {

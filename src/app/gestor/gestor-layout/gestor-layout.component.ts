@@ -20,5 +20,7 @@ export class GestorLayoutComponent {
     { rota: '/gestor', rotulo: 'Visão geral', icone: 'monitoring', exata: true },
     { rota: '/gestor/ativos', rotulo: 'Renda variável', icone: 'trending_up', exata: false },
     { rota: '/gestor/titulos', rotulo: 'Títulos privados', icone: 'account_balance', exata: false },
+    { rota: '/gestor/usuarios', rotulo: 'Usuários', icone: 'group', exata: false },
+    { rota: '/gestor/indicadores', rotulo: 'Indicadores', icone: 'percent', exata: false },
   ];
 }
