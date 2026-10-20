@@ -1,0 +1,80 @@
+<button
+  #botaoAbrir
+  type="button"
+  class="busca__abrir"
+  aria-label="Buscar ativos"
+  [attr.aria-expanded]="expandidaNoCelular()"
+  (click)="abrirNoCelular()"
+>
+  <span aria-hidden="true" class="material-symbols-outlined">search</span>
+</button>
+
+@if (expandidaNoCelular()) {
+  <div class="busca__fundo" aria-hidden="true" (click)="fecharNoCelular()"></div>
+}
+
+<div class="busca" [class.busca--expandida]="expandidaNoCelular()" (focusout)="aoSairDoFoco($event)">
+  <div class="busca__campo">
+    <span aria-hidden="true" class="material-symbols-outlined">search</span>
+    <input
+      #campo
+      type="search"
+      role="combobox"
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Buscar ativos (atalho: tecla barra)"
+      aria-autocomplete="list"
+      placeholder="Buscar ativos... ( / )"
+      [attr.aria-controls]="idLista"
+      [attr.aria-expanded]="listaVisivel()"
+      [attr.aria-activedescendant]="idAtivo()"
+      [value]="termo()"
+      (input)="aoDigitar($any($event.target).value)"
+      (focus)="aoFocar()"
+      (keydown)="aoTeclar($event)"
+    />
+    <button type="button" class="busca__fechar" aria-label="Fechar busca" (click)="fecharNoCelular()">
+      <span aria-hidden="true" class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <div class="busca__painel" [hidden]="!painelVisivel()">
+    <div [id]="idLista" role="listbox" aria-label="Resultados da busca" class="busca__lista">
+      @for (resultado of resultados(); track resultado.grupo + resultado.identificador; let i = $index) {
+        <div
+          role="option"
+          class="busca__opcao"
+          [id]="idOpcao(i)"
+          [class.busca__opcao--ativa]="i === indiceAtivo()"
+          [attr.aria-selected]="i === indiceAtivo()"
+          (mousedown)="$event.preventDefault()"
+          (mousemove)="indiceAtivo.set(i)"
+          (click)="escolher(resultado)"
+        >
+          <span class="busca__nome">
+            @if (resultado.codigo) {
+              <strong>{{ resultado.codigo }}</strong>
+            }
+            {{ resultado.nome }}
+          </span>
+          <span class="busca__meta">
+            <span class="busca__categoria">{{ resultado.categoria | rotulo }}</span>
+            @if (resultado.detalhe) {
+              <span class="busca__detalhe">{{ resultado.detalhe }}</span>
+            }
+          </span>
+        </div>
+      }
+    </div>
+
+    @if (estado() === 'carregando' && resultados().length === 0) {
+      <p class="busca__mensagem">Buscando...</p>
+    } @else if (estado() === 'erro') {
+      <p class="busca__mensagem">Não conseguimos buscar agora. Tente de novo em instantes.</p>
+    } @else if (estado() === 'pronto' && resultados().length === 0) {
+      <p class="busca__mensagem">Nenhum ativo encontrado para "{{ termo().trim() }}".</p>
+    }
+  </div>
+
+  <span class="leitor-de-tela" role="status">{{ anuncio() }}</span>
+</div>

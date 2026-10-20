@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import {FotoPerfilService} from '../../services/foto-perfil.service';
 import { TickerMercadoComponent } from '../ticker-mercado/ticker-mercado.component';
+import { BuscaAtivosComponent } from '../busca-ativos/busca-ativos.component';
 
 interface ItemNav {
   rota: string;
@@ -17,12 +18,12 @@ interface ItemNav {
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TickerMercadoComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TickerMercadoComponent, BuscaAtivosComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
 export class AppShellComponent implements OnInit {
-  @ViewChild('campoBusca') campoBusca?: ElementRef<HTMLInputElement>;
+  @ViewChild(BuscaAtivosComponent) busca?: BuscaAtivosComponent;
   @ViewChild('botaoUsuario') botaoUsuario?: ElementRef<HTMLButtonElement>;
 
   protected readonly themeService = inject(ThemeService);
@@ -33,7 +34,6 @@ export class AppShellComponent implements OnInit {
 
   readonly menuUsuarioAberto = signal(false);
   readonly menuNavegacaoAberto = signal(false);
-  readonly termoBusca = signal('');
 
   readonly itensNav: ItemNav[] = [
     { rota: '/dashboard', rotulo: 'Dashboard', icone: 'dashboard' },
@@ -117,7 +117,7 @@ export class AppShellComponent implements OnInit {
 
     if (evento.key === '/' && !digitandoEmCampo) {
       evento.preventDefault();
-      this.campoBusca?.nativeElement.focus();
+      this.busca?.focar();
     }
   }
 
