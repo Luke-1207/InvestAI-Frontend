@@ -74,17 +74,7 @@
       <app-ticker-mercado class="header__ticker" />
 
       <div class="header__acoes">
-        <div class="header__busca">
-          <span aria-hidden="true" class="material-symbols-outlined">search</span>
-          <input
-            #campoBusca
-            type="search"
-            aria-label="Buscar ativos (atalho: tecla barra)"
-            placeholder="Buscar ativos... ( / )"
-            [value]="termoBusca()"
-            (input)="termoBusca.set($any($event.target).value)"
-          />
-        </div>
+        <app-busca-ativos />
 
         <a class="header__icone-botao" routerLink="/notificacoes" aria-label="Notificações" title="Notificações">
           <span aria-hidden="true" class="material-symbols-outlined">notifications</span>

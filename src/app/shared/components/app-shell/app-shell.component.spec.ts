@@ -74,7 +74,7 @@ describe('AppShellComponent', () => {
 
   it('tecla "/" fora de um campo de texto deve focar o campo de busca', () => {
     fixture.detectChanges();
-    const campoBusca: HTMLInputElement = fixture.nativeElement.querySelector('.header__busca input');
+    const campoBusca: HTMLInputElement = fixture.nativeElement.querySelector('app-busca-ativos input');
     const focoSpy = spyOn(campoBusca, 'focus');
 
     const evento = new KeyboardEvent('keydown', { key: '/', cancelable: true, bubbles: true });
@@ -280,7 +280,7 @@ describe('AppShellComponent', () => {
     });
 
     it('a busca e as notificações devem ter nome para leitores de tela', () => {
-      expect(fixture.nativeElement.querySelector('.header__busca input').getAttribute('aria-label')).toContain('Buscar ativos');
+      expect(fixture.nativeElement.querySelector('app-busca-ativos input').getAttribute('aria-label')).toContain('Buscar ativos');
       expect(fixture.nativeElement.querySelector('a.header__icone-botao').getAttribute('aria-label')).toBe('Notificações');
     });
 

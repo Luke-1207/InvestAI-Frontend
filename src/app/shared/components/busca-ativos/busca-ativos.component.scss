@@ -1,0 +1,185 @@
+@use '../../../../styles/design-system' as *;
+
+:host {
+  display: block;
+}
+
+.busca__abrir,
+.busca__fechar {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: $space-1;
+  border: none;
+  border-radius: $radius-md;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  @include ate-celular {
+    display: flex;
+  }
+}
+
+.busca__fundo {
+  display: none;
+
+  @include ate-celular {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 65;
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.busca {
+  position: relative;
+
+  @include ate-celular {
+    display: none;
+
+    &--expandida {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 70;
+      padding: $space-2 $space-4;
+      background: var(--bg-surface-alt);
+      border-bottom: 1px solid var(--border-default);
+    }
+  }
+}
+
+.busca__campo {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  width: 256px;
+  box-sizing: border-box;
+  padding: $space-2 $space-3;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-md;
+  transition: border-color .2s;
+
+  @include ate-tablet {
+    width: 180px;
+  }
+
+  @include ate-celular {
+    width: 100%;
+    padding-block: $space-1;
+  }
+
+  &:focus-within {
+    border-color: var(--accent);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: $font-body;
+    font-size: 14px;
+
+    @include ate-celular {
+      font-size: 16px;
+
+      &::-webkit-search-cancel-button {
+        display: none;
+      }
+    }
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+
+  > .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--text-secondary);
+  }
+}
+
+.busca__painel {
+  position: absolute;
+  top: calc(100% + #{$space-2});
+  right: 0;
+  z-index: 50;
+  width: 400px;
+  max-width: calc(100vw - #{$space-8});
+  max-height: min(420px, 70vh);
+  overflow-y: auto;
+  background: var(--bg-dropdown);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+
+  &[hidden] {
+    display: none;
+  }
+
+  @include ate-celular {
+    top: 100%;
+    left: $space-4;
+    right: $space-4;
+    width: auto;
+    max-width: none;
+    max-height: calc(100vh - 96px);
+  }
+}
+
+.busca__opcao {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  padding: $space-3 $space-4;
+  cursor: pointer;
+
+  & + & {
+    border-top: 1px solid var(--border-default);
+  }
+
+  &--ativa {
+    background: var(--bg-muted);
+  }
+}
+
+.busca__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-1 $space-2;
+}
+
+.busca__categoria {
+  flex-shrink: 0;
+  @include selo;
+}
+
+.busca__nome {
+  font-size: 14px;
+  color: var(--text-primary);
+
+  strong {
+    margin-right: $space-1;
+  }
+}
+
+.busca__detalhe {
+  @include texto-apoio(12px);
+}
+
+.busca__mensagem {
+  margin: 0;
+  padding: $space-4;
+  @include texto-apoio;
+}
