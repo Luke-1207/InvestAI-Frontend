@@ -1,0 +1,72 @@
+@use '../../../../../styles/design-system' as *;
+
+.dialogo {
+  width: min(440px, calc(100vw - #{$space-8}));
+  box-sizing: border-box;
+  padding: $space-6;
+  background: var(--bg-dropdown);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-lg;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.dialogo__titulo {
+  margin: 0 0 $space-3;
+  font-family: $font-display;
+  font-size: 20px;
+}
+
+.dialogo__texto {
+  @include texto-apoio(15px);
+  line-height: 1.5;
+
+  ::ng-deep p {
+    margin: 0 0 $space-2;
+  }
+}
+
+.dialogo__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: $space-3;
+  margin-top: $space-6;
+}
+
+.dialogo__cancelar,
+.dialogo__confirmar {
+  min-height: 40px;
+  padding: $space-2 $space-5;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.dialogo__cancelar {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+
+.dialogo__confirmar {
+  background: var(--accent);
+  color: var(--accent-on-accent);
+  border: 1px solid transparent;
+
+  &--perigo {
+    background: var(--danger-forte);
+    color: var(--danger-on);
+  }
+}
