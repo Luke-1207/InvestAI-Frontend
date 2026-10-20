@@ -1,0 +1,22 @@
+<label class="filtros__busca">
+  <span aria-hidden="true" class="material-symbols-outlined">search</span>
+  <span class="leitor-de-tela">{{ rotuloBusca() }}</span>
+  <input type="search" [placeholder]="placeholder()" [value]="termo()" (input)="termo.set($any($event.target).value)" />
+</label>
+
+<div class="filtros__pilulas" role="group" aria-label="Filtrar por tipo">
+  @for (opcao of opcoesTipo(); track opcao.valor) {
+    <button type="button" class="filtros__pilula" [attr.aria-pressed]="tipo() === opcao.valor" (click)="tipo.set(opcao.valor)">
+      {{ opcao.rotulo }}
+    </button>
+  }
+</div>
+
+<label class="filtros__status">
+  Status
+  <select (change)="status.set($any($event.target).value)">
+    @for (opcao of opcoesStatus; track opcao.valor) {
+      <option [value]="opcao.valor" [selected]="status() === opcao.valor">{{ opcao.rotulo }}</option>
+    }
+  </select>
+</label>

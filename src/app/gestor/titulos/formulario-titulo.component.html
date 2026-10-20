@@ -1,0 +1,202 @@
+<section class="formulario" aria-labelledby="formulario-titulo-titulo">
+  <a class="formulario__voltar" routerLink="/gestor/titulos">
+    <span aria-hidden="true" class="material-symbols-outlined">arrow_back</span>
+    Voltar para a lista
+  </a>
+
+  <header>
+    <h1 id="formulario-titulo-titulo" class="formulario__titulo">
+      {{ editando ? 'Editar título' : 'Cadastrar título privado' }}
+    </h1>
+    <p class="formulario__descricao">
+      @if (original(); as titulo) {
+        {{ titulo.tipo }} {{ titulo.emissor }}.
+      }
+      Os dados aparecem na renda fixa, no detalhe do título e nas simulações dos investidores.
+    </p>
+  </header>
+
+  @if (carregando()) {
+    <div class="formulario__estado"><app-spinner tamanho="grande" rotulo="Carregando" /></div>
+  } @else if (erroCarregamento()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (naoEncontrado()) {
+    <p class="formulario__erro-geral" role="alert">
+      Não encontramos esse título. Ele pode ter sido removido.
+      <a routerLink="/gestor/titulos">Voltar para a lista</a>
+    </p>
+  } @else {
+    <form [formGroup]="formulario" novalidate (ngSubmit)="salvar()">
+      <div class="formulario__painel">
+        <fieldset
+          class="campo campo--largo"
+          [class.campo--erro]="mostrarErro('tipo')"
+          [attr.aria-describedby]="mostrarErro('tipo') ? 'titulo-tipo-erro' : null"
+        >
+          <legend>Tipo</legend>
+          <div class="campo__opcoes">
+            @for (tipo of opcoesTipo; track tipo; let primeiro = $first) {
+              <label class="campo__opcao">
+                <input
+                  type="radio"
+                  formControlName="tipo"
+                  [id]="'titulo-tipo-' + tipo"
+                  [value]="tipo"
+                  [attr.aria-invalid]="primeiro && mostrarErro('tipo') ? true : null"
+                />
+                {{ tipo }}
+              </label>
+            }
+          </div>
+          @if (mostrarErro('tipo')) {
+            <p id="titulo-tipo-erro" class="campo__erro">{{ mensagemErro('tipo') }}</p>
+          }
+        </fieldset>
+
+        <div class="campo campo--largo" [class.campo--erro]="mostrarErro('emissor')">
+          <label for="titulo-emissor">Emissor</label>
+          <input
+            id="titulo-emissor"
+            formControlName="emissor"
+            list="titulo-emissores"
+            autocomplete="off"
+            placeholder="Ex.: Banco Inter"
+            [attr.aria-invalid]="mostrarErro('emissor')"
+            [attr.aria-describedby]="mostrarErro('emissor') ? 'titulo-emissor-erro' : null"
+          />
+          <datalist id="titulo-emissores">
+            @for (emissor of sugestoesEmissor(); track emissor) {
+              <option [value]="emissor"></option>
+            }
+          </datalist>
+          @if (mostrarErro('emissor')) {
+            <p id="titulo-emissor-erro" class="campo__erro">{{ mensagemErro('emissor') }}</p>
+          }
+        </div>
+
+        <div class="campo" [class.campo--erro]="mostrarErro('indexador')">
+          <label for="titulo-indexador">Indexador</label>
+          <select
+            id="titulo-indexador"
+            formControlName="indexador"
+            [attr.aria-invalid]="mostrarErro('indexador')"
+            [attr.aria-describedby]="mostrarErro('indexador') ? 'titulo-indexador-erro' : null"
+          >
+            <option value="" disabled>Escolha</option>
+            @for (opcao of opcoesIndexador; track opcao.valor) {
+              <option [value]="opcao.valor">{{ opcao.rotulo }}</option>
+            }
+          </select>
+          @if (mostrarErro('indexador')) {
+            <p id="titulo-indexador-erro" class="campo__erro">{{ mensagemErro('indexador') }}</p>
+          }
+        </div>
+
+        <div class="campo" [class.campo--erro]="mostrarErro('taxaPercentual')">
+          <label for="titulo-taxa">Taxa (%)</label>
+          <input
+            id="titulo-taxa"
+            type="number"
+            inputmode="decimal"
+            step="any"
+            min="0"
+            formControlName="taxaPercentual"
+            [attr.aria-invalid]="mostrarErro('taxaPercentual')"
+            [attr.aria-describedby]="descricaoTaxa()"
+          />
+          @if (mostrarErro('taxaPercentual')) {
+            <p id="titulo-taxa-erro" class="campo__erro">{{ mensagemErro('taxaPercentual') }}</p>
+          } @else {
+            <p id="titulo-taxa-ajuda" class="campo__ajuda">{{ ajudaTaxa() }}</p>
+            @if (previaTaxa(); as previa) {
+              <p id="titulo-taxa-previa" class="campo__ajuda">O investidor vai ver: <strong>{{ previa }}</strong></p>
+            }
+          }
+        </div>
+
+        <div class="campo" [class.campo--erro]="mostrarErro('vencimento')">
+          <label for="titulo-vencimento">Vencimento</label>
+          <input
+            id="titulo-vencimento"
+            type="date"
+            [min]="amanha"
+            formControlName="vencimento"
+            [attr.aria-invalid]="mostrarErro('vencimento')"
+            [attr.aria-describedby]="mostrarErro('vencimento') ? 'titulo-vencimento-erro' : null"
+          />
+          @if (mostrarErro('vencimento')) {
+            <p id="titulo-vencimento-erro" class="campo__erro">{{ mensagemErro('vencimento') }}</p>
+          }
+        </div>
+
+        <div class="campo" [class.campo--erro]="mostrarErro('investimentoMinimo')">
+          <label for="titulo-minimo">Investimento mínimo (R$)</label>
+          <input
+            id="titulo-minimo"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            min="0"
+            formControlName="investimentoMinimo"
+            [attr.aria-invalid]="mostrarErro('investimentoMinimo')"
+            [attr.aria-describedby]="mostrarErro('investimentoMinimo') ? 'titulo-minimo-erro' : null"
+          />
+          @if (mostrarErro('investimentoMinimo')) {
+            <p id="titulo-minimo-erro" class="campo__erro">{{ mensagemErro('investimentoMinimo') }}</p>
+          }
+        </div>
+
+        <fieldset
+          class="campo campo--largo"
+          [class.campo--erro]="mostrarErro('liquidez')"
+          [attr.aria-describedby]="mostrarErro('liquidez') ? 'titulo-liquidez-erro' : null"
+        >
+          <legend>Liquidez</legend>
+          <div class="campo__opcoes">
+            @for (opcao of opcoesLiquidez; track opcao.valor; let primeiro = $first) {
+              <label class="campo__opcao">
+                <input
+                  type="radio"
+                  formControlName="liquidez"
+                  [id]="'titulo-liquidez-' + opcao.valor"
+                  [value]="opcao.valor"
+                  [attr.aria-invalid]="primeiro && mostrarErro('liquidez') ? true : null"
+                />
+                {{ opcao.rotulo }}
+              </label>
+            }
+          </div>
+          @if (mostrarErro('liquidez')) {
+            <p id="titulo-liquidez-erro" class="campo__erro">{{ mensagemErro('liquidez') }}</p>
+          }
+        </fieldset>
+
+        <fieldset class="campo campo--largo">
+          <legend>Proteções e impostos</legend>
+          <div class="campo__opcoes">
+            <label class="campo__opcao">
+              <input type="checkbox" formControlName="garantidoFgc" />
+              Garantido pelo FGC
+            </label>
+            <label class="campo__opcao">
+              <input type="checkbox" formControlName="isentoIr" aria-describedby="titulo-isento-ajuda" />
+              Isento de Imposto de Renda
+            </label>
+          </div>
+          <p id="titulo-isento-ajuda" class="campo__ajuda">LCIs e LCAs já vêm marcadas como isentas para pessoa física. Ajuste se for diferente.</p>
+        </fieldset>
+      </div>
+
+      @if (erroGeral()) {
+        <p class="formulario__erro-geral" role="alert">{{ erroGeral() }}</p>
+      }
+
+      <div class="formulario__acoes">
+        <app-button tipoHtml="submit" [carregando]="salvando()">
+          {{ editando ? 'Salvar alterações' : 'Cadastrar título' }}
+        </app-button>
+        <a class="formulario__cancelar" routerLink="/gestor/titulos">Cancelar</a>
+      </div>
+    </form>
+  }
+</section>

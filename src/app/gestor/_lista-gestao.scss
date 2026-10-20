@@ -1,0 +1,215 @@
+@use '../../styles/design-system' as *;
+
+.gestao {
+  @include pagina($space-5);
+}
+
+.gestao__cabecalho {
+  @include cabecalho-pagina(flex-end);
+}
+
+.gestao__titulo {
+  @include titulo-pagina(28px);
+}
+
+.gestao__descricao {
+  margin: $space-1 0 0;
+  @include texto-apoio;
+}
+
+.gestao__novo {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: $space-2 $space-4;
+  border-radius: $radius-md;
+  background: var(--accent);
+  color: var(--accent-on-accent);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.gestao__contagem {
+  margin: 0;
+  @include texto-apoio(13px);
+}
+
+.gestao__estado {
+  @include estado-centralizado(240px);
+}
+
+.gestao__vazio {
+  @include estado-vazio;
+
+  p {
+    margin: 0 0 $space-3;
+  }
+}
+
+.gestao__limpar {
+  @include botao-texto;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.gestao__tabela-wrapper {
+  overflow-x: auto;
+  @include superficie;
+
+  @include ate-celular {
+    overflow: visible;
+    background: none;
+    border: none;
+  }
+}
+
+.gestao__tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th,
+  td {
+    padding: $space-3;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  thead th {
+    white-space: nowrap;
+    @include rotulo(12px);
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: none;
+  }
+
+  tbody th {
+    font-weight: 700;
+  }
+
+  @include ate-celular {
+    thead {
+      @include leitor-de-tela;
+    }
+
+    tbody {
+      display: flex;
+      flex-direction: column;
+      gap: $space-3;
+    }
+
+    tr {
+      display: block;
+      padding: $space-3 $space-4;
+      @include superficie;
+    }
+
+    tbody th,
+    td {
+      display: flex;
+      justify-content: space-between;
+      gap: $space-3;
+      padding: $space-1 0;
+      border: none;
+      text-align: right;
+
+      &::before {
+        content: attr(data-rotulo);
+        text-align: left;
+        @include rotulo(12px);
+      }
+    }
+
+    tbody th {
+      font-size: 16px;
+    }
+
+    .gestao__celula-acoes {
+      justify-content: flex-start;
+      padding-top: $space-3;
+
+      &::before {
+        content: none;
+      }
+    }
+  }
+}
+
+.gestao__linha--inativa > :not(.gestao__celula-acoes) {
+  color: var(--text-secondary);
+}
+
+.gestao__selos {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: $space-1;
+}
+
+.gestao__selo {
+  display: inline-block;
+  padding: 2px $space-2;
+  border-radius: $radius-full;
+  white-space: nowrap;
+  @include texto-etiqueta(11px);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+
+  &--ativo {
+    border-color: var(--border-success);
+    color: var(--success-text);
+  }
+
+  &--alerta {
+    border-color: var(--warning);
+    color: var(--text-primary);
+  }
+}
+
+.gestao__acoes {
+  display: flex;
+  gap: $space-2;
+
+  @include ate-celular {
+    flex-wrap: wrap;
+  }
+}
+
+.gestao__sem-quebra {
+  white-space: nowrap;
+}
+
+.gestao__acao {
+  box-sizing: border-box;
+  min-height: 32px;
+  white-space: nowrap;
+  text-decoration: none;
+  font-size: 13px;
+  @include botao-contorno;
+  padding: $space-1 $space-3;
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--perigo {
+    color: var(--danger);
+
+    &:hover:not(:disabled) {
+      border-color: var(--danger);
+    }
+  }
+}

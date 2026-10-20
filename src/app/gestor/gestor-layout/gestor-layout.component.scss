@@ -1,0 +1,41 @@
+@use '../../../styles/design-system' as *;
+
+:host {
+  @include pagina;
+}
+
+router-outlet {
+  display: none;
+}
+
+.gestor-nav {
+  align-self: flex-start;
+  @include grupo-pilulas;
+  @include rolagem-horizontal-oculta;
+}
+
+.gestor-nav__item {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  white-space: nowrap;
+  text-decoration: none;
+  font-size: 14px;
+  @include pilula;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  @include ate-celular {
+    padding-inline: $space-2;
+
+    .material-symbols-outlined {
+      display: none;
+    }
+  }
+
+  &--ativo {
+    @include pilula-ativa;
+  }
+}

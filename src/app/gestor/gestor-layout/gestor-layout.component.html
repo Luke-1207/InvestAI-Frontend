@@ -1,0 +1,16 @@
+<nav class="gestor-nav" aria-label="Seções do painel do gestor">
+  @for (secao of secoes; track secao.rota) {
+    <a
+      class="gestor-nav__item"
+      [routerLink]="secao.rota"
+      routerLinkActive="gestor-nav__item--ativo"
+      [routerLinkActiveOptions]="{ exact: secao.exata }"
+      ariaCurrentWhenActive="page"
+    >
+      <span aria-hidden="true" class="material-symbols-outlined">{{ secao.icone }}</span>
+      {{ secao.rotulo }}
+    </a>
+  }
+</nav>
+
+<router-outlet />
