@@ -82,7 +82,9 @@
   padding: 0 $space-2;
   margin-bottom: $space-6;
 
-  h1 {
+  .sidebar__marca {
+    display: block;
+    font-family: $font-display;
     font-size: 24px;
     font-weight: 700;
     color: var(--accent);
@@ -324,6 +326,7 @@
 .header__icone-botao {
   background: none;
   border: none;
+  text-decoration: none;
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
@@ -373,11 +376,15 @@
   overflow: hidden;
   z-index: 50;
 
-  a {
+  a,
+  button {
     display: flex;
     align-items: center;
     gap: $space-3;
+    width: 100%;
     padding: $space-3 $space-4;
+    background: none;
+    border: none;
     color: var(--text-primary);
     text-decoration: none;
     font-family: $font-body;
@@ -387,10 +394,10 @@
     &:hover {
       background: var(--bg-muted);
     }
+  }
 
-    &:last-child {
-      color: var(--danger);
-    }
+  button {
+    color: var(--danger);
   }
 }
 
@@ -401,6 +408,7 @@
 .main {
   flex: 1;
   overflow: auto;
+  outline: none;
   padding: $space-10;
   box-sizing: border-box;
 
@@ -440,7 +448,6 @@
     font-family: $font-body;
     font-size: 14px;
     color: var(--text-secondary);
-    opacity: 0.8;
     margin: 0;
   }
 }

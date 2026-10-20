@@ -19,6 +19,8 @@ const LIMITE_TOPO_BALAO = 60;
 const UM_DIA_EM_MS = 24 * 60 * 60 * 1000;
 const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 
+let proximoId = 0;
+
 interface MarcaEixo {
   posicao: number;
   rotulo: string;
@@ -191,6 +193,27 @@ export class GraficoLinhaPrecoComponent {
     const primeira = formatarDataCompleta(pontos[0].data);
     const ultima = formatarDataCompleta(pontos[pontos.length - 1].data);
     return `Gráfico do preço de fechamento de ${primeira} a ${ultima}. Use as setas para percorrer os dias.`;
+  });
+
+  protected readonly idResumo = `grafico-linha-resumo-${proximoId++}`;
+
+  protected readonly resumo = computed(() => {
+    const pontos = this.pontos();
+    if (pontos.length === 0) return '';
+    const moeda = formatoPreco(2);
+    const primeiro = pontos[0];
+    const ultimo = pontos[pontos.length - 1];
+    const menor = pontos.reduce((a, b) => (b.fechamento < a.fechamento ? b : a));
+    const maior = pontos.reduce((a, b) => (b.fechamento > a.fechamento ? b : a));
+    const variacao = primeiro.fechamento ? ((ultimo.fechamento - primeiro.fechamento) / primeiro.fechamento) * 100 : 0;
+    const sentido = variacao > 0 ? 'alta' : variacao < 0 ? 'queda' : 'variação';
+    return (
+      `O fechamento foi de R$ ${moeda.format(primeiro.fechamento)} em ${formatarDataCompleta(primeiro.data)} ` +
+      `para R$ ${moeda.format(ultimo.fechamento)} em ${formatarDataCompleta(ultimo.data)}, ` +
+      `${sentido} de ${moeda.format(Math.abs(variacao))}%. ` +
+      `O menor fechamento foi R$ ${moeda.format(menor.fechamento)}, em ${formatarDataCompleta(menor.data)}, ` +
+      `e o maior foi R$ ${moeda.format(maior.fechamento)}, em ${formatarDataCompleta(maior.data)}.`
+    );
   });
 
   constructor() {

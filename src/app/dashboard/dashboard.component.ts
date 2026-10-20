@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { DashboardService } from '../shared/services/dashboard.service';
 import { SpinnerComponent } from '../shared/components/ui/spinner/spinner.component';
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
@@ -42,7 +42,6 @@ const ALOCACAO_POR_RISCO: Record<string, { rv: number; rf: number }> = {
 })
 export class DashboardComponent implements OnInit {
   protected readonly dashboardService = inject(DashboardService);
-  private readonly router = inject(Router);
 
   protected readonly carregando = signal(true);
   protected readonly erro = signal(false);
@@ -82,10 +81,6 @@ export class DashboardComponent implements OnInit {
         this.erro.set(true);
       },
     });
-  }
-
-  protected abrirAtivo(codigo: string): void {
-    this.router.navigateByUrl(`/renda-variavel/${codigo}`);
   }
 
   protected rotaTitulo(item: SugestaoRendaFixaItem): string[] {

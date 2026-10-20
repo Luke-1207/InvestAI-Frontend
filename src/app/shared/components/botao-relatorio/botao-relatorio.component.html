@@ -9,7 +9,7 @@
     <app-spinner tamanho="pequeno" rotulo="Gerando relatório" />
     <span>Gerando PDF...</span>
   } @else {
-    <span class="material-symbols-outlined">{{ icone() }}</span>
+    <span aria-hidden="true" class="material-symbols-outlined">{{ icone() }}</span>
     <span>{{ rotulo() }}</span>
   }
 </button>

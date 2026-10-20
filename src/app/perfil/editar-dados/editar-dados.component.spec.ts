@@ -280,4 +280,13 @@ describe('EditarDadosComponent', () => {
 
     expect(fixture.componentInstance['avisoFoto']()?.texto).toContain('não corresponde a uma imagem válida');
   });
+
+  it('o envio de foto deve ser alcançável pelo teclado', async () => {
+    await montar();
+
+    const campo: HTMLInputElement = fixture.nativeElement.querySelector('input[type="file"]');
+    expect(campo.hidden).toBeFalse();
+    expect(campo.tabIndex).toBe(0);
+    expect(campo.closest('label')!.textContent).toContain('Enviar foto');
+  });
 });

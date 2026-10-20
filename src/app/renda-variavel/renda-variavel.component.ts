@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AcaoService } from '../shared/services/acao.service';
 import { AcaoListagem, PageResponse, TipoAtivo } from '../shared/models/acao';
 import { SugestoesRendaVariavel } from '../shared/models/dashboard';
@@ -29,6 +29,7 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
   selector: 'app-renda-variavel',
   standalone: true,
   imports: [
+    RouterLink,
     RotuloPipe,
     AvisoEducativoComponent,
     AjudaGlossarioComponent,
@@ -43,7 +44,6 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 })
 export class RendaVariavelComponent implements OnInit {
   private readonly acaoService = inject(AcaoService);
-  private readonly router = inject(Router);
   private readonly relatorioService = inject(RelatorioService);
 
   protected readonly OPCOES_TIPO: OpcaoTipo[] = [
@@ -102,9 +102,6 @@ export class RendaVariavelComponent implements OnInit {
     this.carregar();
   }
 
-  protected abrirDetalhe(codigo: string): void {
-    this.router.navigateByUrl(`/renda-variavel/${codigo}`);
-  }
 
   protected carregar(): void {
     this.carregando.set(true);

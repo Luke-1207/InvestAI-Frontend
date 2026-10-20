@@ -1,29 +1,32 @@
+<a class="pular-conteudo" href="#conteudo-principal" (click)="focarConteudo($event)">Pular para o conteúdo</a>
+
 <div class="shell">
   @if (menuNavegacaoAberto()) {
-    <div class="shell__fundo" (click)="fecharMenuNavegacao()"></div>
+    <div class="shell__fundo" aria-hidden="true" (click)="fecharMenuNavegacao()"></div>
   }
 
   <aside id="menu-navegacao" class="sidebar" [class.sidebar--aberta]="menuNavegacaoAberto()">
     <div class="sidebar__logo">
-      <img src="logo.svg" alt="InvestAI" width="32" height="32" />
+      <img src="logo.svg" alt="" width="32" height="32" />
       <div>
-        <h1>InvestAI</h1>
+        <span class="sidebar__marca">InvestAI</span>
         <p>AI Wealth Management</p>
       </div>
       <button type="button" class="sidebar__fechar" aria-label="Fechar menu" (click)="fecharMenuNavegacao()">
-        <span class="material-symbols-outlined">close</span>
+        <span aria-hidden="true" class="material-symbols-outlined">close</span>
       </button>
     </div>
 
-    <nav class="sidebar__nav">
+    <nav class="sidebar__nav" aria-label="Menu principal">
       @for (item of itensNav; track item.rota) {
         <a
           [routerLink]="item.rota"
           routerLinkActive="ativo"
+          ariaCurrentWhenActive="page"
           class="sidebar__nav-item"
           (click)="fecharMenuNavegacao()"
         >
-          <span class="material-symbols-outlined">{{ item.icone }}</span>
+          <span aria-hidden="true" class="material-symbols-outlined">{{ item.icone }}</span>
           <span>{{ item.rotulo }}</span>
         </a>
       }
@@ -33,10 +36,11 @@
         <a
           routerLink="/gestor"
           routerLinkActive="ativo"
+          ariaCurrentWhenActive="page"
           class="sidebar__nav-item sidebar__nav-item--gestor"
           (click)="fecharMenuNavegacao()"
         >
-          <span class="material-symbols-outlined">shield_person</span>
+          <span aria-hidden="true" class="material-symbols-outlined">shield_person</span>
           <span>Painel do Gestor</span>
         </a>
       }
@@ -44,7 +48,7 @@
 
     <div class="sidebar__rodape">
       <button type="button" class="sidebar__sair" (click)="sair()">
-        <span class="material-symbols-outlined">logout</span>
+        <span aria-hidden="true" class="material-symbols-outlined">logout</span>
         <span>Sair</span>
       </button>
     </div>
@@ -60,7 +64,7 @@
         [attr.aria-expanded]="menuNavegacaoAberto()"
         (click)="alternarMenuNavegacao()"
       >
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" class="material-symbols-outlined">menu</span>
       </button>
 
       <a routerLink="/dashboard" class="header__marca">
@@ -71,56 +75,67 @@
 
       <div class="header__acoes">
         <div class="header__busca">
-          <span class="material-symbols-outlined">search</span>
+          <span aria-hidden="true" class="material-symbols-outlined">search</span>
           <input
             #campoBusca
-            type="text"
+            type="search"
+            aria-label="Buscar ativos (atalho: tecla barra)"
             placeholder="Buscar ativos... ( / )"
             [value]="termoBusca()"
             (input)="termoBusca.set($any($event.target).value)"
           />
         </div>
 
-        <button type="button" class="header__icone-botao" routerLink="/notificacoes" title="Notificações">
-          <span class="material-symbols-outlined">notifications</span>
-        </button>
+        <a class="header__icone-botao" routerLink="/notificacoes" aria-label="Notificações" title="Notificações">
+          <span aria-hidden="true" class="material-symbols-outlined">notifications</span>
+        </a>
 
-        <button type="button" class="header__icone-botao" (click)="alternarTema()" title="Alternar tema">
-          <span class="material-symbols-outlined">dark_mode</span>
+        <button
+          type="button"
+          class="header__icone-botao"
+          [attr.aria-label]="themeService.tema() === 'dark' ? 'Usar tema claro' : 'Usar tema escuro'"
+          [title]="themeService.tema() === 'dark' ? 'Usar tema claro' : 'Usar tema escuro'"
+          (click)="alternarTema()"
+        >
+          <span aria-hidden="true" class="material-symbols-outlined">{{ themeService.tema() === 'dark' ? 'light_mode' : 'dark_mode' }}</span>
         </button>
 
         <div class="header__usuario" data-menu-usuario>
           <button
+            #botaoUsuario
             type="button"
             class="header__avatar"
+            aria-label="Menu da sua conta"
+            aria-controls="menu-usuario"
+            [attr.aria-expanded]="menuUsuarioAberto()"
             [class.header__avatar--foto]="fotoPerfilService.url()"
             (click)="alternarMenuUsuario()"
           >
             @if (fotoPerfilService.url(); as url) {
-              <img [src]="url" alt="Sua foto de perfil" class="header__avatar-foto" />
+              <img [src]="url" alt="" class="header__avatar-foto" />
             } @else {
-              {{ iniciais }}
+              <span aria-hidden="true">{{ iniciais }}</span>
             }
           </button>
 
           @if (menuUsuarioAberto()) {
-            <div class="header__dropdown">
+            <div id="menu-usuario" class="header__dropdown">
               <a routerLink="/perfil" (click)="menuUsuarioAberto.set(false)">
-                <span class="material-symbols-outlined">person</span>
+                <span aria-hidden="true" class="material-symbols-outlined">person</span>
                 <span>Perfil</span>
               </a>
               <div class="header__dropdown-divisor"></div>
-              <a (click)="sair()">
-                <span class="material-symbols-outlined">logout</span>
+              <button type="button" (click)="sair()">
+                <span aria-hidden="true" class="material-symbols-outlined">logout</span>
                 <span>Sair</span>
-              </a>
+              </button>
             </div>
           }
         </div>
       </div>
     </header>
 
-    <main class="main">
+    <main id="conteudo-principal" class="main" tabindex="-1">
       <router-outlet />
     </main>
 

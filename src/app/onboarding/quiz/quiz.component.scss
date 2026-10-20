@@ -52,6 +52,10 @@
 .quiz__pergunta {
   @include titulo-pagina(28px, 0 0 $space-8);
   line-height: 1.25;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .quiz__opcoes {

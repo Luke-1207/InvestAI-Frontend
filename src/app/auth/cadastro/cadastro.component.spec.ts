@@ -69,6 +69,12 @@ describe('CadastroComponent', () => {
     return el().querySelector('app-button button')!.textContent!.trim();
   }
 
+  it('deve ter o formulário como conteúdo principal e o título da página em h1', () => {
+    expect(el().querySelector('main h1')!.textContent!.trim()).toBe('Criar sua conta');
+    expect(el().querySelector('aside.auth-layout__institucional')).not.toBeNull();
+    expect(el().querySelector('.auth-layout__logo img')!.getAttribute('alt')).toBe('');
+  });
+
   it('a foto deve ser opcional e explicar formatos e tamanho', () => {
     expect(el().querySelector('.cadastro-foto__titulo')!.textContent).toContain('(OPCIONAL)');
     expect(el().querySelector('.cadastro-foto__dica')!.textContent).toContain('JPG, PNG ou WEBP, até 2 MB.');

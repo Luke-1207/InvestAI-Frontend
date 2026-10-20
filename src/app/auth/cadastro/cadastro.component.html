@@ -1,10 +1,10 @@
 <app-auth-layout>
-  <h3 class="auth-form__titulo">Criar sua conta</h3>
+  <h1 class="auth-form__titulo">Criar sua conta</h1>
   <p class="auth-form__subtitulo">Responda um quiz rápido e receba recomendações sob medida.</p>
 
   @if (erro()) {
     <div class="auth-form__alerta auth-form__alerta--erro">
-      <span class="material-symbols-outlined">error</span>
+      <span aria-hidden="true" class="material-symbols-outlined">error</span>
       {{ erro() }}
     </div>
   }
@@ -51,7 +51,7 @@
           <img class="cadastro-foto__previa" [src]="previa" alt="Prévia da sua foto de perfil" />
         } @else {
           <span class="cadastro-foto__previa cadastro-foto__previa--vazia" aria-hidden="true">
-            <span class="material-symbols-outlined">person</span>
+            <span aria-hidden="true" class="material-symbols-outlined">person</span>
           </span>
         }
 

@@ -13,11 +13,11 @@
                 <p>{{ item.rotulo }}</p>
               </div>
               <button type="button" (click)="removerSlot('A')" aria-label="Remover">
-                <span class="material-symbols-outlined">close</span>
+                <span aria-hidden="true" class="material-symbols-outlined">close</span>
               </button>
             </div>
           } @else {
-            <span class="material-symbols-outlined">add_circle</span>
+            <span aria-hidden="true" class="material-symbols-outlined">add_circle</span>
             <p>Escolha o primeiro ativo</p>
           }
         </div>
@@ -32,18 +32,18 @@
                 <p>{{ item.rotulo }}</p>
               </div>
               <button type="button" (click)="removerSlot('B')" aria-label="Remover">
-                <span class="material-symbols-outlined">close</span>
+                <span aria-hidden="true" class="material-symbols-outlined">close</span>
               </button>
             </div>
           } @else {
-            <span class="material-symbols-outlined">add_circle</span>
+            <span aria-hidden="true" class="material-symbols-outlined">add_circle</span>
             <p>Escolha o segundo ativo</p>
           }
         </div>
       </div>
 
       <div class="comparacao__busca">
-        <span class="material-symbols-outlined">search</span>
+        <span aria-hidden="true" class="material-symbols-outlined">search</span>
         <input
           type="text"
           placeholder="Buscar ação, FII, ETF, Tesouro ou título..."
@@ -81,7 +81,7 @@
   } @else {
     <div class="comparacao__resultado">
       <button type="button" class="comparacao__voltar" (click)="voltarParaSelecao()">
-        <span class="material-symbols-outlined">arrow_back</span>
+        <span aria-hidden="true" class="material-symbols-outlined">arrow_back</span>
         Trocar ativos
       </button>
 
@@ -118,7 +118,7 @@
                       <span>Compatibilidade com seu perfil</span>
                       <strong [style.color]="corCompatibilidade[item.compatibilidade!]">{{ item.score }}</strong>
                     </div>
-                    <div class="comparacao__barra-fundo">
+                    <div class="comparacao__barra-fundo" aria-hidden="true">
                       <div
                         class="comparacao__barra-preenchida"
                         [style.width.%]="item.score"
@@ -134,7 +134,7 @@
 
         <div class="comparacao__veredito">
           <span class="comparacao__veredito-etiqueta">
-            <span class="material-symbols-outlined">auto_awesome</span>
+            <span aria-hidden="true" class="material-symbols-outlined">auto_awesome</span>
             Veredito da IA
           </span>
 

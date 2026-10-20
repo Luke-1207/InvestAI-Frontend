@@ -12,7 +12,7 @@ import { formatarMoeda, formatarNumero, formatarPercentual } from '../../utils/f
   styleUrl: './ticker-mercado.component.scss',
   host: {
     role: 'region',
-    'aria-label': 'Indicadores de mercado',
+    'aria-label': 'Cotações do mercado',
     '[class.ticker-mercado--pausado]': 'ajudaAberta()',
   },
 })

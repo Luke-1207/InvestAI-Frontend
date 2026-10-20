@@ -39,11 +39,11 @@ describe('CriteriosScoreComponent', () => {
   }
 
   it('deve mostrar o score no título', () => {
-    expect(fixture.nativeElement.querySelector('h3').textContent).toContain('Como chegamos a 10 pontos');
+    expect(fixture.nativeElement.querySelector('h2').textContent).toContain('Como chegamos a 10 pontos');
   });
 
   it('deve separar o que somou do que tirou pontos, do maior para o menor impacto', () => {
-    expect(grupos().map((grupo) => grupo.querySelector('h4')!.textContent!.trim())).toEqual([
+    expect(grupos().map((grupo) => grupo.querySelector('h3')!.textContent!.trim())).toEqual([
       'O que somou pontos',
       'O que tirou pontos',
     ]);

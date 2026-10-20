@@ -27,7 +27,7 @@
     <ul class="relatorios__lista">
       @for (registro of registros(); track registro.id) {
         <li class="relatorios__item">
-          <span class="relatorios__icone material-symbols-outlined">{{ iconeTipo(registro.tipo) }}</span>
+          <span aria-hidden="true" class="relatorios__icone material-symbols-outlined">{{ iconeTipo(registro.tipo) }}</span>
           <div class="relatorios__descricao">
             <strong>{{ rotuloTipo(registro.tipo) }}</strong>
             <span>{{ rotuloReferencia(registro.referencia) }}</span>

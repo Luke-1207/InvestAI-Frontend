@@ -12,9 +12,9 @@
 
       @if (!dados.perfil.perfilPreenchido) {
         <div class="dashboard__perfil-incompleto">
-          <span class="material-symbols-outlined">assignment_late</span>
+          <span aria-hidden="true" class="material-symbols-outlined">assignment_late</span>
           <div class="dashboard__perfil-incompleto-texto">
-            <h3>Complete seu perfil pra receber sugestões personalizadas</h3>
+            <h2>Complete seu perfil pra receber sugestões personalizadas</h2>
             <p>Leva menos de 2 minutos e a InvestAI passa a te mostrar recomendações sob medida.</p>
           </div>
           <a routerLink="/onboarding" class="dashboard__link-quiz">Responder o quiz</a>
@@ -28,7 +28,7 @@
         @if (dados.sugestoesRendaVariavel.itens.length > 0) {
           <div class="dashboard__grid">
             @for (item of dados.sugestoesRendaVariavel.itens; track item.codigo) {
-              <app-cartao-sugestao-ativo [item]="item" (clique)="abrirAtivo(item.codigo)" />
+              <app-cartao-sugestao-ativo [item]="item" />
             }
           </div>
         } @else {
@@ -44,9 +44,9 @@
               <div class="dashboard__card">
                 <div class="dashboard__card-cabecalho">
                   <div>
-                    <h4>
+                    <h3>
                       <a class="dashboard__card-link" [routerLink]="rotaTitulo(item)">{{ item.nome }}</a>
-                    </h4>
+                    </h3>
                     <p>
                       {{ item.categoria | rotulo }}
                       <app-ajuda-glossario [chave]="item.categoria" />
@@ -54,6 +54,8 @@
                   </div>
                   <span
                     class="dashboard__score-circulo"
+                    role="img"
+                    [attr.aria-label]="'Score de compatibilidade ' + item.score + ' de 100'"
                     [style.color]="corCompatibilidade[item.compatibilidade]"
                     [style.border-color]="corCompatibilidade[item.compatibilidade]"
                   >
@@ -81,7 +83,11 @@
 
             <div class="dashboard__barra-linha">
               <span>Risco</span>
-              <div class="dashboard__barra">
+              <div
+                class="dashboard__barra"
+                role="img"
+                [attr.aria-label]="'Nível de risco ' + (indiceRisco(dados.perfil.perfilRisco.valor) + 1) + ' de 3'"
+              >
                 @for (i of tresEtapas; track i) {
                   <span
                     class="dashboard__barra-segmento"
@@ -93,7 +99,11 @@
 
             <div class="dashboard__barra-linha">
               <span>Horizonte</span>
-              <div class="dashboard__barra">
+              <div
+                class="dashboard__barra"
+                role="img"
+                [attr.aria-label]="'Prazo ' + (indiceHorizonte(dados.perfil.horizonteInvestimento.valor) + 1) + ' de 3, do curto ao longo'"
+              >
                 @for (i of tresEtapas; track i) {
                   <span
                     class="dashboard__barra-segmento"

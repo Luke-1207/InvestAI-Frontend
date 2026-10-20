@@ -86,7 +86,7 @@ describe('PerfilComponent', () => {
 
   it('deve mostrar o card de perfil de risco com a descrição real', async () => {
     await montar();
-    expect(fixture.nativeElement.querySelector('.preferencias__risco-valor h2').textContent).toContain('Moderado');
+    expect(fixture.nativeElement.querySelector('.preferencias__risco-titulo').textContent).toContain('Moderado');
   });
 
   it('perfil preenchido: deve mostrar as preferências editáveis e o botão de refazer o quiz completo', async () => {
@@ -105,7 +105,7 @@ describe('PerfilComponent', () => {
     fixture.nativeElement.querySelector('app-preferencias-perfil form').dispatchEvent(new Event('submit', { cancelable: true }));
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.preferencias__risco-valor h2').textContent).toContain('Arrojado');
+    expect(fixture.nativeElement.querySelector('.preferencias__risco-titulo').textContent).toContain('Arrojado');
   });
 
   it('perfil incompleto: deve mostrar o CTA de responder o quiz, sem as preferências', async () => {

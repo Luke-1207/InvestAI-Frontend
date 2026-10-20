@@ -1,4 +1,4 @@
-<div class="quiz">
+<main class="quiz">
   @if (carregando()) {
     <div class="quiz__estado">
       <app-spinner tamanho="grande" />
@@ -7,7 +7,14 @@
     <app-erro-servidor (tentarNovamente)="carregarQuiz()" />
   } @else {
     @if (perguntaAtual(); as pergunta) {
-      <div class="quiz__progresso">
+      <div
+        class="quiz__progresso"
+        role="progressbar"
+        aria-label="Progresso do quiz"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="progresso() | number: '1.0-0'"
+      >
         <div class="quiz__progresso-barra" [style.width.%]="progresso()"></div>
       </div>
 
@@ -19,12 +26,12 @@
           }
         </p>
 
-        <h2 class="quiz__pergunta">
+        <h1 class="quiz__pergunta" tabindex="-1">
           {{ pergunta.texto }}
           @if (pergunta.apoio) {
             <app-ajuda class="quiz__ajuda-pergunta" rotulo="Entenda esta pergunta" [texto]="pergunta.apoio" />
           }
-        </h2>
+        </h1>
 
         <div class="quiz__opcoes">
           @for (opcao of pergunta.opcoes; track opcao.id) {
@@ -37,7 +44,7 @@
                 [attr.aria-pressed]="estaSelecionada(opcao.id)"
                 (click)="selecionarOpcao(opcao.id)"
               >
-                <span class="quiz__opcao-emoji">{{ opcao.emoji }}</span>
+                <span class="quiz__opcao-emoji" aria-hidden="true">{{ opcao.emoji }}</span>
                 <span class="quiz__opcao-texto">{{ opcao.texto }}</span>
               </button>
               @if (opcao.explicacao) {
@@ -73,4 +80,4 @@
       </div>
     }
   }
-</div>
+</main>

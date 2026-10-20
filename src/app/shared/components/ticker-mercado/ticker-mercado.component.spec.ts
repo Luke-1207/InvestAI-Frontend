@@ -28,7 +28,7 @@ describe('TickerMercadoComponent', () => {
 
   it('deve ser uma região identificada para leitores de tela', () => {
     expect(fixture.nativeElement.getAttribute('role')).toBe('region');
-    expect(fixture.nativeElement.getAttribute('aria-label')).toBe('Indicadores de mercado');
+    expect(fixture.nativeElement.getAttribute('aria-label')).toBe('Cotações do mercado');
   });
 
   it('deve mostrar traços enquanto os indicadores não chegaram', () => {
