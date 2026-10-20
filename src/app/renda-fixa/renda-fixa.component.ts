@@ -14,7 +14,13 @@ import { AvisoEducativoComponent } from '../shared/components/aviso-educativo/av
 import { AjudaGlossarioComponent } from '../shared/components/ajuda-glossario/ajuda-glossario.component';
 
 type Modo = 'livre' | 'inteligente';
-type FiltroCategoria = 'TODOS' | 'TESOURO' | 'CDB';
+type FiltroCategoria = 'TODOS' | 'TESOURO' | 'CDB' | 'LCI_LCA';
+
+const CATEGORIAS_DO_FILTRO: Record<Exclude<FiltroCategoria, 'TODOS'>, CategoriaRendaFixa[]> = {
+  TESOURO: ['TESOURO'],
+  CDB: ['CDB'],
+  LCI_LCA: ['LCI', 'LCA'],
+};
 
 interface OpcaoCategoria {
   valor: FiltroCategoria;
@@ -48,6 +54,7 @@ export class RendaFixaComponent implements OnInit {
     { valor: 'TODOS', rotulo: 'Tudo' },
     { valor: 'TESOURO', rotulo: 'Tesouro Direto' },
     { valor: 'CDB', rotulo: 'CDBs' },
+    { valor: 'LCI_LCA', rotulo: 'LCI e LCA' },
   ];
 
   protected readonly skeletonsPlaceholder = SKELETONS_PLACEHOLDER;
@@ -63,7 +70,8 @@ export class RendaFixaComponent implements OnInit {
   protected readonly itensFiltrados = computed(() => {
     const categoria = this.filtroCategoria();
     if (categoria === 'TODOS') return this.itens();
-    return this.itens().filter((item) => item.categoria === categoria);
+    const categorias = CATEGORIAS_DO_FILTRO[categoria];
+    return this.itens().filter((item) => categorias.includes(item.categoria));
   });
 
   protected readonly podeExportar = computed(

@@ -26,6 +26,21 @@ export function formatarPercentual(valor: Numero, comSinal = false): string {
   return `${sinal}${formatarNumero(valor)}%`;
 }
 
+export function formatarTaxaComIndexador(indexador: string | null | undefined, taxa: Numero, taxaSomadaAoIndexador: boolean): string {
+  if (ausente(taxa)) return VALOR_AUSENTE;
+  const valor = formatarPercentual(taxa);
+  switch (indexador) {
+    case 'CDI':
+      return `${valor} do CDI`;
+    case 'SELIC':
+      return taxaSomadaAoIndexador ? `Selic + ${valor} a.a.` : `${valor} da Selic`;
+    case 'IPCA':
+      return `IPCA + ${valor} a.a.`;
+    default:
+      return `${valor} a.a.`;
+  }
+}
+
 export function formatarData(valor: string | null | undefined): string {
   if (!valor) return VALOR_AUSENTE;
   const somenteData = /^(\d{4})-(\d{2})-(\d{2})$/.exec(valor);

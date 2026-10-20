@@ -121,6 +121,45 @@ describe('RendaFixaComponent', () => {
     expect(fixture.nativeElement.querySelector('.rf__card h2').textContent).toContain('CDB Banco X');
   });
 
+  function clicarFiltro(rotulo: string): void {
+    const botao = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('.rf__filtro')).find(
+      (b) => b.textContent!.trim() === rotulo,
+    )!;
+    botao.click();
+    fixture.detectChanges();
+  }
+
+  it('deve oferecer as abas Tudo, Tesouro Direto, CDBs e LCI e LCA', () => {
+    const rotulos = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.rf__filtro')).map((b) =>
+      b.textContent!.trim(),
+    );
+
+    expect(rotulos).toEqual(['Tudo', 'Tesouro Direto', 'CDBs', 'LCI e LCA']);
+  });
+
+  it('aba "LCI e LCA" deve mostrar só LCIs e LCAs', () => {
+    fixture.componentInstance['itens'].set([
+      itemMock(),
+      itemMock({ id: '2', categoria: 'CDB', nome: 'CDB Banco X' }),
+      itemMock({ id: '3', categoria: 'LCI', nome: 'LCI Banco Y', isentoIr: true }),
+      itemMock({ id: '4', categoria: 'LCA', nome: 'LCA Banco Z', isentoIr: true }),
+    ]);
+
+    clicarFiltro('LCI e LCA');
+
+    const nomes = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.rf__card h2')).map((h) =>
+      h.textContent!.trim(),
+    );
+    expect(nomes).toEqual(['LCI Banco Y', 'LCA Banco Z']);
+  });
+
+  it('aba "LCI e LCA" sem títulos deve mostrar a mensagem de lista vazia', () => {
+    clicarFiltro('LCI e LCA');
+
+    expect(fixture.nativeElement.querySelectorAll('.rf__card').length).toBe(0);
+    expect(fixture.nativeElement.querySelector('.rf__mensagem-vazia').textContent).toContain('Nenhum título encontrado');
+  });
+
   it('selo de garantia deve mostrar "Tesouro Nacional" pra TESOURO e "Garantido pelo FGC" só quando garantidoFgc é true', () => {
     const selos = fixture.nativeElement.querySelectorAll('.rf__selo');
     expect(selos[0].textContent).toContain('Tesouro Nacional');

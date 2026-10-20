@@ -1,4 +1,4 @@
-import { formatarData, formatarMoeda, formatarNumero, formatarPercentual } from './formatacao.util';
+import { formatarData, formatarMoeda, formatarNumero, formatarPercentual, formatarTaxaComIndexador } from './formatacao.util';
 
 describe('formatacao.util', () => {
   it('formatarNumero deve usar ponto no milhar e vírgula nos decimais', () => {
@@ -22,6 +22,19 @@ describe('formatacao.util', () => {
     expect(formatarPercentual(1.5, true)).toBe('+1,50%');
     expect(formatarPercentual(0, true)).toBe('+0,00%');
     expect(formatarPercentual(-0.42, true)).toBe('-0,42%');
+  });
+
+  it('formatarTaxaComIndexador deve escrever a taxa do jeito que o mercado fala de cada indexador', () => {
+    expect(formatarTaxaComIndexador('CDI', 110, false)).toBe('110,00% do CDI');
+    expect(formatarTaxaComIndexador('SELIC', 0.05, true)).toBe('Selic + 0,05% a.a.');
+    expect(formatarTaxaComIndexador('SELIC', 100, false)).toBe('100,00% da Selic');
+    expect(formatarTaxaComIndexador('IPCA', 6.5, true)).toBe('IPCA + 6,50% a.a.');
+    expect(formatarTaxaComIndexador('PREFIXADO', 13.2, false)).toBe('13,20% a.a.');
+    expect(formatarTaxaComIndexador(null, 12, false)).toBe('12,00% a.a.');
+  });
+
+  it('formatarTaxaComIndexador deve mostrar o traço de ausente quando não há taxa', () => {
+    expect(formatarTaxaComIndexador('CDI', null, false)).toBe('—');
   });
 
   it('formatarData deve manter o dia de uma data sem horário, sem recuar por fuso', () => {

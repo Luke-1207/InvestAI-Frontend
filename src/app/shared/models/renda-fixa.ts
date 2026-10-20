@@ -23,7 +23,9 @@ export interface RendaFixaListagem {
 export interface RentabilidadeEstimada {
   taxaBrutaAnual: number;
   aliquotaIR: number;
-  taxaLiquidaAnual: number;
+  taxaLiquidaAnual: number | null;
+  taxaSomadaAoIndexador: boolean;
+  percentualRendimentoLiquido: number;
 }
 
 export interface TituloPrivadoDetalhe {
@@ -50,6 +52,7 @@ export interface TituloTesouroDetalhe {
   vencimento: string;
   pagaJurosSemestrais: boolean;
   liquidez: string;
+  rentabilidadeEstimada: RentabilidadeEstimada;
   resumoIA: string;
 }
 
@@ -80,9 +83,10 @@ export interface DetalheRendaFixaNormalizado {
   nomeOuEmissor: string;
   indexadorOuTipo: string;
   indexador: string;
-  taxaBrutaAnual: number;
+  rentabilidade: string;
   aliquotaIR: number;
-  taxaLiquidaAnual: number;
+  rentabilidadeLiquida: string | null;
+  percentualRendimentoLiquido: number;
   vencimento: string;
   investimentoMinimo: number;
   liquidez: string;
