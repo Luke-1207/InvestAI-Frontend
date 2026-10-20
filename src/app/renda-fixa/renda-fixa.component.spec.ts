@@ -118,7 +118,7 @@ describe('RendaFixaComponent', () => {
 
     expect(service.listar).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelectorAll('.rf__card').length).toBe(1);
-    expect(fixture.nativeElement.querySelector('.rf__card h4').textContent).toContain('CDB Banco X');
+    expect(fixture.nativeElement.querySelector('.rf__card h2').textContent).toContain('CDB Banco X');
   });
 
   it('selo de garantia deve mostrar "Tesouro Nacional" pra TESOURO e "Garantido pelo FGC" só quando garantidoFgc é true', () => {
@@ -135,12 +135,11 @@ describe('RendaFixaComponent', () => {
     expect(fixture.nativeElement.querySelector('.rf__selo')).toBeNull();
   });
 
-  it('deve navegar pro detalhe ao clicar num card', () => {
-    const navSpy = spyOn(router, 'navigateByUrl');
+  it('o título do card deve ser um link para o detalhe, alcançável pelo Tab', () => {
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('.rf__card h2 a.rf__card-link');
 
-    fixture.nativeElement.querySelector('.rf__card').click();
-
-    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/1');
+    expect(link.getAttribute('href')).toBe('/renda-fixa/1');
+    expect(link.tabIndex).toBe(0);
   });
 
   it('deve mostrar mensagem de vazio quando não há itens', () => {
@@ -155,22 +154,16 @@ describe('RendaFixaComponent', () => {
     service.listar.and.returnValue(of([itemMock({ id: '1', codigo: 'tesouro-selic-2029' })]));
     fixture.componentInstance['carregar']();
     fixture.detectChanges();
-    const navSpy = spyOn(router, 'navigateByUrl');
 
-    fixture.nativeElement.querySelector('.rf__card').click();
-
-    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/tesouro-selic-2029');
+    expect(fixture.nativeElement.querySelector('.rf__card-link').getAttribute('href')).toBe('/renda-fixa/tesouro-selic-2029');
   });
 
   it('deve navegar usando o id quando o item é privado (codigo vem null)', () => {
     service.listar.and.returnValue(of([itemMock({ id: '99', codigo: null, categoria: 'CDB' })]));
     fixture.componentInstance['carregar']();
     fixture.detectChanges();
-    const navSpy = spyOn(router, 'navigateByUrl');
 
-    fixture.nativeElement.querySelector('.rf__card').click();
-
-    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/99');
+    expect(fixture.nativeElement.querySelector('.rf__card-link').getAttribute('href')).toBe('/renda-fixa/99');
   });
 
   function irParaModoInteligente(): void {

@@ -19,6 +19,11 @@ const ALTURA_MAXIMA = 180;
 export class GraficoBarrasComponent {
   readonly barras = input.required<BarraDado[]>();
 
+  protected readonly descricao = computed(() => {
+    const formato = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return 'Gráfico de barras. ' + this.barras().map((b) => `${b.rotulo}: R$ ${formato.format(b.valor)}`).join('; ') + '.';
+  });
+
   protected readonly barrasComAltura = computed(() => {
     const dados = this.barras();
     const maximo = Math.max(...dados.map((b) => b.valor), 1);

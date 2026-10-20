@@ -23,6 +23,7 @@ interface ItemNav {
 })
 export class AppShellComponent implements OnInit {
   @ViewChild('campoBusca') campoBusca?: ElementRef<HTMLInputElement>;
+  @ViewChild('botaoUsuario') botaoUsuario?: ElementRef<HTMLButtonElement>;
 
   protected readonly themeService = inject(ThemeService);
   protected readonly authService = inject(AuthService);
@@ -54,8 +55,14 @@ export class AppShellComponent implements OnInit {
         filter((evento) => evento instanceof NavigationEnd),
         takeUntilDestroyed(),
       )
-      .subscribe(() => this.fecharMenuNavegacao());
+      .subscribe(() => {
+        this.fecharMenuNavegacao();
+        if (this.jaNavegou) this.focarConteudo();
+        this.jaNavegou = true;
+      });
   }
+
+  private jaNavegou = false;
 
   ngOnInit(): void {
     this.fotoPerfilService.carregar();
@@ -84,6 +91,11 @@ export class AppShellComponent implements OnInit {
     this.themeService.alternarTema();
   }
 
+  focarConteudo(evento?: Event): void {
+    evento?.preventDefault();
+    document.getElementById('conteudo-principal')?.focus({ preventScroll: !evento });
+  }
+
   sair(): void {
     this.menuUsuarioAberto.set(false);
     this.authService.logout();
@@ -93,6 +105,10 @@ export class AppShellComponent implements OnInit {
   aoTeclar(evento: KeyboardEvent): void {
     if (evento.key === 'Escape') {
       this.fecharMenuNavegacao();
+      if (this.menuUsuarioAberto()) {
+        this.menuUsuarioAberto.set(false);
+        this.botaoUsuario?.nativeElement.focus();
+      }
       return;
     }
 

@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { ConformidadeComponent } from './conformidade.component';
 
 describe('ConformidadeComponent', () => {
   let fixture: ComponentFixture<ConformidadeComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [ConformidadeComponent] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [ConformidadeComponent], providers: [provideRouter([])] }).compileComponents();
     fixture = TestBed.createComponent(ConformidadeComponent);
     fixture.detectChanges();
   });
@@ -18,7 +19,14 @@ describe('ConformidadeComponent', () => {
       'Como o score é calculado',
       'Uso de inteligência artificial',
       'Dados de mercado',
+      'Saiba mais',
     ]);
+  });
+
+  it('deve levar para as outras páginas institucionais', () => {
+    const links = Array.from(fixture.nativeElement.querySelectorAll('a')).map((a) => (a as HTMLAnchorElement).getAttribute('href'));
+
+    expect(links).toEqual(['/regras-cvm', '/privacidade', '/termos-de-uso']);
   });
 
   it('deve mostrar os critérios do score de renda variável e de renda fixa com os limites de Alta e Média', () => {

@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { RendaFixaService } from '../shared/services/renda-fixa.service';
 import { RendaFixaListagem, CategoriaRendaFixa } from '../shared/models/renda-fixa';
 import { CORES_COMPATIBILIDADE } from '../shared/models/compatibilidade';
@@ -26,13 +26,22 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 @Component({
   selector: 'app-renda-fixa',
   standalone: true,
-  imports: [RotuloPipe, AjudaGlossarioComponent, AvisoEducativoComponent, DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent, BotaoRelatorioComponent],
+  imports: [
+    RouterLink,
+    RotuloPipe,
+    AjudaGlossarioComponent,
+    AvisoEducativoComponent,
+    DecimalPipe,
+    DatePipe,
+    SkeletonCardComponent,
+    ErroServidorComponent,
+    BotaoRelatorioComponent,
+  ],
   templateUrl: './renda-fixa.component.html',
   styleUrl: './renda-fixa.component.scss',
 })
 export class RendaFixaComponent implements OnInit {
   private readonly rendaFixaService = inject(RendaFixaService);
-  private readonly router = inject(Router);
   private readonly relatorioService = inject(RelatorioService);
 
   protected readonly OPCOES_CATEGORIA: OpcaoCategoria[] = [
@@ -104,8 +113,8 @@ export class RendaFixaComponent implements OnInit {
     });
   }
 
-  protected abrirDetalhe(item: RendaFixaListagem): void {
-    this.router.navigateByUrl(`/renda-fixa/${item.codigo ?? item.id}`);
+  protected rotaDetalhe(item: RendaFixaListagem): string[] {
+    return ['/renda-fixa', item.codigo ?? item.id];
   }
 
   protected seloGarantia(item: RendaFixaListagem): string | null {

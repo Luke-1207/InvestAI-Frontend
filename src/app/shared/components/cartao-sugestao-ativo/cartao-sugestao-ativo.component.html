@@ -1,11 +1,20 @@
-<div class="cartao-sugestao-ativo" role="link" tabindex="0" (click)="clique.emit()" (keydown.enter)="clique.emit()">
+<article class="cartao-sugestao-ativo">
   <div class="cartao-sugestao-ativo__cabecalho">
     <div>
-      <h4>{{ item().codigo }}</h4>
+      <ng-template #link>
+        <a class="cartao-sugestao-ativo__link" [routerLink]="['/renda-variavel', item().codigo]">{{ item().codigo }}</a>
+      </ng-template>
+      @if (nivelTitulo() === 2) {
+        <h2><ng-container [ngTemplateOutlet]="link" /></h2>
+      } @else {
+        <h3><ng-container [ngTemplateOutlet]="link" /></h3>
+      }
       <p>{{ item().nome }}</p>
     </div>
     <span
       class="cartao-sugestao-ativo__score"
+      role="img"
+      [attr.aria-label]="'Score de compatibilidade ' + item().score + ' de 100'"
       [style.color]="corCompatibilidade[item().compatibilidade]"
       [style.border-color]="corCompatibilidade[item().compatibilidade]"
     >
@@ -25,4 +34,4 @@
   </div>
 
   <p class="cartao-sugestao-ativo__justificativa">{{ item().justificativa }}</p>
-</div>
+</article>

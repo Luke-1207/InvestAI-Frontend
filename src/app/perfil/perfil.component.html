@@ -12,12 +12,12 @@
           <div class="perfil__avatar">{{ iniciais() }}</div>
         }
         <div class="perfil__identificacao-texto">
-          <h1>{{ usuario()?.nome }}</h1>
+          <h1>{{ usuario()?.nome || 'Seu perfil' }}</h1>
           <p>{{ usuario()?.email }}</p>
         </div>
         <div class="perfil__identificacao-acoes">
           <a routerLink="/perfil/editar" class="perfil__botao-editar-dados">
-            <span class="material-symbols-outlined">edit</span>
+            <span aria-hidden="true" class="material-symbols-outlined">edit</span>
             Editar Dados Pessoais
           </a>
           <app-botao-relatorio rotulo="Exportar perfil" icone="picture_as_pdf" [requisicao]="exportarPerfil" />
@@ -26,9 +26,9 @@
 
       @if (!dados.perfilPreenchido) {
         <div class="perfil__incompleto">
-          <span class="material-symbols-outlined">assignment_late</span>
+          <span aria-hidden="true" class="material-symbols-outlined">assignment_late</span>
           <div>
-            <h3>Você ainda não fez o quiz de perfil</h3>
+            <h2>Você ainda não fez o quiz de perfil</h2>
             <p>Responda em menos de 2 minutos pra gente calibrar suas recomendações.</p>
           </div>
           <button type="button" [disabled]="refazendoQuiz()" (click)="refazerQuiz()">

@@ -1,12 +1,12 @@
 <app-auth-layout>
-  <h3 class="auth-form__titulo">Recuperar senha</h3>
+  <h1 class="auth-form__titulo">Recuperar senha</h1>
   <p class="auth-form__subtitulo">
     Informe o e-mail cadastrado na sua conta para receber o link de redefinição.
   </p>
 
   @if (enviado()) {
     <div class="auth-form__alerta auth-form__alerta--sucesso">
-      <span class="material-symbols-outlined">mark_email_read</span>
+      <span aria-hidden="true" class="material-symbols-outlined">mark_email_read</span>
       Link de redefinição enviado para o seu e-mail.
     </div>
     <div class="auth-form__links">
@@ -15,7 +15,7 @@
   } @else {
     @if (erro()) {
       <div class="auth-form__alerta auth-form__alerta--erro">
-        <span class="material-symbols-outlined">error</span>
+        <span aria-hidden="true" class="material-symbols-outlined">error</span>
         {{ erro() }}
       </div>
     }

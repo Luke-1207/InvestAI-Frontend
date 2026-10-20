@@ -35,4 +35,16 @@ describe('GraficoBarrasComponent', () => {
     expect(barras[1].style.height).toBe('180px');
     expect(parseFloat(barras[0].style.height)).toBeLessThan(180);
   });
+
+  it('deve descrever as barras em texto para leitores de tela', () => {
+    fixture.componentRef.setInput('barras', [
+      { rotulo: 'Valor investido', valor: 1000, cor: '#fff' },
+      { rotulo: 'Na poupança', valor: 1061.68, cor: '#000' },
+    ]);
+    fixture.detectChanges();
+
+    const grafico: HTMLElement = fixture.nativeElement.querySelector('.grafico-barras');
+    expect(grafico.getAttribute('role')).toBe('img');
+    expect(grafico.getAttribute('aria-label')).toBe('Gráfico de barras. Valor investido: R$ 1.000,00; Na poupança: R$ 1.061,68.');
+  });
 });

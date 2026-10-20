@@ -1,11 +1,11 @@
 <section class="criterios-score">
-  <h3 class="criterios-score__titulo">Como chegamos a {{ score() }} pontos</h3>
+  <h2 class="criterios-score__titulo">Como chegamos a {{ score() }} pontos</h2>
 
   @if (temCriterios()) {
     <div class="criterios-score__grupos">
       @if (somaram().length > 0) {
         <div class="criterios-score__grupo">
-          <h4>O que somou pontos</h4>
+          <h3>O que somou pontos</h3>
           <ul>
             @for (criterio of somaram(); track criterio.chave) {
               <li>
@@ -19,7 +19,7 @@
 
       @if (tiraram().length > 0) {
         <div class="criterios-score__grupo">
-          <h4>O que tirou pontos</h4>
+          <h3>O que tirou pontos</h3>
           <ul>
             @for (criterio of tiraram(); track criterio.chave) {
               <li>

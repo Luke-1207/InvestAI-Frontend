@@ -57,7 +57,7 @@ describe('CampoEditavelComponent', () => {
   }
 
   it('fora da edição, deve mostrar o título, o valor atual e o botão Editar', () => {
-    expect(el().querySelector('h3')!.textContent!.trim()).toBe('Objetivo');
+    expect(el().querySelector('h2')!.textContent!.trim()).toBe('Objetivo');
     expect(el().querySelector('.valor-atual')!.textContent).toBe('Renda passiva');
     expect(botaoEditar()!.getAttribute('aria-label')).toBe('Editar objetivo');
     expect(el().querySelector('form')).toBeNull();

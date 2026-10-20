@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface CriterioPeso {
   criterio: string;
@@ -8,6 +9,7 @@ interface CriterioPeso {
 @Component({
   selector: 'app-conformidade',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './conformidade.component.html',
   styleUrl: './conformidade.component.scss',
 })

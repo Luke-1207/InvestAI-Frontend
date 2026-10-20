@@ -2,13 +2,18 @@
 
 .cartao-sugestao-ativo {
   @include cartao;
-  @include cartao-clicavel;
+  @include cartao-com-link;
+}
+
+.cartao-sugestao-ativo__link {
+  @include link-do-cartao;
 }
 
 .cartao-sugestao-ativo__cabecalho {
   @include cabecalho-cartao;
 
-  h4 {
+  h2,
+  h3 {
     font-family: $font-display;
     font-size: 16px;
     margin: 0;

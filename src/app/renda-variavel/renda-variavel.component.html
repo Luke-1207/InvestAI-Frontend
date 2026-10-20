@@ -31,7 +31,7 @@
           [class.rv__modo--ativo]="modo() === 'inteligente'"
           (click)="alternarModo('inteligente')"
         >
-          <span class="material-symbols-outlined">auto_awesome</span>
+          <span aria-hidden="true" class="material-symbols-outlined">auto_awesome</span>
           Modo Inteligente
         </button>
       </div>
@@ -55,10 +55,10 @@
       @if (dados.content.length > 0) {
         <div class="rv__grid">
           @for (item of dados.content; track item.codigo) {
-            <div class="rv__card" (click)="abrirDetalhe(item.codigo)">
+            <div class="rv__card">
               <div class="rv__card-cabecalho">
                 <div>
-                  <h4>{{ item.codigo }}</h4>
+                  <h2><a class="rv__card-link" [routerLink]="['/renda-variavel', item.codigo]">{{ item.codigo }}</a></h2>
                   <p>{{ item.nome }}</p>
                 </div>
                 <span class="rv__tipo">
@@ -113,7 +113,7 @@
         <app-aviso-educativo />
         <div class="rv__grid">
           @for (item of dados.itens; track item.codigo) {
-            <app-cartao-sugestao-ativo [item]="item" (clique)="abrirDetalhe(item.codigo)" />
+            <app-cartao-sugestao-ativo [item]="item" [nivelTitulo]="2" />
           }
         </div>
       } @else {

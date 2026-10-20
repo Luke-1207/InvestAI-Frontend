@@ -10,6 +10,7 @@
       tabindex="0"
       role="group"
       [attr.aria-label]="rotuloAcessivel()"
+      [attr.aria-describedby]="idResumo"
       (keydown)="aoPressionarTecla($event)"
       (focus)="aoFocar()"
       (blur)="limpar()"
@@ -67,6 +68,7 @@
         </div>
       }
     </div>
+    <p class="leitor-de-tela" [id]="idResumo">{{ resumo() }}</p>
     <span class="grafico-linha__leitor" aria-live="polite">{{ anuncio() }}</span>
   } @else {
     <p class="grafico-linha__vazio">Sem dados de histórico para esse período.</p>

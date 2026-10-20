@@ -1,6 +1,6 @@
 <app-auth-layout>
   @if (tokenAusente) {
-    <h3 class="auth-form__titulo">Link inválido</h3>
+    <h1 class="auth-form__titulo">Link inválido</h1>
     <p class="auth-form__subtitulo">
       Esse link de redefinição está incompleto ou expirado. Solicite um novo.
     </p>
@@ -8,21 +8,21 @@
       <a routerLink="/auth/recuperar-senha" class="auth-form__link--destaque">Solicitar novo link</a>
     </div>
   } @else if (concluido()) {
-    <h3 class="auth-form__titulo">Senha redefinida</h3>
+    <h1 class="auth-form__titulo">Senha redefinida</h1>
     <div class="auth-form__alerta auth-form__alerta--sucesso">
-      <span class="material-symbols-outlined">check_circle</span>
+      <span aria-hidden="true" class="material-symbols-outlined">check_circle</span>
       Sua senha foi alterada com sucesso.
     </div>
     <div class="auth-form__links">
       <a routerLink="/auth/login" class="auth-form__link--destaque">Ir para o login</a>
     </div>
   } @else {
-    <h3 class="auth-form__titulo">Criar nova senha</h3>
+    <h1 class="auth-form__titulo">Criar nova senha</h1>
     <p class="auth-form__subtitulo">Escolha uma nova senha para a sua conta.</p>
 
     @if (erro()) {
       <div class="auth-form__alerta auth-form__alerta--erro">
-        <span class="material-symbols-outlined">error</span>
+        <span aria-hidden="true" class="material-symbols-outlined">error</span>
         {{ erro() }}
       </div>
     }

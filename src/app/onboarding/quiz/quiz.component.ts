@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, Injector, OnInit, afterNextRender, computed, inject, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PerfilService } from '../../shared/services/perfil.service';
@@ -14,7 +15,7 @@ const MENSAGEM_ERRO_ENVIO = 'Não foi possível salvar suas respostas. Tente nov
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [ButtonComponent, SpinnerComponent, ErroServidorComponent, AjudaContextualComponent],
+  imports: [DecimalPipe, ButtonComponent, SpinnerComponent, ErroServidorComponent, AjudaContextualComponent],
   templateUrl: './quiz.component.html',
   styleUrl: './quiz.component.scss',
 })
@@ -22,6 +23,7 @@ export class QuizComponent implements OnInit {
   private readonly perfilService = inject(PerfilService);
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly injector = inject(Injector);
 
   protected readonly perguntas = signal<QuizPergunta[]>([]);
   protected readonly etapaAtual = signal(0);
@@ -100,6 +102,7 @@ export class QuizComponent implements OnInit {
   protected voltar(): void {
     if (this.etapaAtual() > 0) {
       this.etapaAtual.update((etapa) => etapa - 1);
+      this.focarPergunta();
     }
   }
 
@@ -110,7 +113,12 @@ export class QuizComponent implements OnInit {
       this.enviarRespostas();
     } else {
       this.etapaAtual.update((etapa) => etapa + 1);
+      this.focarPergunta();
     }
+  }
+
+  private focarPergunta(): void {
+    afterNextRender(() => document.querySelector<HTMLElement>('.quiz__pergunta')?.focus(), { injector: this.injector });
   }
 
   private enviarRespostas(): void {

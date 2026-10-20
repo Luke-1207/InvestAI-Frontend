@@ -214,4 +214,29 @@ describe('QuizComponent', () => {
 
     expect(toast).toHaveBeenCalledWith('Não foi possível salvar suas respostas. Tente novamente.');
   });
+
+  describe('acessibilidade', () => {
+    it('a pergunta deve ser o título principal da página, dentro do conteúdo principal', () => {
+      expect(fixture.nativeElement.querySelector('main h1.quiz__pergunta')).not.toBeNull();
+    });
+
+    it('a barra de progresso deve informar o andamento e os emojis não devem ser lidos', () => {
+      const progresso = fixture.nativeElement.querySelector('.quiz__progresso');
+
+      expect(progresso.getAttribute('role')).toBe('progressbar');
+      expect(progresso.getAttribute('aria-label')).toBe('Progresso do quiz');
+      expect(Number(progresso.getAttribute('aria-valuenow'))).toBeGreaterThan(0);
+      expect(fixture.nativeElement.querySelector('.quiz__opcao-emoji').getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('ao avançar, o foco deve ir para a nova pergunta', async () => {
+      opcoes()[0].click();
+      fixture.detectChanges();
+      botaoContinuar().click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(document.activeElement).toBe(fixture.nativeElement.querySelector('.quiz__pergunta'));
+    });
+  });
 });
