@@ -1,4 +1,4 @@
-<div class="grafico-barras">
+<div class="grafico-barras" role="img" [attr.aria-label]="descricao()">
   @for (barra of barrasComAltura(); track barra.rotulo) {
     <div class="grafico-barras__coluna">
       <span class="grafico-barras__valor">R$ {{ barra.valor | number: '1.2-2' }}</span>

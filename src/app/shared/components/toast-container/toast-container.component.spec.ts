@@ -46,4 +46,11 @@ describe('ToastContainerComponent', () => {
 
     expect(toasts().length).toBe(0);
   });
+
+  it('os avisos devem ser anunciados por leitores de tela', () => {
+    const container = fixture.nativeElement.querySelector('.toast-container');
+
+    expect(container.getAttribute('role')).toBe('status');
+    expect(container.getAttribute('aria-live')).toBe('polite');
+  });
 });

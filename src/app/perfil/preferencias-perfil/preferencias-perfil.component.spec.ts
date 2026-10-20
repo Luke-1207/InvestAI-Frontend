@@ -65,7 +65,7 @@ describe('PreferenciasPerfilComponent', () => {
 
   function campo(titulo: string): HTMLElement {
     return Array.from(el().querySelectorAll<HTMLElement>('app-campo-editavel')).find(
-      (c) => c.querySelector('h3')!.textContent!.trim() === titulo,
+      (c) => c.querySelector('h2')!.textContent!.trim() === titulo,
     )!;
   }
 

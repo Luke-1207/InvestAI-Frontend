@@ -2,7 +2,7 @@
   <header class="painel-gestor__cabecalho">
     <div>
       <span class="painel-gestor__etiqueta">
-        <span class="material-symbols-outlined">shield_person</span>
+        <span aria-hidden="true" class="material-symbols-outlined">shield_person</span>
         Área administrativa
       </span>
       <h1 class="painel-gestor__titulo">Painel do Gestor</h1>
@@ -24,13 +24,13 @@
         <article class="painel-gestor__card" data-teste="card-usuarios">
           <div class="painel-gestor__card-topo">
             <h2>Total de usuários</h2>
-            <span class="material-symbols-outlined">group</span>
+            <span aria-hidden="true" class="material-symbols-outlined">group</span>
           </div>
           <p class="painel-gestor__numero">{{ formatarNumero(dados.totalUsuarios) }}</p>
           <p class="painel-gestor__apoio">
             @if (dados.novosUsuariosUltimos30Dias > 0) {
               <span class="painel-gestor__variacao painel-gestor__variacao--positiva">
-                <span class="material-symbols-outlined">trending_up</span>
+                <span aria-hidden="true" class="material-symbols-outlined">trending_up</span>
                 +{{ formatarNumero(dados.novosUsuariosUltimos30Dias) }}
                 @if (variacaoUsuarios(); as variacao) {
                   ({{ formatarVariacao(variacao) }}%)
@@ -47,7 +47,7 @@
         <article class="painel-gestor__card" data-teste="card-perfis">
           <div class="painel-gestor__card-topo">
             <h2>Perfis concluídos</h2>
-            <span class="material-symbols-outlined">fact_check</span>
+            <span aria-hidden="true" class="material-symbols-outlined">fact_check</span>
           </div>
           <p class="painel-gestor__numero">
             {{ formatarNumero(dados.usuariosComPerfilPreenchido) }}
@@ -69,7 +69,7 @@
         <article class="painel-gestor__card" data-teste="card-ia">
           <div class="painel-gestor__card-topo">
             <h2>Microsserviço de IA</h2>
-            <span class="material-symbols-outlined">smart_toy</span>
+            <span aria-hidden="true" class="material-symbols-outlined">smart_toy</span>
           </div>
           @if (statusIa(); as status) {
             <p class="painel-gestor__status">
@@ -120,7 +120,7 @@
             @for (categoria of categorias(); track categoria.rotulo) {
               <li class="painel-gestor__categoria">
                 <span class="painel-gestor__categoria-rotulo">{{ categoria.rotulo }}</span>
-                <span class="painel-gestor__categoria-trilho">
+                <span class="painel-gestor__categoria-trilho" aria-hidden="true">
                   <span
                     class="painel-gestor__categoria-barra"
                     [class.painel-gestor__categoria-barra--rf]="categoria.grupo === 'rf'"

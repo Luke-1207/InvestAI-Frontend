@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { DashboardComponent } from './dashboard.component';
@@ -78,14 +78,13 @@ describe('DashboardComponent', () => {
     );
   });
 
-  it('clicar em um card de renda variável deve abrir o detalhe do ativo', async () => {
+  it('os cards de renda variável devem levar ao detalhe do ativo', async () => {
     await montar(mockDashboard());
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigateByUrl').and.resolveTo(true);
 
-    fixture.nativeElement.querySelectorAll('app-cartao-sugestao-ativo .cartao-sugestao-ativo')[1].click();
-
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/renda-variavel/VALE3');
+    const links = Array.from(fixture.nativeElement.querySelectorAll('app-cartao-sugestao-ativo h3 a')).map((a) =>
+      (a as HTMLAnchorElement).getAttribute('href'),
+    );
+    expect(links).toEqual(['/renda-variavel/PETR4', '/renda-variavel/VALE3']);
   });
 
   it('cards de renda fixa devem levar ao detalhe: Tesouro pelo código, título privado pelo id', async () => {
@@ -130,5 +129,18 @@ describe('DashboardComponent', () => {
     const legendas = fixture.nativeElement.querySelectorAll('.donut-chart__percentual');
     expect(legendas[0].textContent.trim()).toBe('50%');
     expect(legendas[1].textContent.trim()).toBe('50%');
+  });
+
+  it('as barras de risco e prazo do perfil devem ter descrição em texto', async () => {
+    await montar(mockDashboard());
+
+    const barras = Array.from(fixture.nativeElement.querySelectorAll('.dashboard__barra')).map((b) => [
+      (b as HTMLElement).getAttribute('role'),
+      (b as HTMLElement).getAttribute('aria-label'),
+    ]);
+    expect(barras).toEqual([
+      ['img', 'Nível de risco 2 de 3'],
+      ['img', 'Prazo 3 de 3, do curto ao longo'],
+    ]);
   });
 });

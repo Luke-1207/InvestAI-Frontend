@@ -1,10 +1,10 @@
 <app-auth-layout>
-  <h3 class="auth-form__titulo">Entrar na sua conta</h3>
+  <h1 class="auth-form__titulo">Entrar na sua conta</h1>
   <p class="auth-form__subtitulo">Acesse suas recomendações personalizadas geradas por IA.</p>
 
   @if (erro()) {
     <div class="auth-form__alerta auth-form__alerta--erro">
-      <span class="material-symbols-outlined">error</span>
+      <span aria-hidden="true" class="material-symbols-outlined">error</span>
       {{ erro() }}
     </div>
   }

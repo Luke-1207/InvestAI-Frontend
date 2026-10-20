@@ -27,7 +27,8 @@
   gap: $space-3;
   margin-bottom: $space-10;
 
-  h1 {
+  .auth-layout__marca {
+    display: block;
     font-family: $font-display;
     font-size: 24px;
     font-weight: 700;

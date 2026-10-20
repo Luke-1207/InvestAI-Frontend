@@ -240,4 +240,15 @@ describe('GraficoLinhaPrecoComponent', () => {
     expect(el().querySelector('.grafico-linha__balao')).toBeNull();
     expect(Array.from(el().querySelectorAll('.grafico-linha__rotulo--x')).map((t) => t.textContent!.trim())).toEqual(['01/01']);
   });
+
+  it('deve resumir o período em texto: começo, fim, variação, menor e maior fechamento', () => {
+    montar();
+
+    const area = el().querySelector('.grafico-linha__area')!;
+    const resumo = el().querySelector(`#${area.getAttribute('aria-describedby')}`)!;
+    expect(resumo.textContent!.trim()).toBe(
+      'O fechamento foi de R$ 12,00 em 01/01/2026 para R$ 15,50 em 03/01/2026, alta de 29,17%. ' +
+        'O menor fechamento foi R$ 8,00, em 02/01/2026, e o maior foi R$ 15,50, em 03/01/2026.',
+    );
+  });
 });

@@ -34,12 +34,12 @@
           [class.detalhe-ativo__favorito--ativo]="favoritado()"
           (click)="alternarFavorito()"
         >
-          <span class="material-symbols-outlined">{{ favoritado() ? 'star' : 'star_border' }}</span>
+          <span aria-hidden="true" class="material-symbols-outlined">{{ favoritado() ? 'star' : 'star_border' }}</span>
           {{ favoritado() ? 'Nos favoritos' : 'Salvar como Favorito' }}
         </button>
 
         <button type="button" class="detalhe-ativo__comparar" (click)="compararAtivo()">
-          <span class="material-symbols-outlined">compare_arrows</span>
+          <span aria-hidden="true" class="material-symbols-outlined">compare_arrows</span>
           Comparar Ativo
         </button>
 
@@ -99,13 +99,15 @@
       @if (!carregandoIA() && sugestaoIA(); as ia) {
         <div class="detalhe-ativo__ia">
         <span class="detalhe-ativo__ia-etiqueta">
-          <span class="material-symbols-outlined">auto_awesome</span>
+          <span aria-hidden="true" class="material-symbols-outlined">auto_awesome</span>
           Análise da IA
         </span>
 
           <div class="detalhe-ativo__ia-corpo">
           <span
             class="detalhe-ativo__ia-score"
+            role="img"
+            [attr.aria-label]="'Score de compatibilidade ' + ia.score + ' de 100'"
             [style.color]="corCompatibilidade[ia.compatibilidade]"
             [style.border-color]="corCompatibilidade[ia.compatibilidade]"
           >

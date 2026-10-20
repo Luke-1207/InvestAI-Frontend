@@ -49,6 +49,37 @@
   }
 }
 
+@mixin cartao-com-link {
+  position: relative;
+  @include cartao-clicavel;
+
+  &:has(a:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  app-ajuda-glossario {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@mixin link-do-cartao {
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
 @mixin grid-cartoes($minimo: 260px, $repeticao: auto-fill) {
   display: grid;
   grid-template-columns: repeat($repeticao, minmax($minimo, 1fr));
@@ -245,7 +276,7 @@
   flex-shrink: 0;
   padding: $space-2 $space-4;
   background: var(--warning);
-  color: #1a1200;
+  color: var(--warning-on);
   font-family: $font-body;
   font-weight: 700;
   font-size: 14px;

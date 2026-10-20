@@ -14,7 +14,7 @@
       {{ iconePerfilRisco[perfil().perfilRisco.valor] ?? 'balance' }}
     </span>
     <div>
-      <h2>{{ perfil().perfilRisco.descricao }}</h2>
+      <strong class="preferencias__risco-titulo">{{ perfil().perfilRisco.descricao }}</strong>
       @if (perfil().resumoIA) {
         <p>{{ perfil().resumoIA }}</p>
       }

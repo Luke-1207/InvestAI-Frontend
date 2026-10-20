@@ -57,7 +57,7 @@
   }
 
   &--ativo {
-    @include pilula-ativa(var(--ai), white);
+    @include pilula-ativa(var(--ai-forte), white);
   }
 }
 
@@ -67,13 +67,17 @@
 
 .rv__card {
   @include cartao;
-  @include cartao-clicavel;
+  @include cartao-com-link;
+}
+
+.rv__card-link {
+  @include link-do-cartao;
 }
 
 .rv__card-cabecalho {
   @include cabecalho-cartao;
 
-  h4 {
+  h2 {
     font-family: $font-display;
     font-size: 16px;
     margin: 0;

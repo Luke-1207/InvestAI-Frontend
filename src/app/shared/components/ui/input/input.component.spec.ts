@@ -72,4 +72,11 @@ describe('InputComponent', () => {
     const erro = fixture.nativeElement.querySelector('.app-input__erro');
     expect(erro.textContent).toContain('Campo obrigatório.');
   });
+
+  it('o botão de mostrar a senha deve ser alcançável pelo teclado e ter nome', () => {
+    const botaoOlho: HTMLButtonElement = fixture.nativeElement.querySelector('.app-input__alternar-senha');
+
+    expect(botaoOlho.tabIndex).toBe(0);
+    expect(botaoOlho.getAttribute('aria-label')).toBe('Mostrar senha');
+  });
 });

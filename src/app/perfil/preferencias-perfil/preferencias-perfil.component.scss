@@ -11,15 +11,16 @@
   align-items: flex-start;
   gap: $space-4;
 
-  h2 {
-    @include titulo-pagina(22px, 0 0 $space-2);
-  }
-
   p {
     @include texto-apoio;
     line-height: 1.5;
     margin: 0;
   }
+}
+
+.preferencias__risco-titulo {
+  display: block;
+  @include titulo-pagina(22px, 0 0 $space-2);
 }
 
 .preferencias__risco-icone {
@@ -163,7 +164,6 @@
 
 .preferencias__nota {
   @include texto-apoio(13px);
-  line-height: 1.5;
   margin: 0;
 }
 

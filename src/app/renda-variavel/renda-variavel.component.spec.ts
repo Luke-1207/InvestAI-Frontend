@@ -127,12 +127,11 @@ describe('RendaVariavelComponent', () => {
     expect(navSpy).not.toHaveBeenCalled();
   });
 
-  it('deve navegar pro detalhe do ativo ao clicar num card do Modo Livre', () => {
-    const navSpy = spyOn(router, 'navigateByUrl');
+  it('no Modo Livre, o código do ativo deve ser um link para o detalhe, alcançável pelo Tab', () => {
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('.rv__card h2 a.rv__card-link');
 
-    fixture.nativeElement.querySelector('.rv__card').click();
-
-    expect(navSpy).toHaveBeenCalledWith('/renda-variavel/PETR4');
+    expect(link.getAttribute('href')).toBe('/renda-variavel/PETR4');
+    expect(link.textContent!.trim()).toBe('PETR4');
   });
 
   it('não deve mostrar paginação quando só existe 1 página', () => {
