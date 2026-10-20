@@ -11,15 +11,20 @@ const PRIVADO_MOCK: TituloPrivadoDetalhe = {
   id: '123e4567-e89b-12d3-a456-426614174000', tipo: 'CDB', emissor: 'Banco Inter', indexador: 'CDI',
   taxaPercentual: 105, vencimento: '2027-01-01', investimentoMinimo: 500,
   liquidez: 'DIARIA', garantidoFgc: true, isentoIr: false,
-  rentabilidadeEstimada: { taxaBrutaAnual: 10, aliquotaIR: 17.5, taxaLiquidaAnual: 8.25 },
+  rentabilidadeEstimada: {
+    taxaBrutaAnual: 105, aliquotaIR: 17.5, taxaLiquidaAnual: 86.63, taxaSomadaAoIndexador: false, percentualRendimentoLiquido: 82.5,
+  },
   resumoIA: 'Contexto econômico do CDB.',
 };
 
 const TESOURO_MOCK: TituloTesouroDetalhe = {
   codigo: 'tesouro-selic-2029', nome: 'Tesouro Selic 2029',
   tipo: { valor: 'SELIC', descricao: 'Tesouro Selic' },
-  taxaAnual: 11, precoMinimo: 150, vencimento: '2029-01-01',
+  taxaAnual: 0.05, precoMinimo: 150, vencimento: '2029-01-01',
   pagaJurosSemestrais: false, liquidez: 'DIARIA', resumoIA: 'Contexto econômico do Tesouro.',
+  rentabilidadeEstimada: {
+    taxaBrutaAnual: 0.05, aliquotaIR: 15, taxaLiquidaAnual: null, taxaSomadaAoIndexador: true, percentualRendimentoLiquido: 85,
+  },
 };
 
 function itemListagemMock(overrides: Partial<RendaFixaListagem> = {}): RendaFixaListagem {
@@ -50,11 +55,11 @@ describe('DetalheRendaFixaComponent', () => {
   let toastService: ToastService;
   let router: Router;
 
-  async function montar(identificador: string) {
+  async function montar(identificador: string, privado: TituloPrivadoDetalhe = PRIVADO_MOCK) {
     service = jasmine.createSpyObj('RendaFixaService', [
       'obterDetalhePrivado', 'obterDetalheTesouro', 'listar', 'simular',
     ]);
-    service.obterDetalhePrivado.and.returnValue(of(PRIVADO_MOCK));
+    service.obterDetalhePrivado.and.returnValue(of(privado));
     service.obterDetalheTesouro.and.returnValue(of(TESOURO_MOCK));
     service.listar.and.returnValue(of([]));
     service.simular.and.returnValue(of({
@@ -93,14 +98,73 @@ describe('DetalheRendaFixaComponent', () => {
     expect(service.obterDetalhePrivado).not.toHaveBeenCalled();
   });
 
-  it('deve normalizar o detalhe do Tesouro calculando o IR no cliente (backend não manda esse cálculo)', async () => {
+  function valorDoCampo(seletor: string, rotuloCampo: string): string | undefined {
+    const campos: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll(`${seletor} > div`));
+    const campo = campos.find((c) => c.querySelector('span')?.textContent?.includes(rotuloCampo));
+    return campo?.querySelector('strong')?.textContent?.trim();
+  }
+
+  it('deve normalizar o detalhe do Tesouro com a rentabilidade calculada pelo backend', async () => {
     await montar('tesouro-selic-2029');
 
     const el = fixture.nativeElement;
     expect(el.textContent).toContain('Tesouro Nacional');
     expect(el.querySelector('h1').textContent).toContain('Tesouro Selic 2029');
-    // vencimento em 2029 (bem longe) -> alíquota mínima de 15%
-    expect(el.textContent).toContain('15');
+    expect(valorDoCampo('.detalhe-rf__tributacao-grid', 'Alíquota de IR')).toMatch(/^15[.,]00%$/);
+  });
+
+  it('no CDB atrelado ao CDI, deve mostrar a taxa e a líquida em % do CDI', async () => {
+    await montar('123e4567-e89b-12d3-a456-426614174000');
+
+    expect(valorDoCampo('.detalhe-rf__grid-dados', 'Rentabilidade')).toBe('105,00% do CDI');
+    expect(valorDoCampo('.detalhe-rf__tributacao-grid', 'Rentabilidade líquida')).toBe('86,63% do CDI');
+    expect(fixture.nativeElement.textContent).not.toContain('Parcela do rendimento');
+  });
+
+  it('no Tesouro Selic, deve mostrar a parcela do rendimento em vez de descontar o IR da taxa fixa', async () => {
+    await montar('tesouro-selic-2029');
+
+    expect(valorDoCampo('.detalhe-rf__grid-dados', 'Rentabilidade')).toBe('Selic + 0,05% a.a.');
+    expect(valorDoCampo('.detalhe-rf__tributacao-grid', 'Parcela do rendimento')).toBe('85% do rendimento bruto');
+    expect(fixture.nativeElement.textContent).not.toContain('Rentabilidade líquida estimada');
+
+    const ajuda: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '.detalhe-rf__tributacao-grid .ajuda__botao[aria-label="O que é Parcela do rendimento?"]',
+    );
+    ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')!.textContent).toContain('inclusive a parte que vem do índice');
+  });
+
+  it('no CDB IPCA+, deve escrever a taxa como IPCA + X% e mostrar a parcela do rendimento', async () => {
+    await montar('123e4567-e89b-12d3-a456-426614174000', {
+      ...PRIVADO_MOCK,
+      indexador: 'IPCA',
+      taxaPercentual: 6.5,
+      rentabilidadeEstimada: {
+        taxaBrutaAnual: 6.5, aliquotaIR: 20, taxaLiquidaAnual: null, taxaSomadaAoIndexador: true, percentualRendimentoLiquido: 80,
+      },
+    });
+
+    expect(valorDoCampo('.detalhe-rf__grid-dados', 'Rentabilidade')).toBe('IPCA + 6,50% a.a.');
+    expect(valorDoCampo('.detalhe-rf__tributacao-grid', 'Parcela do rendimento')).toBe('80% do rendimento bruto');
+  });
+
+  it('na LCI IPCA+ isenta, deve mostrar só o selo de isenção', async () => {
+    await montar('123e4567-e89b-12d3-a456-426614174000', {
+      ...PRIVADO_MOCK,
+      tipo: 'LCI',
+      indexador: 'IPCA',
+      isentoIr: true,
+      rentabilidadeEstimada: {
+        taxaBrutaAnual: 5.2, aliquotaIR: 0, taxaLiquidaAnual: 5.2, taxaSomadaAoIndexador: true, percentualRendimentoLiquido: 100,
+      },
+    });
+
+    expect(valorDoCampo('.detalhe-rf__grid-dados', 'Rentabilidade')).toBe('IPCA + 5,20% a.a.');
+    expect(fixture.nativeElement.querySelector('.detalhe-rf__isento')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('Parcela do rendimento');
   });
 
   it('deve mostrar o selo "Garantido pelo FGC" pro título privado com garantidoFgc=true', async () => {

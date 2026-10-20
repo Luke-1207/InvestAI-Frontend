@@ -106,6 +106,7 @@ describe('ComparacaoService', () => {
       codigo: 'tesouro-selic-2029', nome: 'Tesouro Selic 2029', tipo: { valor: 'SELIC', descricao: 'Tesouro Selic' },
       taxaAnual: 11, precoMinimo: 150, vencimento: '2029-01-01', pagaJurosSemestrais: false,
       liquidez: 'DIARIA', resumoIA: '',
+      rentabilidadeEstimada: { taxaBrutaAnual: 11, aliquotaIR: 15, taxaLiquidaAnual: null, taxaSomadaAoIndexador: true, percentualRendimentoLiquido: 85 },
     };
     rendaFixaService.obterDetalheTesouro.and.returnValue(of(detalheTesouro));
     rendaFixaService.listar.and.returnValue(of([
@@ -126,7 +127,7 @@ describe('ComparacaoService', () => {
       id: '123e4567-e89b-12d3-a456-426614174000', tipo: 'CDB', emissor: 'Banco Inter', indexador: 'CDI',
       taxaPercentual: 105, vencimento: '2027-01-01', investimentoMinimo: 500, liquidez: 'DIARIA',
       garantidoFgc: true, isentoIr: false,
-      rentabilidadeEstimada: { taxaBrutaAnual: 10, aliquotaIR: 17.5, taxaLiquidaAnual: 8.25 }, resumoIA: '',
+      rentabilidadeEstimada: { taxaBrutaAnual: 10, aliquotaIR: 17.5, taxaLiquidaAnual: 8.25, taxaSomadaAoIndexador: false, percentualRendimentoLiquido: 82.5 }, resumoIA: '',
     };
     rendaFixaService.obterDetalhePrivado.and.returnValue(of(detalhePrivado));
     rendaFixaService.listar.and.returnValue(of([]));

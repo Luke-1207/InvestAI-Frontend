@@ -30,9 +30,13 @@
 }
 
 .rf__filtro {
+  white-space: nowrap;
   @include pilula;
   @include texto-etiqueta(12px);
-  white-space: nowrap;
+
+  @include ate-celular {
+    padding-inline: $space-2;
+  }
 
   &--ativo {
     @include pilula-ativa;
