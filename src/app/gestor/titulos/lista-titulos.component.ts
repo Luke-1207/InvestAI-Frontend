@@ -12,6 +12,7 @@ import {
 import { RotuloPipe } from '../../shared/pipes/rotulo.pipe';
 import { SpinnerComponent } from '../../shared/components/ui/spinner/spinner.component';
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
+import { TabelaGestaoComponent } from '../tabela-gestao/tabela-gestao.component';
 import { FiltrosGestaoComponent } from '../filtros-gestao/filtros-gestao.component';
 import { DialogoConfirmacaoComponent } from '../../shared/components/ui/dialogo-confirmacao/dialogo-confirmacao.component';
 import { formatarData, formatarMoeda, formatarTaxaComIndexador } from '../../shared/utils/formatacao.util';
@@ -27,7 +28,7 @@ export function nomeDoTitulo(titulo: Pick<TituloGestao, 'tipo' | 'emissor'>): st
 @Component({
   selector: 'app-lista-titulos',
   standalone: true,
-  imports: [RouterLink, RotuloPipe, SpinnerComponent, ErroServidorComponent, DialogoConfirmacaoComponent, FiltrosGestaoComponent],
+  imports: [RouterLink, RotuloPipe, SpinnerComponent, ErroServidorComponent, DialogoConfirmacaoComponent, FiltrosGestaoComponent, TabelaGestaoComponent],
   templateUrl: './lista-titulos.component.html',
   styleUrl: './lista-titulos.component.scss',
 })

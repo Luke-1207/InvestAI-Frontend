@@ -1,0 +1,37 @@
+@use '../../../styles/design-system' as *;
+@use '../lista-gestao';
+
+.usuarios__identificacao {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.usuarios__email {
+  overflow-wrap: anywhere;
+  font-weight: 400;
+  @include texto-apoio(13px);
+}
+
+.usuarios__selo-gestor {
+  border-color: var(--border-ai);
+  color: var(--ai);
+}
+
+.usuarios--atualizando {
+  opacity: 0.6;
+}
+
+.usuarios__aviso {
+  margin: 0;
+  @include texto-apoio;
+}
+
+.usuarios__paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-4;
+  @include texto-apoio;
+}

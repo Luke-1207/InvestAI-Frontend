@@ -1,0 +1,126 @@
+<section class="formulario" aria-labelledby="indicadores-titulo">
+  <header>
+    <h1 id="indicadores-titulo" class="formulario__titulo">Selic e IPCA</h1>
+    <p class="formulario__descricao">
+      Esses valores entram nas simulações de rendimento, no CDI estimado e na comparação com a poupança.
+      Eles vêm do Banco Central todo dia às 7h. Use esta tela quando essa atualização falhar.
+    </p>
+  </header>
+
+  @if (carregando()) {
+    <div class="formulario__estado"><app-spinner tamanho="grande" rotulo="Carregando indicadores" /></div>
+  } @else if (erroCarregamento()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else {
+    <div
+      class="indicadores__situacao"
+      [class.indicadores__situacao--alerta]="situacao() !== 'em-dia'"
+      [attr.role]="situacao() !== 'em-dia' ? 'status' : null"
+    >
+      <span aria-hidden="true" class="material-symbols-outlined">{{ situacao() === 'em-dia' ? 'check_circle' : 'warning' }}</span>
+      <div>
+        @switch (situacao()) {
+          @case ('em-dia') {
+            <strong>Atualização em dia</strong>
+          }
+          @case ('atrasada') {
+            <strong>A atualização automática parece ter falhado</strong>
+          }
+          @default {
+            <strong>Ainda não há valores de Selic e IPCA</strong>
+          }
+        }
+        <p>
+          @if (atuais()?.selicIpcaSincronizadoEm; as data) {
+            Última atualização em {{ data | date: "dd/MM/yyyy 'às' HH:mm" }}.
+          } @else {
+            Nenhuma atualização registrada.
+          }
+          @if (atuais()?.selicAtual != null) {
+            Hoje a plataforma usa Selic de {{ formatarPercentual(atuais()!.selicAtual) }} ao ano e IPCA de
+            {{ formatarPercentual(atuais()!.ipcaAcumulado12m) }} em 12 meses.
+          }
+        </p>
+      </div>
+    </div>
+
+    <form [formGroup]="formulario" novalidate (ngSubmit)="revisar()">
+      <div class="formulario__painel">
+        <div class="campo" [class.campo--erro]="mostrarErro('selicAtual')">
+          <label for="indicador-selic">Selic atual (% ao ano)</label>
+          <input
+            id="indicador-selic"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            formControlName="selicAtual"
+            [attr.aria-invalid]="mostrarErro('selicAtual')"
+            [attr.aria-describedby]="descricao('selicAtual', 'indicador-selic-ajuda', selicIncomum())"
+          />
+          @if (mostrarErro('selicAtual')) {
+            <p id="indicador-selic-ajuda-erro" class="campo__erro">{{ mensagemErro('selicAtual') }}</p>
+          } @else {
+            <p id="indicador-selic-ajuda" class="campo__ajuda">
+              A taxa básica definida pelo Copom. Ex.: 14,25.
+              @if (cdiEstimado(); as cdi) {
+                O CDI estimado fica em <strong>{{ cdi }}</strong> (Selic menos 0,10).
+              }
+            </p>
+            @if (selicIncomum()) {
+              <p id="indicador-selic-ajuda-aviso" class="campo__ajuda indicadores__aviso">Valor bem acima do comum. Confira antes de salvar.</p>
+            }
+          }
+        </div>
+
+        <div class="campo" [class.campo--erro]="mostrarErro('ipcaAcumulado12m')">
+          <label for="indicador-ipca">IPCA acumulado em 12 meses (%)</label>
+          <input
+            id="indicador-ipca"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            formControlName="ipcaAcumulado12m"
+            [attr.aria-invalid]="mostrarErro('ipcaAcumulado12m')"
+            [attr.aria-describedby]="descricao('ipcaAcumulado12m', 'indicador-ipca-ajuda', ipcaIncomum())"
+          />
+          @if (mostrarErro('ipcaAcumulado12m')) {
+            <p id="indicador-ipca-ajuda-erro" class="campo__erro">{{ mensagemErro('ipcaAcumulado12m') }}</p>
+          } @else {
+            <p id="indicador-ipca-ajuda" class="campo__ajuda">A inflação oficial dos últimos 12 meses, do IBGE. Pode ser negativa.</p>
+            @if (ipcaIncomum()) {
+              <p id="indicador-ipca-ajuda-aviso" class="campo__ajuda indicadores__aviso">Valor fora do comum. Confira antes de salvar.</p>
+            }
+          }
+        </div>
+      </div>
+
+      @if (semMudanca()) {
+        <p class="campo__ajuda" role="status">Os valores são iguais aos que a plataforma já usa. Nada para salvar.</p>
+      }
+      @if (erroGeral()) {
+        <p class="formulario__erro-geral" role="alert">{{ erroGeral() }}</p>
+      }
+
+      <div class="formulario__acoes">
+        <app-button tipoHtml="submit" [carregando]="salvando()">Revisar e salvar</app-button>
+      </div>
+    </form>
+  }
+</section>
+
+<app-dialogo-confirmacao
+  titulo="Atualizar Selic e IPCA?"
+  textoConfirmar="Salvar valores"
+  [processando]="salvando()"
+  (confirmado)="salvar()"
+>
+  <p>
+    Selic: {{ formatarPercentual(atuais()?.selicAtual) }} para
+    <strong>{{ formatarPercentual(formulario.controls.selicAtual.value) }}</strong> ao ano.
+  </p>
+  <p>
+    IPCA: {{ formatarPercentual(atuais()?.ipcaAcumulado12m) }} para
+    <strong>{{ formatarPercentual(formulario.controls.ipcaAcumulado12m.value) }}</strong> em 12 meses.
+  </p>
+  <p>Os novos valores passam a valer na hora. Quando a atualização automática voltar a funcionar, ela substitui esses valores.</p>
+</app-dialogo-confirmacao>

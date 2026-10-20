@@ -1,0 +1,32 @@
+@use '../../../styles/design-system' as *;
+@use '../formulario-gestao';
+
+.indicadores__situacao {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4;
+  border: 1px solid var(--border-success);
+  border-radius: $radius-lg;
+
+  > .material-symbols-outlined {
+    color: var(--success-text);
+  }
+
+  p {
+    margin: $space-1 0 0;
+    @include texto-apoio;
+  }
+
+  &--alerta {
+    border-color: var(--warning);
+
+    > .material-symbols-outlined {
+      color: var(--warning);
+    }
+  }
+}
+
+.indicadores__aviso {
+  color: var(--text-primary);
+}

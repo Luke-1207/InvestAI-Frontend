@@ -32,6 +32,18 @@ export const GESTOR_ROUTES: Routes = [
         loadComponent: () => import('./titulos/formulario-titulo.component').then((m) => m.FormularioTituloComponent),
       },
       {
+        path: 'usuarios',
+        loadComponent: () => import('./usuarios/lista-usuarios.component').then((m) => m.ListaUsuariosComponent),
+      },
+      {
+        path: 'usuarios/:id',
+        loadComponent: () => import('./usuarios/detalhe-usuario.component').then((m) => m.DetalheUsuarioComponent),
+      },
+      {
+        path: 'indicadores',
+        loadComponent: () => import('./indicadores/indicadores.component').then((m) => m.IndicadoresComponent),
+      },
+      {
         path: 'titulos/:id',
         loadComponent: () => import('./titulos/formulario-titulo.component').then((m) => m.FormularioTituloComponent),
       },

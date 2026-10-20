@@ -3,6 +3,7 @@ import {
   aplicarErrosDoServidor,
   dataFutura,
   hojeIso,
+  numeroObrigatorio,
   numeroPositivo,
   semRepeticao,
   tamanhoDoTexto,
@@ -29,6 +30,12 @@ describe('validacoes-gestao', () => {
     expect(numeroPositivo(new FormControl(0))).toEqual({ positivo: true });
     expect(numeroPositivo(new FormControl(-1))).toEqual({ positivo: true });
     expect(numeroPositivo(new FormControl(0.01))).toBeNull();
+  });
+
+  it('numeroObrigatorio deve aceitar zero e negativos, mas não campo vazio', () => {
+    expect(numeroObrigatorio(new FormControl(null))).toEqual({ required: true });
+    expect(numeroObrigatorio(new FormControl(-0.5))).toBeNull();
+    expect(numeroObrigatorio(new FormControl(0))).toBeNull();
   });
 
   it('dataFutura deve aceitar só datas depois de hoje, como o @Future da API', () => {

@@ -1,0 +1,91 @@
+@use '../../../styles/design-system' as *;
+
+app-tabela-gestao {
+  display: block;
+  overflow-x: auto;
+  @include superficie;
+
+  @include ate-celular {
+    overflow: visible;
+    background: none;
+    border: none;
+  }
+}
+
+app-tabela-gestao table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th,
+  td {
+    padding: $space-3;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  thead th {
+    white-space: nowrap;
+    @include rotulo(12px);
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: none;
+  }
+
+  tbody th {
+    font-weight: 700;
+  }
+
+  @include ate-celular {
+    thead {
+      @include leitor-de-tela;
+    }
+
+    tbody {
+      display: flex;
+      flex-direction: column;
+      gap: $space-3;
+    }
+
+    tr {
+      display: block;
+      padding: $space-3 $space-4;
+      @include superficie;
+    }
+
+    tbody th,
+    td {
+      display: flex;
+      justify-content: space-between;
+      gap: $space-3;
+      padding: $space-1 0;
+      border: none;
+      text-align: right;
+
+      &::before {
+        content: attr(data-rotulo);
+        text-align: left;
+        @include rotulo(12px);
+      }
+    }
+
+    tbody th {
+      font-size: 16px;
+    }
+
+    .gestao__celula-acoes {
+      justify-content: flex-start;
+      padding-top: $space-3;
+
+      &::before {
+        content: none;
+      }
+    }
+  }
+}
+
+app-tabela-gestao .gestao__linha--inativa > :not(.gestao__celula-acoes) {
+  color: var(--text-secondary);
+}

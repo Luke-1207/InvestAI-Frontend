@@ -21,6 +21,12 @@ export function numeroPositivo(controle: AbstractControl): ValidationErrors | nu
   return typeof valor === 'number' && Number.isFinite(valor) && valor > 0 ? null : { positivo: true };
 }
 
+export function numeroObrigatorio(controle: AbstractControl): ValidationErrors | null {
+  const valor = controle.value;
+  if (valor === null || valor === undefined || valor === '') return { required: true };
+  return typeof valor === 'number' && Number.isFinite(valor) ? null : { numero: true };
+}
+
 export function hojeIso(): string {
   const hoje = new Date();
   const mes = String(hoje.getMonth() + 1).padStart(2, '0');

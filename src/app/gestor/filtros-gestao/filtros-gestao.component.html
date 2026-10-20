@@ -4,7 +4,7 @@
   <input type="search" [placeholder]="placeholder()" [value]="termo()" (input)="termo.set($any($event.target).value)" />
 </label>
 
-<div class="filtros__pilulas" role="group" aria-label="Filtrar por tipo">
+<div class="filtros__pilulas" role="group" [attr.aria-label]="rotuloTipo()">
   @for (opcao of opcoesTipo(); track opcao.valor) {
     <button type="button" class="filtros__pilula" [attr.aria-pressed]="tipo() === opcao.valor" (click)="tipo.set(opcao.valor)">
       {{ opcao.rotulo }}
