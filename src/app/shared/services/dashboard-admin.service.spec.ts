@@ -31,14 +31,40 @@ describe('DashboardAdminService', () => {
     expect(resposta).toEqual(mock);
   });
 
-  it('obterStatusIa() deve fazer GET em /dashboard/admin/ia-status', () => {
-    const mock = { disponivel: true, rabbitmqConectado: true, verificadoEm: '2026-10-06T14:00:00' };
+  it('obterIntegracoes() deve fazer GET em /dashboard/admin/integracoes', () => {
+    const mock = { integracoes: [], verificadoEm: '2026-10-21T19:00:00' };
     let resposta: unknown;
 
-    service.obterStatusIa().subscribe((dados) => (resposta = dados));
+    service.obterIntegracoes().subscribe((dados) => (resposta = dados));
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/dashboard/admin/ia-status`);
+    const req = httpMock.expectOne(`${environment.apiUrl}/dashboard/admin/integracoes`);
     expect(req.request.method).toBe('GET');
+    req.flush(mock);
+
+    expect(resposta).toEqual(mock);
+  });
+
+  it('verificarIntegracoes() deve fazer POST em /dashboard/admin/integracoes/verificar', () => {
+    const mock = { integracoes: [], verificadoEm: '2026-10-21T19:00:00' };
+    let resposta: unknown;
+
+    service.verificarIntegracoes().subscribe((dados) => (resposta = dados));
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/dashboard/admin/integracoes/verificar`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mock);
+
+    expect(resposta).toEqual(mock);
+  });
+
+  it('verificarIntegracao() deve fazer POST na rota da integração pedida', () => {
+    const mock = { chave: 'LLM', nome: 'LLM (Groq)', situacao: 'OPERACIONAL' };
+    let resposta: unknown;
+
+    service.verificarIntegracao('LLM').subscribe((dados) => (resposta = dados));
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/dashboard/admin/integracoes/LLM/verificar`);
+    expect(req.request.method).toBe('POST');
     req.flush(mock);
 
     expect(resposta).toEqual(mock);

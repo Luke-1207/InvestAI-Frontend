@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
-import { DashboardAdminComponent, INTERVALO_STATUS_IA_MS } from './dashboard-admin.component';
+import { Subject, of, throwError } from 'rxjs';
+import { DashboardAdminComponent, INTERVALO_INTEGRACOES_MS } from './dashboard-admin.component';
 import { DashboardAdminService } from '../../shared/services/dashboard-admin.service';
-import { DashboardAdminResponse, StatusIa } from '../../shared/models/dashboard-admin';
+import { DashboardAdminResponse, SaudeIntegracoes, StatusIntegracao } from '../../shared/models/dashboard-admin';
 
 function criarMetricas(parcial: Partial<DashboardAdminResponse> = {}): DashboardAdminResponse {
   return {
@@ -25,16 +25,36 @@ function criarMetricas(parcial: Partial<DashboardAdminResponse> = {}): Dashboard
   };
 }
 
-const STATUS_ONLINE: StatusIa = { disponivel: true, rabbitmqConectado: true, verificadoEm: '2026-10-05T11:40:00' };
+function integracao(parcial: Partial<StatusIntegracao>): StatusIntegracao {
+  return {
+    chave: 'MICROSSERVICO_IA', nome: 'Microsserviço de IA', situacao: 'OPERACIONAL', simulado: false, detalhe: null,
+    ultimoSucessoEm: null, ultimaFalhaEm: null, ultimoErro: null, ...parcial,
+  };
+}
+
+function saude(integracoes: StatusIntegracao[]): SaudeIntegracoes {
+  return { integracoes, verificadoEm: '2026-10-21T19:00:00' };
+}
+
+const TUDO_OK = saude([
+  integracao({}),
+  integracao({ chave: 'RABBITMQ', nome: 'RabbitMQ' }),
+  integracao({ chave: 'HG_BRASIL', nome: 'HG Brasil', simulado: true }),
+]);
 
 describe('DashboardAdminComponent', () => {
   let fixture: ComponentFixture<DashboardAdminComponent>;
   let service: jasmine.SpyObj<DashboardAdminService>;
 
   beforeEach(async () => {
-    service = jasmine.createSpyObj<DashboardAdminService>('DashboardAdminService', ['obterMetricas', 'obterStatusIa']);
+    service = jasmine.createSpyObj<DashboardAdminService>('DashboardAdminService', [
+      'obterMetricas',
+      'obterIntegracoes',
+      'verificarIntegracoes',
+      'verificarIntegracao',
+    ]);
     service.obterMetricas.and.returnValue(of(criarMetricas()));
-    service.obterStatusIa.and.returnValue(of(STATUS_ONLINE));
+    service.obterIntegracoes.and.returnValue(of(TUDO_OK));
 
     await TestBed.configureTestingModule({
       imports: [DashboardAdminComponent],
@@ -108,58 +128,99 @@ describe('DashboardAdminComponent', () => {
     fixture.destroy();
   }));
 
-  it('deve mostrar o status da IA como Online com o indicador correspondente', fakeAsync(() => {
+  it('o card de integrações deve resumir que está tudo operando e quantas estão simuladas', fakeAsync(() => {
     const el = iniciar();
 
-    const card = el.querySelector('[data-teste="card-ia"]');
-    expect(texto(card)).toContain('Online');
-    expect(texto(card)).toContain('RabbitMQ conectado');
+    const card = el.querySelector('[data-teste="card-integracoes"]');
+    expect(texto(card)).toContain('Tudo operando');
+    expect(texto(card)).toContain('3 de 3 sem problemas');
+    expect(texto(card)).toContain('1 em modo simulado');
     expect(card?.querySelector('.painel-gestor__pulso--online')).toBeTruthy();
+    expect(el.querySelector('app-saude-integracoes li')).not.toBeNull();
     fixture.destroy();
   }));
 
-  it('deve consultar o status da IA de novo a cada intervalo e refletir a mudança', fakeAsync(() => {
+  it('deve consultar as integrações de novo a cada intervalo e refletir a mudança', fakeAsync(() => {
     const el = iniciar();
-    expect(service.obterStatusIa).toHaveBeenCalledTimes(1);
+    expect(service.obterIntegracoes).toHaveBeenCalledTimes(1);
 
-    service.obterStatusIa.and.returnValue(
-      of({ disponivel: false, rabbitmqConectado: false, verificadoEm: '2026-10-05T11:41:00' }),
-    );
-    tick(INTERVALO_STATUS_IA_MS);
+    service.obterIntegracoes.and.returnValue(of(saude([
+      integracao({ situacao: 'FORA_DO_AR' }),
+      integracao({ chave: 'BANCO_CENTRAL', nome: 'Banco Central', situacao: 'DESATUALIZADA' }),
+      integracao({ chave: 'RABBITMQ', nome: 'RabbitMQ', situacao: 'DESCONHECIDA' }),
+    ])));
+    tick(INTERVALO_INTEGRACOES_MS);
     fixture.detectChanges();
 
-    const card = el.querySelector('[data-teste="card-ia"]');
-    expect(service.obterStatusIa).toHaveBeenCalledTimes(2);
-    expect(texto(card)).toContain('Offline');
-    expect(texto(card)).toContain('RabbitMQ desconectado');
+    const card = el.querySelector('[data-teste="card-integracoes"]');
+    expect(service.obterIntegracoes).toHaveBeenCalledTimes(2);
+    expect(texto(card)).toContain('2 com problema');
     expect(card?.querySelector('.painel-gestor__pulso--offline')).toBeTruthy();
     fixture.destroy();
   }));
 
-  it('falha na consulta do status deve mostrar Offline e continuar consultando', fakeAsync(() => {
-    service.obterStatusIa.and.returnValue(throwError(() => new Error('falha de rede')));
+  it('só integração desatualizada deve deixar o indicador em alerta, não em erro', fakeAsync(() => {
+    service.obterIntegracoes.and.returnValue(of(saude([
+      integracao({}),
+      integracao({ chave: 'TESOURO_DIRETO', nome: 'Tesouro Direto', situacao: 'DESATUALIZADA' }),
+    ])));
 
     const el = iniciar();
 
-    const card = el.querySelector('[data-teste="card-ia"]');
-    expect(texto(card)).toContain('Offline');
-    expect(texto(card)).toContain('RabbitMQ sem informação');
-
-    service.obterStatusIa.and.returnValue(of(STATUS_ONLINE));
-    tick(INTERVALO_STATUS_IA_MS);
-    fixture.detectChanges();
-
-    expect(texto(card)).toContain('Online');
+    const card = el.querySelector('[data-teste="card-integracoes"]');
+    expect(card?.querySelector('.painel-gestor__pulso--alerta')).toBeTruthy();
+    expect(card?.querySelector('.painel-gestor__pulso--offline')).toBeNull();
     fixture.destroy();
   }));
 
-  it('ao destruir o componente deve parar de consultar o status da IA', fakeAsync(() => {
+  it('falha na consulta deve avisar, manter a última verificação e continuar consultando', fakeAsync(() => {
+    service.obterIntegracoes.and.returnValue(throwError(() => new Error('falha de rede')));
+    const el = iniciar();
+    expect(texto(el.querySelector('[data-teste="card-integracoes"]'))).toContain('Sem resposta');
+
+    service.obterIntegracoes.and.returnValue(of(TUDO_OK));
+    tick(INTERVALO_INTEGRACOES_MS);
+    fixture.detectChanges();
+    expect(texto(el.querySelector('[data-teste="card-integracoes"]'))).toContain('Tudo operando');
+
+    service.obterIntegracoes.and.returnValue(throwError(() => new Error('falha de rede')));
+    tick(INTERVALO_INTEGRACOES_MS);
+    fixture.detectChanges();
+    expect(texto(el.querySelector('app-saude-integracoes'))).toContain('mostrando a última verificação');
+    expect(el.querySelectorAll('app-saude-integracoes li').length).toBe(3);
+    expect(el.querySelector('[data-teste="card-integracoes"] .painel-gestor__pulso--offline')).toBeTruthy();
+    fixture.destroy();
+  }));
+
+  it('as integrações devem aparecer mesmo quando as métricas do painel falham', fakeAsync(() => {
+    service.obterMetricas.and.returnValue(throwError(() => new Error('falha')));
+
+    const el = iniciar();
+
+    expect(el.querySelector('app-erro-servidor')).not.toBeNull();
+    expect(el.querySelectorAll('app-saude-integracoes li').length).toBe(3);
+    fixture.destroy();
+  }));
+
+  it('"Ver detalhes" deve levar o foco para a seção de integrações', fakeAsync(() => {
+    const el = iniciar();
+    const secao = el.querySelector<HTMLElement>('#saude-integracoes')!;
+    const rolagem = spyOn(secao, 'scrollIntoView');
+
+    el.querySelector<HTMLAnchorElement>('[data-teste="card-integracoes"] a')!.click();
+
+    expect(rolagem).toHaveBeenCalled();
+    expect(document.activeElement).toBe(secao);
+    fixture.destroy();
+  }));
+
+  it('ao destruir o componente deve parar de consultar as integrações', fakeAsync(() => {
     iniciar();
     fixture.destroy();
 
-    tick(INTERVALO_STATUS_IA_MS * 3);
+    tick(INTERVALO_INTEGRACOES_MS * 3);
 
-    expect(service.obterStatusIa).toHaveBeenCalledTimes(1);
+    expect(service.obterIntegracoes).toHaveBeenCalledTimes(1);
   }));
 
   it('deve desenhar a distribuição de risco no gráfico de rosca', fakeAsync(() => {
@@ -279,6 +340,104 @@ describe('DashboardAdminComponent', () => {
     expect(service.obterMetricas).toHaveBeenCalledTimes(2);
     expect(el.querySelector('app-erro-servidor')).toBeNull();
     expect(el.querySelector('[data-teste="card-usuarios"]')).toBeTruthy();
+    fixture.destroy();
+  }));
+
+  it('deve atualizar as integrações sozinho a cada 5 minutos', fakeAsync(() => {
+    iniciar();
+    expect(INTERVALO_INTEGRACOES_MS).toBe(300_000);
+
+    tick(299_000);
+    expect(service.obterIntegracoes).toHaveBeenCalledTimes(1);
+
+    tick(1_000);
+    expect(service.obterIntegracoes).toHaveBeenCalledTimes(2);
+    expect(texto(fixture.nativeElement.querySelector('.saude__verificacao'))).toContain('a cada 5 minutos');
+    fixture.destroy();
+  }));
+
+  it('verificar uma integração deve atualizar só ela na lista e no card', fakeAsync(() => {
+    const resposta = new Subject<StatusIntegracao>();
+    service.verificarIntegracao.and.returnValue(resposta);
+    const el = iniciar();
+
+    el.querySelector<HTMLButtonElement>('[data-chave="RABBITMQ"] [data-teste="verificar-integracao"]')!.click();
+    fixture.detectChanges();
+
+    expect(service.verificarIntegracao).toHaveBeenCalledOnceWith('RABBITMQ');
+    expect(el.querySelector<HTMLButtonElement>('[data-chave="RABBITMQ"] [data-teste="verificar-integracao"]')!.disabled).toBeTrue();
+
+    resposta.next(integracao({ chave: 'RABBITMQ', nome: 'RabbitMQ', situacao: 'FORA_DO_AR', detalhe: 'Sem conexão.' }));
+    resposta.complete();
+    fixture.detectChanges();
+
+    expect(texto(el.querySelector('[data-chave="RABBITMQ"]'))).toContain('Fora do ar');
+    expect(texto(el.querySelector('[data-chave="MICROSSERVICO_IA"]'))).toContain('Operacional');
+    expect(el.querySelectorAll('app-saude-integracoes li').length).toBe(3);
+    expect(texto(el.querySelector('[data-teste="card-integracoes"]'))).toContain('1 com problema');
+    expect(el.querySelector<HTMLButtonElement>('[data-chave="RABBITMQ"] [data-teste="verificar-integracao"]')!.disabled).toBeFalse();
+    fixture.destroy();
+  }));
+
+  it('falha ao verificar uma integração deve avisar e manter o estado anterior', fakeAsync(() => {
+    service.verificarIntegracao.and.returnValue(throwError(() => new Error('falha de rede')));
+    const el = iniciar();
+
+    el.querySelector<HTMLButtonElement>('[data-chave="HG_BRASIL"] [data-teste="verificar-integracao"]')!.click();
+    fixture.detectChanges();
+
+    expect(texto(el.querySelector('app-saude-integracoes [role="alert"]'))).toContain('Não conseguimos verificar HG Brasil agora');
+    expect(texto(el.querySelector('[data-chave="HG_BRASIL"]'))).toContain('Operacional');
+    expect(el.querySelector<HTMLButtonElement>('[data-chave="HG_BRASIL"] [data-teste="verificar-integracao"]')!.disabled).toBeFalse();
+    fixture.destroy();
+  }));
+
+  it('verificar todas deve trocar a lista inteira e reiniciar a contagem dos 5 minutos', fakeAsync(() => {
+    service.verificarIntegracoes.and.returnValue(of(saude([
+      integracao({}),
+      integracao({ chave: 'LLM', nome: 'LLM (Groq)', situacao: 'FORA_DO_AR' }),
+    ])));
+    const el = iniciar();
+
+    tick(200_000);
+    el.querySelector<HTMLButtonElement>('[data-teste="verificar-todas"]')!.click();
+    fixture.detectChanges();
+
+    expect(service.verificarIntegracoes).toHaveBeenCalledTimes(1);
+    expect(el.querySelectorAll('app-saude-integracoes li').length).toBe(2);
+    expect(texto(el.querySelector('[data-teste="card-integracoes"]'))).toContain('1 com problema');
+
+    tick(100_000);
+    expect(service.obterIntegracoes).toHaveBeenCalledTimes(1);
+
+    tick(200_000);
+    expect(service.obterIntegracoes).toHaveBeenCalledTimes(2);
+    fixture.destroy();
+  }));
+
+  it('verificar todas depois de uma falha na consulta deve tirar o aviso de falha', fakeAsync(() => {
+    service.obterIntegracoes.and.returnValue(throwError(() => new Error('falha de rede')));
+    service.verificarIntegracoes.and.returnValue(of(TUDO_OK));
+    const el = iniciar();
+    expect(texto(el.querySelector('app-saude-integracoes'))).toContain('Não conseguimos atualizar agora');
+
+    el.querySelector<HTMLButtonElement>('[data-teste="verificar-todas"]')!.click();
+    fixture.detectChanges();
+
+    expect(texto(el.querySelector('app-saude-integracoes'))).not.toContain('Não conseguimos atualizar agora');
+    expect(el.querySelectorAll('app-saude-integracoes li').length).toBe(3);
+    fixture.destroy();
+  }));
+
+  it('falha ao verificar todas deve avisar e liberar o botão de novo', fakeAsync(() => {
+    service.verificarIntegracoes.and.returnValue(throwError(() => new Error('falha de rede')));
+    const el = iniciar();
+
+    el.querySelector<HTMLButtonElement>('[data-teste="verificar-todas"]')!.click();
+    fixture.detectChanges();
+
+    expect(texto(el.querySelector('app-saude-integracoes [role="alert"]'))).toContain('Não conseguimos verificar as integrações agora');
+    expect(el.querySelector<HTMLButtonElement>('[data-teste="verificar-todas"]')!.disabled).toBeFalse();
     fixture.destroy();
   }));
 });

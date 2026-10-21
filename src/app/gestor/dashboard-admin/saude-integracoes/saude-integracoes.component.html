@@ -1,0 +1,103 @@
+<section class="saude" id="saude-integracoes" tabindex="-1" aria-labelledby="saude-integracoes-titulo">
+  <div class="saude__topo">
+    <div class="saude__titulo">
+      <h2 id="saude-integracoes-titulo">Saúde das integrações</h2>
+      @if (saude(); as dados) {
+        <p class="saude__verificacao">
+          Atualiza sozinho a cada {{ textoIntervalo() }} · verificado às {{ dados.verificadoEm | date: 'HH:mm:ss' }}
+        </p>
+      }
+    </div>
+    <button
+      type="button"
+      class="saude__verificar-todas"
+      data-teste="verificar-todas"
+      [disabled]="verificandoTodas()"
+      [attr.aria-busy]="verificandoTodas()"
+      (click)="verificarTodas.emit()"
+    >
+      <span aria-hidden="true" class="material-symbols-outlined" [class.saude__girando]="verificandoTodas()">refresh</span>
+      {{ verificandoTodas() ? 'Verificando...' : 'Verificar todas' }}
+    </button>
+  </div>
+
+  <p class="leitor-de-tela" role="status">{{ resumo() }}</p>
+
+  @if (falhaConsulta()) {
+    <p class="saude__aviso">
+      <span aria-hidden="true" class="material-symbols-outlined">wifi_off</span>
+      Não conseguimos atualizar agora{{ saude() ? '; mostrando a última verificação' : '' }}. Use "Verificar todas" para tentar de novo.
+    </p>
+  }
+
+  @if (aviso(); as mensagem) {
+    <p class="saude__aviso saude__aviso--erro" role="alert">
+      <span aria-hidden="true" class="material-symbols-outlined">error</span>
+      {{ mensagem }}
+    </p>
+  }
+
+  @if (saude(); as dados) {
+    <ul class="saude__lista">
+      @for (item of dados.integracoes; track item.chave) {
+        <li class="saude__item" [attr.data-chave]="item.chave">
+          <div class="saude__cabecalho">
+            <h3>{{ item.nome }}</h3>
+            <button
+              type="button"
+              class="saude__recarregar"
+              data-teste="verificar-integracao"
+              [attr.aria-label]="'Verificar ' + item.nome + ' agora'"
+              [attr.title]="'Verificar ' + item.nome + ' agora'"
+              [disabled]="emVerificacao(item.chave)"
+              [attr.aria-busy]="emVerificacao(item.chave)"
+              (click)="verificar.emit(item.chave)"
+            >
+              <span aria-hidden="true" class="material-symbols-outlined" [class.saude__girando]="emVerificacao(item.chave)">refresh</span>
+            </button>
+          </div>
+
+          <span class="saude__selos">
+            <span class="saude__situacao saude__situacao--{{ estilos[item.situacao].cor }}">
+              <span aria-hidden="true" class="material-symbols-outlined">{{ estilos[item.situacao].icone }}</span>
+              {{ rotulos[item.situacao] }}
+            </span>
+            @if (item.simulado) {
+              <span class="saude__simulado">Simulado</span>
+            }
+          </span>
+
+          @if (item.detalhe) {
+            <p class="saude__detalhe">{{ item.detalhe }}</p>
+          }
+
+          <dl class="saude__datas">
+            <div>
+              <dt>Último sucesso</dt>
+              <dd>
+                @if (item.ultimoSucessoEm) {
+                  {{ item.ultimoSucessoEm | date: 'dd/MM/yyyy HH:mm' }} · {{ tempoRelativo(item.ultimoSucessoEm) }}
+                } @else {
+                  Nenhum registrado
+                }
+              </dd>
+            </div>
+            @if (item.ultimaFalhaEm) {
+              <div>
+                <dt>Última falha</dt>
+                <dd>
+                  {{ item.ultimaFalhaEm | date: 'dd/MM/yyyy HH:mm' }} · {{ tempoRelativo(item.ultimaFalhaEm) }}
+                  @if (item.ultimoErro && item.ultimoErro !== item.detalhe) {
+                    <span class="saude__erro">{{ item.ultimoErro }}</span>
+                  }
+                </dd>
+              </div>
+            }
+          </dl>
+        </li>
+      }
+    </ul>
+  } @else if (!falhaConsulta()) {
+    <p class="saude__aviso">Verificando as integrações...</p>
+  }
+</section>
