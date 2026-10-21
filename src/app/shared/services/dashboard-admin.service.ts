@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { DashboardAdminResponse, StatusIa } from '../models/dashboard-admin';
+import { ChaveIntegracao, DashboardAdminResponse, SaudeIntegracoes, StatusIntegracao } from '../models/dashboard-admin';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardAdminService {
@@ -13,7 +13,15 @@ export class DashboardAdminService {
     return this.http.get<DashboardAdminResponse>(this.baseUrl);
   }
 
-  obterStatusIa(): Observable<StatusIa> {
-    return this.http.get<StatusIa>(`${this.baseUrl}/ia-status`);
+  obterIntegracoes(): Observable<SaudeIntegracoes> {
+    return this.http.get<SaudeIntegracoes>(`${this.baseUrl}/integracoes`);
+  }
+
+  verificarIntegracoes(): Observable<SaudeIntegracoes> {
+    return this.http.post<SaudeIntegracoes>(`${this.baseUrl}/integracoes/verificar`, null);
+  }
+
+  verificarIntegracao(chave: ChaveIntegracao): Observable<StatusIntegracao> {
+    return this.http.post<StatusIntegracao>(`${this.baseUrl}/integracoes/${chave}/verificar`, null);
   }
 }

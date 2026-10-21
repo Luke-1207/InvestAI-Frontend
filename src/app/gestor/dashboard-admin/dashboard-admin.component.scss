@@ -163,6 +163,10 @@
     }
   }
 
+  &--alerta {
+    background: var(--warning);
+  }
+
   &--offline {
     background: var(--danger);
   }
