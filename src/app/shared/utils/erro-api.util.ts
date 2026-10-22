@@ -6,6 +6,11 @@ export function errosDosCampos(erro: unknown): Record<string, string> {
   return detalhes && typeof detalhes === 'object' ? (detalhes as Record<string, string>) : {};
 }
 
+export function mensagemDeAcesso(erro: unknown, padrao: string): string {
+  if (erro instanceof HttpErrorResponse && (erro.status === 0 || erro.status === 429)) return mensagemDoErro(erro, padrao);
+  return padrao;
+}
+
 export function mensagemDoErro(erro: unknown, padrao: string): string {
   if (!(erro instanceof HttpErrorResponse)) return padrao;
   if (erro.status === 0) return 'Sem conexão com o servidor. Confira sua internet e tente de novo.';

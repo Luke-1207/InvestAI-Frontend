@@ -5,6 +5,7 @@ import { AuthLayoutComponent } from '../../shared/components/auth-layout/auth-la
 import { InputComponent } from '../../shared/components/ui/input/input.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { AuthService } from '../../shared/services/auth.service';
+import { mensagemDeAcesso } from '../../shared/utils/erro-api.util';
 
 @Component({
   selector: 'app-login',
@@ -37,9 +38,9 @@ export class LoginComponent {
 
     this.authService.login(this.formulario.getRawValue()).subscribe({
       next: () => this.router.navigateByUrl('/dashboard'),
-      error: () => {
+      error: (erro: unknown) => {
         this.carregando.set(false);
-        this.erro.set('E-mail ou senha inválidos.');
+        this.erro.set(mensagemDeAcesso(erro, 'E-mail ou senha inválidos.'));
       },
     });
   }
