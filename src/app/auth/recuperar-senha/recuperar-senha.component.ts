@@ -5,6 +5,7 @@ import { AuthLayoutComponent } from '../../shared/components/auth-layout/auth-la
 import { InputComponent } from '../../shared/components/ui/input/input.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { AuthService } from '../../shared/services/auth.service';
+import { mensagemDeAcesso } from '../../shared/utils/erro-api.util';
 
 @Component({
   selector: 'app-recuperar-senha',
@@ -39,9 +40,9 @@ export class RecuperarSenhaComponent {
         this.carregando.set(false);
         this.enviado.set(true);
       },
-      error: () => {
+      error: (erro: unknown) => {
         this.carregando.set(false);
-        this.erro.set('Não foi possível enviar o link. Tente novamente.');
+        this.erro.set(mensagemDeAcesso(erro, 'Não foi possível enviar o link. Tente novamente.'));
       },
     });
   }

@@ -3,7 +3,7 @@
   <p class="auth-form__subtitulo">Acesse suas recomendações personalizadas geradas por IA.</p>
 
   @if (erro()) {
-    <div class="auth-form__alerta auth-form__alerta--erro">
+    <div class="auth-form__alerta auth-form__alerta--erro" role="alert">
       <span aria-hidden="true" class="material-symbols-outlined">error</span>
       {{ erro() }}
     </div>
