@@ -12,6 +12,8 @@ import {
   VereditoComparacao,
 } from '../models/comparacao';
 import { TituloPrivadoDetalhe, TituloTesouroDetalhe } from '../models/renda-fixa';
+import { formatarData, formatarMoeda, formatarNumero, formatarPercentual } from '../utils/formatacao.util';
+import { rotulo } from '../utils/rotulos.util';
 
 type ItemComparacaoSemPontuacao = Omit<ItemComparacao, 'tipo' | 'score' | 'compatibilidade'>;
 
@@ -41,7 +43,7 @@ export class ComparacaoService {
             tipo: r.categoria,
             identificador: r.codigo ?? r.id,
             rotulo: r.nome,
-            subRotulo: r.indexador,
+            subRotulo: rotulo(r.indexador),
           }),
         ),
       ]),
@@ -76,13 +78,10 @@ export class ComparacaoService {
     }).pipe(
       map(({ detalhe, sugestao }) => {
         const metricas: MetricaComparacao[] = [
-          { rotulo: 'Preço', valor: `R$ ${detalhe.preco.toFixed(2)}` },
-          {
-            rotulo: 'Variação',
-            valor: `${detalhe.variacaoPercentual >= 0 ? '+' : ''}${detalhe.variacaoPercentual.toFixed(2)}%`,
-          },
-          { rotulo: 'Dividend Yield', valor: `${detalhe.dividendYield.toFixed(2)}%` },
-          { rotulo: 'P/VP', valor: detalhe.precoValorPatrimonial.toFixed(2) },
+          { rotulo: 'Preço', valor: formatarMoeda(detalhe.preco) },
+          { rotulo: 'Variação', valor: formatarPercentual(detalhe.variacaoPercentual, true) },
+          { rotulo: 'Dividend Yield', valor: formatarPercentual(detalhe.dividendYield) },
+          { rotulo: 'P/VP', valor: formatarNumero(detalhe.precoValorPatrimonial) },
         ];
 
         return {
@@ -132,10 +131,10 @@ export class ComparacaoService {
       rotulo: dto.nome,
       categoria: 'TESOURO',
       metricas: [
-        { rotulo: 'Rentabilidade', valor: `${dto.taxaAnual.toFixed(2)}% a.a.` },
-        { rotulo: 'Vencimento', valor: new Date(dto.vencimento).toLocaleDateString('pt-BR') },
-        { rotulo: 'Investimento mínimo', valor: `R$ ${dto.precoMinimo.toFixed(2)}` },
-        { rotulo: 'Liquidez', valor: dto.liquidez === 'DIARIA' ? 'Diária' : 'No vencimento' },
+        { rotulo: 'Rentabilidade', valor: `${formatarPercentual(dto.taxaAnual)} a.a.` },
+        { rotulo: 'Vencimento', valor: formatarData(dto.vencimento) },
+        { rotulo: 'Investimento mínimo', valor: formatarMoeda(dto.precoMinimo) },
+        { rotulo: 'Liquidez', valor: rotulo(dto.liquidez) },
       ],
     };
   }
@@ -146,10 +145,10 @@ export class ComparacaoService {
       rotulo: dto.emissor,
       categoria: dto.tipo,
       metricas: [
-        { rotulo: 'Rentabilidade', valor: `${dto.rentabilidadeEstimada.taxaBrutaAnual.toFixed(2)}% a.a.` },
-        { rotulo: 'Vencimento', valor: new Date(dto.vencimento).toLocaleDateString('pt-BR') },
-        { rotulo: 'Investimento mínimo', valor: `R$ ${dto.investimentoMinimo.toFixed(2)}` },
-        { rotulo: 'Liquidez', valor: dto.liquidez === 'DIARIA' ? 'Diária' : 'No vencimento' },
+        { rotulo: 'Rentabilidade', valor: `${formatarPercentual(dto.rentabilidadeEstimada.taxaBrutaAnual)} a.a.` },
+        { rotulo: 'Vencimento', valor: formatarData(dto.vencimento) },
+        { rotulo: 'Investimento mínimo', valor: formatarMoeda(dto.investimentoMinimo) },
+        { rotulo: 'Liquidez', valor: rotulo(dto.liquidez) },
       ],
     };
   }

@@ -1,0 +1,112 @@
+<section class="gestao" aria-labelledby="gestao-ativos-titulo">
+  <header class="gestao__cabecalho">
+    <div>
+      <h1 id="gestao-ativos-titulo" class="gestao__titulo">Renda variável</h1>
+      <p class="gestao__descricao">Ações, FIIs e ETFs que os investidores veem na plataforma.</p>
+    </div>
+    <a class="gestao__novo" routerLink="/gestor/ativos/novo">
+      <span aria-hidden="true" class="material-symbols-outlined">add</span>
+      Cadastrar ativo
+    </a>
+  </header>
+
+  @if (carregando()) {
+    <div class="gestao__estado"><app-spinner tamanho="grande" rotulo="Carregando ativos" /></div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (ativos().length === 0) {
+    <div class="gestao__vazio">
+      <p>Nenhum ativo cadastrado ainda.</p>
+      <a class="gestao__novo" routerLink="/gestor/ativos/novo">Cadastrar o primeiro ativo</a>
+    </div>
+  } @else {
+    <app-filtros-gestao
+      rotuloBusca="Buscar ativos cadastrados"
+      placeholder="Buscar por código, nome ou setor"
+      [opcoesTipo]="opcoesTipo"
+      [(termo)]="termo"
+      [(tipo)]="filtroTipo"
+      [(status)]="filtroStatus"
+    />
+
+    <p class="gestao__contagem" aria-live="polite">{{ contagem() }}</p>
+
+    @if (filtrados().length === 0) {
+      <div class="gestao__vazio">
+        <p>Nenhum ativo encontrado com esses filtros.</p>
+        @if (temFiltro()) {
+          <button type="button" class="gestao__limpar" (click)="limparFiltros()">Limpar filtros</button>
+        }
+      </div>
+    } @else {
+      <app-tabela-gestao>
+        <table class="gestao__tabela">
+          <caption class="leitor-de-tela">Ativos de renda variável cadastrados</caption>
+          <thead>
+            <tr>
+              <th scope="col">Código</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Setor</th>
+              <th scope="col">Status</th>
+              <th scope="col"><span class="leitor-de-tela">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ativo of filtrados(); track ativo.id) {
+              <tr [class.gestao__linha--inativa]="!ativo.ativo">
+                <th scope="row" data-rotulo="Código">{{ ativo.codigo }}</th>
+                <td data-rotulo="Nome">{{ ativo.nome }}</td>
+                <td data-rotulo="Tipo">{{ ativo.tipo | rotulo }}</td>
+                <td data-rotulo="Setor">{{ ativo.setor || 'Não informado' }}</td>
+                <td data-rotulo="Status">
+                  <span class="gestao__selo" [class.gestao__selo--ativo]="ativo.ativo">
+                    {{ ativo.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td class="gestao__celula-acoes">
+                  <div class="gestao__acoes">
+                    <a class="gestao__acao" [routerLink]="['/gestor/ativos', ativo.id]" [attr.aria-label]="'Editar ' + ativo.codigo">
+                      Editar
+                    </a>
+                    @if (ativo.ativo) {
+                      <button
+                        type="button"
+                        class="gestao__acao gestao__acao--perigo"
+                        [attr.aria-label]="'Desativar ' + ativo.codigo"
+                        (click)="pedirDesativacao(ativo)"
+                      >
+                        Desativar
+                      </button>
+                    } @else {
+                      <button
+                        type="button"
+                        class="gestao__acao"
+                        [attr.aria-label]="'Reativar ' + ativo.codigo"
+                        [disabled]="reativandoId() === ativo.id"
+                        (click)="reativar(ativo)"
+                      >
+                        {{ reativandoId() === ativo.id ? 'Reativando...' : 'Reativar' }}
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </app-tabela-gestao>
+    }
+  }
+</section>
+
+<app-dialogo-confirmacao
+  [titulo]="'Desativar ' + (paraDesativar()?.codigo ?? '') + '?'"
+  textoConfirmar="Desativar"
+  [perigoso]="true"
+  [processando]="desativando()"
+  (confirmado)="confirmarDesativacao()"
+>
+  <p>{{ paraDesativar()?.nome }} deixa de aparecer nas listagens, na busca e nas sugestões dos investidores.</p>
+  <p>Você pode reativar quando quiser, aqui mesmo.</p>
+</app-dialogo-confirmacao>

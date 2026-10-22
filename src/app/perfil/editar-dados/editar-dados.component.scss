@@ -1,22 +1,15 @@
-@use '../../../styles/tokens' as *;
+@use '../../../styles/design-system' as *;
 
 .editar-dados {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  @include pagina;
   max-width: 720px;
 
   h1 {
-    font-family: $font-display;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
+    @include titulo-pagina;
   }
 
   form {
-    display: flex;
-    flex-direction: column;
-    gap: $space-6;
+    @include pagina;
   }
 }
 
@@ -40,19 +33,10 @@
 }
 
 .editar-dados__secao {
-  padding: $space-6;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
+  @include cartao($space-6, $space-4);
 
   h2 {
-    font-family: $font-display;
-    font-size: 16px;
-    font-weight: 700;
-    margin: 0;
+    @include titulo-pagina(16px);
   }
 }
 
@@ -63,9 +47,7 @@
 }
 
 .editar-dados__dica {
-  font-family: $font-body;
-  font-size: 13px;
-  color: var(--text-secondary);
+  @include texto-apoio(13px);
   margin: 0;
 }
 
@@ -103,25 +85,18 @@
 
 .editar-dados__botao-foto,
 .editar-dados__remover-foto {
+  @include botao-contorno;
   display: inline-flex;
-  align-items: center;
-  gap: $space-2;
-  padding: $space-2 $space-4;
-  border: 1px solid var(--border-strong);
-  border-radius: $radius-md;
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  font-family: $font-body;
-  font-size: 14px;
-  cursor: pointer;
+  @include botao-contorno-icone;
+}
 
-  .material-symbols-outlined {
-    font-size: 18px;
-  }
+.editar-dados__botao-foto {
+  position: relative;
+}
 
-  &:hover {
-    border-color: var(--accent);
-  }
+.editar-dados__botao-foto:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .editar-dados__botao-foto--desabilitado,
@@ -178,16 +153,7 @@
 }
 
 .editar-dados__link {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-family: $font-body;
-  font-size: 14px;
-  cursor: pointer;
-
-  &:hover {
-    color: var(--text-primary);
-  }
+  @include botao-texto;
 }
 
 .editar-dados__secao > .editar-dados__botao-foto {

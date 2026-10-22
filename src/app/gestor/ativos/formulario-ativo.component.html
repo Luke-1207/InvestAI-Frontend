@@ -1,0 +1,124 @@
+<section class="formulario" aria-labelledby="formulario-ativo-titulo">
+  <a class="formulario__voltar" routerLink="/gestor/ativos">
+    <span aria-hidden="true" class="material-symbols-outlined">arrow_back</span>
+    Voltar para a lista
+  </a>
+
+  <header>
+    <h1 id="formulario-ativo-titulo" class="formulario__titulo">
+      {{ editando ? 'Editar ' + (original()?.codigo ?? 'ativo') : 'Cadastrar ativo' }}
+    </h1>
+    <p class="formulario__descricao">Ações, FIIs e ETFs da B3. A cotação é buscada automaticamente pelo código.</p>
+  </header>
+
+  @if (carregando()) {
+    <div class="formulario__estado"><app-spinner tamanho="grande" rotulo="Carregando" /></div>
+  } @else if (erroCarregamento()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (naoEncontrado()) {
+    <p class="formulario__erro-geral" role="alert">
+      Não encontramos esse ativo. Ele pode ter sido removido.
+      <a routerLink="/gestor/ativos">Voltar para a lista</a>
+    </p>
+  } @else {
+    <form [formGroup]="formulario" novalidate (ngSubmit)="salvar()">
+      <div class="formulario__painel">
+        <div class="campo" [class.campo--erro]="mostrarErro('codigo')">
+          <label for="ativo-codigo">Código</label>
+          <input
+            id="ativo-codigo"
+            formControlName="codigo"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            placeholder="Ex.: PETR4"
+            [attr.aria-invalid]="mostrarErro('codigo')"
+            [attr.aria-describedby]="mostrarErro('codigo') ? 'ativo-codigo-erro' : 'ativo-codigo-ajuda'"
+          />
+          @if (mostrarErro('codigo')) {
+            <p id="ativo-codigo-erro" class="campo__erro">{{ mensagemErro('codigo') }}</p>
+          } @else {
+            <p id="ativo-codigo-ajuda" class="campo__ajuda">
+              {{ editando ? 'O código não pode ser alterado depois do cadastro.' : 'O mesmo código usado na B3. Até 10 letras e números.' }}
+            </p>
+          }
+        </div>
+
+        <div class="campo" [class.campo--erro]="mostrarErro('nome')">
+          <label for="ativo-nome">Nome</label>
+          <input
+            id="ativo-nome"
+            formControlName="nome"
+            autocomplete="off"
+            placeholder="Ex.: Petrobras PN"
+            [attr.aria-invalid]="mostrarErro('nome')"
+            [attr.aria-describedby]="mostrarErro('nome') ? 'ativo-nome-erro' : null"
+          />
+          @if (mostrarErro('nome')) {
+            <p id="ativo-nome-erro" class="campo__erro">{{ mensagemErro('nome') }}</p>
+          }
+        </div>
+
+        <fieldset
+          class="campo campo--largo"
+          [class.campo--erro]="mostrarErro('tipo')"
+          [attr.aria-describedby]="mostrarErro('tipo') ? 'ativo-tipo-erro' : null"
+        >
+          <legend>Tipo</legend>
+          <div class="campo__opcoes">
+            @for (opcao of opcoesTipo; track opcao.valor; let primeiro = $first) {
+              <label class="campo__opcao">
+                <input
+                  type="radio"
+                  formControlName="tipo"
+                  [id]="'ativo-tipo-' + opcao.valor"
+                  [value]="opcao.valor"
+                  [attr.aria-invalid]="primeiro && mostrarErro('tipo') ? true : null"
+                />
+                {{ opcao.rotulo }}
+              </label>
+            }
+          </div>
+          @if (mostrarErro('tipo')) {
+            <p id="ativo-tipo-erro" class="campo__erro">{{ mensagemErro('tipo') }}</p>
+          }
+        </fieldset>
+
+        <div class="campo campo--largo" [class.campo--erro]="mostrarErro('setor')">
+          <label for="ativo-setor">Setor <span class="campo__ajuda">(opcional)</span></label>
+          <input
+            id="ativo-setor"
+            formControlName="setor"
+            list="ativo-setores"
+            autocomplete="off"
+            [attr.aria-invalid]="mostrarErro('setor')"
+            [attr.aria-describedby]="mostrarErro('setor') ? 'ativo-setor-erro' : 'ativo-setor-ajuda'"
+          />
+          <datalist id="ativo-setores">
+            @for (setor of sugestoesSetor(); track setor) {
+              <option [value]="setor"></option>
+            }
+          </datalist>
+          @if (mostrarErro('setor')) {
+            <p id="ativo-setor-erro" class="campo__erro">{{ mensagemErro('setor') }}</p>
+          } @else {
+            <p id="ativo-setor-ajuda" class="campo__ajuda">
+              As preferências de setor do perfil só valem para setores escritos igual às sugestões.
+            </p>
+          }
+        </div>
+      </div>
+
+      @if (erroGeral()) {
+        <p class="formulario__erro-geral" role="alert">{{ erroGeral() }}</p>
+      }
+
+      <div class="formulario__acoes">
+        <app-button tipoHtml="submit" [carregando]="salvando()">
+          {{ editando ? 'Salvar alterações' : 'Cadastrar ativo' }}
+        </app-button>
+        <a class="formulario__cancelar" routerLink="/gestor/ativos">Cancelar</a>
+      </div>
+    </form>
+  }
+</section>

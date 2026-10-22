@@ -5,8 +5,9 @@ import { filter } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
-import { IndicadorTicker } from '../../models/indicador-mercado';
 import {FotoPerfilService} from '../../services/foto-perfil.service';
+import { TickerMercadoComponent } from '../ticker-mercado/ticker-mercado.component';
+import { BuscaAtivosComponent } from '../busca-ativos/busca-ativos.component';
 
 interface ItemNav {
   rota: string;
@@ -17,12 +18,13 @@ interface ItemNav {
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TickerMercadoComponent, BuscaAtivosComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
 export class AppShellComponent implements OnInit {
-  @ViewChild('campoBusca') campoBusca?: ElementRef<HTMLInputElement>;
+  @ViewChild(BuscaAtivosComponent) busca?: BuscaAtivosComponent;
+  @ViewChild('botaoUsuario') botaoUsuario?: ElementRef<HTMLButtonElement>;
 
   protected readonly themeService = inject(ThemeService);
   protected readonly authService = inject(AuthService);
@@ -32,7 +34,6 @@ export class AppShellComponent implements OnInit {
 
   readonly menuUsuarioAberto = signal(false);
   readonly menuNavegacaoAberto = signal(false);
-  readonly termoBusca = signal('');
 
   readonly itensNav: ItemNav[] = [
     { rota: '/dashboard', rotulo: 'Dashboard', icone: 'dashboard' },
@@ -42,31 +43,11 @@ export class AppShellComponent implements OnInit {
     { rota: '/favoritos', rotulo: 'Favoritos', icone: 'star' },
     { rota: '/notificacoes', rotulo: 'Notificações', icone: 'notifications' },
     { rota: '/relatorios', rotulo: 'Relatórios', icone: 'description' },
+    { rota: '/glossario', rotulo: 'Glossário', icone: 'menu_book' },
     { rota: '/perfil', rotulo: 'Perfil', icone: 'person' },
   ];
 
   readonly ehGestor = computed(() => this.authService.role() === 'GESTOR');
-
-  readonly indicadores = computed<IndicadorTicker[]>(() => {
-    const dados = this.dashboardService.dashboard()?.indicadoresMercado;
-    if (!dados) {
-      return [
-        { label: 'IBOVESPA', valor: '—' },
-        { label: 'DÓLAR', valor: '—' },
-        { label: 'EURO', valor: '—' },
-        { label: 'SELIC', valor: '—' },
-        { label: 'IPCA', valor: '—' },
-      ];
-    }
-
-    return [
-      { label: 'IBOVESPA', valor: dados.ibovespaPontos.toLocaleString('pt-BR'), positivo: dados.ibovespaVariacaoDia >= 0 },
-      { label: 'DÓLAR', valor: `R$ ${dados.dolarValor.toFixed(2)}`, positivo: dados.dolarVariacaoDia >= 0 },
-      { label: 'EURO', valor: `R$ ${dados.euroValor.toFixed(2)}`, positivo: dados.euroVariacaoDia >= 0 },
-      { label: 'SELIC', valor: `${dados.selicAtual.toFixed(2)}%` },
-      { label: 'IPCA', valor: `${dados.ipcaAcumulado12m.toFixed(2)}%` },
-    ];
-  });
 
   constructor() {
     this.router.events
@@ -74,8 +55,14 @@ export class AppShellComponent implements OnInit {
         filter((evento) => evento instanceof NavigationEnd),
         takeUntilDestroyed(),
       )
-      .subscribe(() => this.fecharMenuNavegacao());
+      .subscribe(() => {
+        this.fecharMenuNavegacao();
+        if (this.jaNavegou) this.focarConteudo();
+        this.jaNavegou = true;
+      });
   }
+
+  private jaNavegou = false;
 
   ngOnInit(): void {
     this.fotoPerfilService.carregar();
@@ -104,6 +91,11 @@ export class AppShellComponent implements OnInit {
     this.themeService.alternarTema();
   }
 
+  focarConteudo(evento?: Event): void {
+    evento?.preventDefault();
+    document.getElementById('conteudo-principal')?.focus({ preventScroll: !evento });
+  }
+
   sair(): void {
     this.menuUsuarioAberto.set(false);
     this.authService.logout();
@@ -113,6 +105,10 @@ export class AppShellComponent implements OnInit {
   aoTeclar(evento: KeyboardEvent): void {
     if (evento.key === 'Escape') {
       this.fecharMenuNavegacao();
+      if (this.menuUsuarioAberto()) {
+        this.menuUsuarioAberto.set(false);
+        this.botaoUsuario?.nativeElement.focus();
+      }
       return;
     }
 
@@ -121,7 +117,7 @@ export class AppShellComponent implements OnInit {
 
     if (evento.key === '/' && !digitandoEmCampo) {
       evento.preventDefault();
-      this.campoBusca?.nativeElement.focus();
+      this.busca?.focar();
     }
   }
 

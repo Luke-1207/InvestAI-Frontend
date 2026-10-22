@@ -1,5 +1,5 @@
 import { ValorDescrito } from './quiz';
-import { Compatibilidade } from './compatibilidade';
+import { Compatibilidade, CriterioScore } from './compatibilidade';
 
 export interface IndicadoresMercado {
   ibovespaPontos: number;
@@ -25,10 +25,12 @@ export interface SugestaoAtivoItem {
   score: number;
   compatibilidade: Compatibilidade;
   justificativa: string;
+  criterios?: CriterioScore[];
 }
 
 export interface SugestaoRendaFixaItem {
   id: string;
+  codigo?: string | null;
   categoria: 'TESOURO' | 'CDB' | 'LCI' | 'LCA';
   nome: string;
   taxa: number;
@@ -36,6 +38,7 @@ export interface SugestaoRendaFixaItem {
   score: number;
   compatibilidade: Compatibilidade;
   justificativa: string;
+  criterios?: CriterioScore[];
 }
 
 export interface SugestoesRendaVariavel {

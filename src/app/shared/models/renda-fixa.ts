@@ -1,4 +1,4 @@
-import { Compatibilidade } from './compatibilidade';
+import { Compatibilidade, CriterioScore } from './compatibilidade';
 
 export type CategoriaRendaFixa = 'TESOURO' | 'CDB' | 'LCI' | 'LCA';
 
@@ -17,12 +17,15 @@ export interface RendaFixaListagem {
   score: number | null;
   compatibilidade: Compatibilidade | null;
   justificativa: string | null;
+  criterios?: CriterioScore[];
 }
 
 export interface RentabilidadeEstimada {
   taxaBrutaAnual: number;
   aliquotaIR: number;
-  taxaLiquidaAnual: number;
+  taxaLiquidaAnual: number | null;
+  taxaSomadaAoIndexador: boolean;
+  percentualRendimentoLiquido: number;
 }
 
 export interface TituloPrivadoDetalhe {
@@ -49,7 +52,29 @@ export interface TituloTesouroDetalhe {
   vencimento: string;
   pagaJurosSemestrais: boolean;
   liquidez: string;
+  rentabilidadeEstimada: RentabilidadeEstimada;
   resumoIA: string;
+}
+
+export interface SimulacaoRendimento {
+  valorInvestido: number;
+  prazoMeses: number;
+  prazoDias: number;
+  dataResgate: string;
+  taxaAnualEstimada: number;
+  valorBruto: number;
+  rendimentoBruto: number;
+  aliquotaIR: number;
+  impostoRenda: number;
+  valorLiquido: number;
+  rendimentoLiquido: number;
+  taxaAnualPoupanca: number;
+  valorPoupanca: number;
+  rendimentoPoupanca: number;
+  diferencaParaPoupanca: number;
+  premissas: string[];
+  avisos: string[];
+  indicadoresAtualizadosEm: string | null;
 }
 
 export interface DetalheRendaFixaNormalizado {
@@ -57,9 +82,11 @@ export interface DetalheRendaFixaNormalizado {
   categoria: CategoriaRendaFixa;
   nomeOuEmissor: string;
   indexadorOuTipo: string;
-  taxaBrutaAnual: number;
+  indexador: string;
+  rentabilidade: string;
   aliquotaIR: number;
-  taxaLiquidaAnual: number;
+  rentabilidadeLiquida: string | null;
+  percentualRendimentoLiquido: number;
   vencimento: string;
   investimentoMinimo: number;
   liquidez: string;

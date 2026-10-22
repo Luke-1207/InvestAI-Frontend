@@ -1,1 +1,98 @@
 @use '../../shared/components/auth-layout/auth-form' as *;
+@use '../../../styles/design-system' as *;
+
+.cadastro-foto {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-4;
+}
+
+.cadastro-foto__previa {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: $radius-full;
+  object-fit: cover;
+
+  &--vazia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed var(--border-strong);
+    color: var(--text-secondary);
+  }
+}
+
+.cadastro-foto__conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  min-width: 0;
+}
+
+.cadastro-foto__titulo {
+  @include rotulo(12px);
+  font-weight: 500;
+}
+
+.cadastro-foto__dica {
+  @include texto-apoio(13px);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.cadastro-foto__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.cadastro-foto__botao,
+.cadastro-foto__remover {
+  @include botao-contorno;
+  @include botao-contorno-icone;
+}
+
+.cadastro-foto__botao {
+  position: relative;
+
+  &:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  &--desabilitado {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.cadastro-foto__input {
+  @include leitor-de-tela;
+}
+
+.cadastro-foto__remover:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.cadastro-foto__remover:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cadastro__aceite {
+  @include texto-apoio(13px);
+  line-height: 1.5;
+  margin: 0;
+
+  a {
+    color: var(--accent);
+  }
+}
+
+.cadastro-foto__erro {
+  font-size: 13px;
+  color: var(--danger);
+  margin: 0;
+}

@@ -8,6 +8,15 @@ export interface SetorPreferido {
   preferencia: PreferenciaSetor;
 }
 
+export interface EditarPerfilRequest {
+  perfilRisco: string;
+  objetivoFinanceiro: string;
+  horizonteInvestimento: string;
+  valorDisponivel: number;
+  tiposAceitos: TipoAtivo[];
+  setoresPreferidos: SetorPreferido[];
+}
+
 export interface PerfilResponse {
   perfilRisco: ValorDescrito;
   objetivoFinanceiro: ValorDescrito;

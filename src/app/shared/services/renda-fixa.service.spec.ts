@@ -49,4 +49,23 @@ describe('RendaFixaService', () => {
     expect(req.request.method).toBe('GET');
     req.flush({});
   });
+
+  it('simular deve usar o endpoint de título privado quando o identificador é um UUID', () => {
+    service.simular('123e4567-e89b-12d3-a456-426614174000', 1000, 12).subscribe();
+
+    const req = httpMock.expectOne((r) => r.url === `${baseUrl}/titulos/123e4567-e89b-12d3-a456-426614174000/simulacao`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('valor')).toBe('1000');
+    expect(req.request.params.get('prazoMeses')).toBe('12');
+    req.flush({});
+  });
+
+  it('simular deve usar o endpoint do Tesouro quando o identificador é um código', () => {
+    service.simular('IPCA2035', 250.5, 24).subscribe();
+
+    const req = httpMock.expectOne((r) => r.url === `${baseUrl}/tesouro/IPCA2035/simulacao`);
+    expect(req.request.params.get('valor')).toBe('250.5');
+    expect(req.request.params.get('prazoMeses')).toBe('24');
+    req.flush({});
+  });
 });

@@ -1,0 +1,139 @@
+<section class="gestao" aria-labelledby="gestao-titulos-titulo">
+  <header class="gestao__cabecalho">
+    <div>
+      <h1 id="gestao-titulos-titulo" class="gestao__titulo">Títulos privados</h1>
+      <p class="gestao__descricao">CDBs, LCIs e LCAs oferecidos na renda fixa. O Tesouro Direto é atualizado automaticamente.</p>
+    </div>
+    <a class="gestao__novo" routerLink="/gestor/titulos/novo">
+      <span aria-hidden="true" class="material-symbols-outlined">add</span>
+      Cadastrar título
+    </a>
+  </header>
+
+  @if (carregando()) {
+    <div class="gestao__estado"><app-spinner tamanho="grande" rotulo="Carregando títulos" /></div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (titulos().length === 0) {
+    <div class="gestao__vazio">
+      <p>Nenhum título privado cadastrado ainda.</p>
+      <a class="gestao__novo" routerLink="/gestor/titulos/novo">Cadastrar o primeiro título</a>
+    </div>
+  } @else {
+    <app-filtros-gestao
+      rotuloBusca="Buscar títulos cadastrados"
+      placeholder="Buscar por emissor ou indexador"
+      [opcoesTipo]="opcoesTipo"
+      [(termo)]="termo"
+      [(tipo)]="filtroTipo"
+      [(status)]="filtroStatus"
+    />
+
+    <p class="gestao__contagem" aria-live="polite">{{ contagem() }}</p>
+
+    @if (filtrados().length === 0) {
+      <div class="gestao__vazio">
+        <p>Nenhum título encontrado com esses filtros.</p>
+        @if (temFiltro()) {
+          <button type="button" class="gestao__limpar" (click)="limparFiltros()">Limpar filtros</button>
+        }
+      </div>
+    } @else {
+      <app-tabela-gestao>
+        <table class="gestao__tabela">
+          <caption class="leitor-de-tela">Títulos privados cadastrados</caption>
+          <thead>
+            <tr>
+              <th scope="col">Título</th>
+              <th scope="col">Taxa</th>
+              <th scope="col">Vencimento</th>
+              <th scope="col">Mínimo</th>
+              <th scope="col">Liquidez</th>
+              <th scope="col">Status</th>
+              <th scope="col"><span class="leitor-de-tela">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (titulo of filtrados(); track titulo.id) {
+              <tr [class.gestao__linha--inativa]="!titulo.ativo">
+                <th scope="row" data-rotulo="Título">{{ nome(titulo) }}</th>
+                <td data-rotulo="Taxa" class="gestao__sem-quebra">{{ taxa(titulo) }}</td>
+                <td data-rotulo="Vencimento" class="gestao__sem-quebra">{{ formatarData(titulo.vencimento) }}</td>
+                <td data-rotulo="Mínimo" class="gestao__sem-quebra">{{ formatarMoeda(titulo.investimentoMinimo) }}</td>
+                <td data-rotulo="Liquidez">{{ titulo.liquidez | rotulo }}</td>
+                <td data-rotulo="Status">
+                  <span class="gestao__selos">
+                    <span class="gestao__selo" [class.gestao__selo--ativo]="titulo.ativo">
+                      {{ titulo.ativo ? 'Ativo' : 'Inativo' }}
+                    </span>
+                    @if (vencido(titulo)) {
+                      <span class="gestao__selo gestao__selo--alerta">Vencido</span>
+                    }
+                  </span>
+                </td>
+                <td class="gestao__celula-acoes">
+                  <div class="gestao__acoes">
+                    <a class="gestao__acao" [routerLink]="['/gestor/titulos', titulo.id]" [attr.aria-label]="'Editar ' + nome(titulo)">
+                      Editar
+                    </a>
+                    @if (titulo.ativo) {
+                      <button
+                        type="button"
+                        class="gestao__acao"
+                        [attr.aria-label]="'Desativar ' + nome(titulo)"
+                        (click)="pedirDesativacao(titulo)"
+                      >
+                        Desativar
+                      </button>
+                    } @else {
+                      <button
+                        type="button"
+                        class="gestao__acao"
+                        [attr.aria-label]="'Ativar ' + nome(titulo)"
+                        [disabled]="ativandoId() === titulo.id"
+                        (click)="ativar(titulo)"
+                      >
+                        {{ ativandoId() === titulo.id ? 'Ativando...' : 'Ativar' }}
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      class="gestao__acao gestao__acao--perigo"
+                      [attr.aria-label]="'Remover ' + nome(titulo)"
+                      (click)="pedirRemocao(titulo)"
+                    >
+                      Remover
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </app-tabela-gestao>
+    }
+  }
+</section>
+
+<app-dialogo-confirmacao
+  #dialogoDesativar
+  [titulo]="'Desativar ' + (selecionado() ? nome(selecionado()!) : '') + '?'"
+  textoConfirmar="Desativar"
+  [processando]="processando()"
+  (confirmado)="confirmarDesativacao()"
+>
+  <p>O título deixa de aparecer na renda fixa, na busca e nas sugestões dos investidores.</p>
+  <p>Você pode ativar de novo quando quiser.</p>
+</app-dialogo-confirmacao>
+
+<app-dialogo-confirmacao
+  #dialogoRemover
+  [titulo]="'Remover ' + (selecionado() ? nome(selecionado()!) : '') + '?'"
+  textoConfirmar="Remover de vez"
+  [perigoso]="true"
+  [processando]="processando()"
+  (confirmado)="confirmarRemocao()"
+>
+  <p>O título é apagado do cadastro e não dá para desfazer.</p>
+  <p>Se a ideia é só tirar da vitrine por um tempo, use Desativar.</p>
+</app-dialogo-confirmacao>

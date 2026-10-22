@@ -1,4 +1,4 @@
-@use '../../../../styles/tokens' as *;
+@use '../../../../styles/design-system' as *;
 
 .toast-container {
   position: fixed;
@@ -24,10 +24,8 @@
   align-items: flex-start;
   gap: $space-3;
   padding: $space-4;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
+  @include superficie($radius-md);
   border-left: 4px solid var(--text-secondary);
-  border-radius: $radius-md;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
   animation: toast-entrar 0.25s ease-out;
   pointer-events: auto;

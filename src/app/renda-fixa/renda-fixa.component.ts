@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { RendaFixaService } from '../shared/services/renda-fixa.service';
 import { RendaFixaListagem, CategoriaRendaFixa } from '../shared/models/renda-fixa';
 import { CORES_COMPATIBILIDADE } from '../shared/models/compatibilidade';
@@ -8,10 +8,19 @@ import { SkeletonCardComponent } from '../shared/components/ui/skeleton-card/ske
 import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-servidor.component';
 import { RelatorioService } from '../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
-import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
+import { AvisoEducativoComponent } from '../shared/components/aviso-educativo/aviso-educativo.component';
+import { AjudaGlossarioComponent } from '../shared/components/ajuda-glossario/ajuda-glossario.component';
 
 type Modo = 'livre' | 'inteligente';
-type FiltroCategoria = 'TODOS' | 'TESOURO' | 'CDB';
+type FiltroCategoria = 'TODOS' | 'TESOURO' | 'CDB' | 'LCI_LCA';
+
+const CATEGORIAS_DO_FILTRO: Record<Exclude<FiltroCategoria, 'TODOS'>, CategoriaRendaFixa[]> = {
+  TESOURO: ['TESOURO'],
+  CDB: ['CDB'],
+  LCI_LCA: ['LCI', 'LCA'],
+};
 
 interface OpcaoCategoria {
   valor: FiltroCategoria;
@@ -23,19 +32,29 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 @Component({
   selector: 'app-renda-fixa',
   standalone: true,
-  imports: [DecimalPipe, DatePipe, SkeletonCardComponent, ErroServidorComponent, BotaoRelatorioComponent],
+  imports: [
+    RouterLink,
+    RotuloPipe,
+    AjudaGlossarioComponent,
+    AvisoEducativoComponent,
+    DecimalPipe,
+    DatePipe,
+    SkeletonCardComponent,
+    ErroServidorComponent,
+    BotaoRelatorioComponent,
+  ],
   templateUrl: './renda-fixa.component.html',
   styleUrl: './renda-fixa.component.scss',
 })
 export class RendaFixaComponent implements OnInit {
   private readonly rendaFixaService = inject(RendaFixaService);
-  private readonly router = inject(Router);
   private readonly relatorioService = inject(RelatorioService);
 
   protected readonly OPCOES_CATEGORIA: OpcaoCategoria[] = [
     { valor: 'TODOS', rotulo: 'Tudo' },
     { valor: 'TESOURO', rotulo: 'Tesouro Direto' },
     { valor: 'CDB', rotulo: 'CDBs' },
+    { valor: 'LCI_LCA', rotulo: 'LCI e LCA' },
   ];
 
   protected readonly skeletonsPlaceholder = SKELETONS_PLACEHOLDER;
@@ -51,7 +70,8 @@ export class RendaFixaComponent implements OnInit {
   protected readonly itensFiltrados = computed(() => {
     const categoria = this.filtroCategoria();
     if (categoria === 'TODOS') return this.itens();
-    return this.itens().filter((item) => item.categoria === categoria);
+    const categorias = CATEGORIAS_DO_FILTRO[categoria];
+    return this.itens().filter((item) => categorias.includes(item.categoria));
   });
 
   protected readonly podeExportar = computed(
@@ -101,8 +121,8 @@ export class RendaFixaComponent implements OnInit {
     });
   }
 
-  protected abrirDetalhe(item: RendaFixaListagem): void {
-    this.router.navigateByUrl(`/renda-fixa/${item.codigo ?? item.id}`);
+  protected rotaDetalhe(item: RendaFixaListagem): string[] {
+    return ['/renda-fixa', item.codigo ?? item.id];
   }
 
   protected seloGarantia(item: RendaFixaListagem): string | null {

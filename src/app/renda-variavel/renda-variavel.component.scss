@@ -1,23 +1,14 @@
-@use '../../styles/tokens' as *;
+@use '../../styles/design-system' as *;
 
 .rv {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  @include pagina;
 }
 
 .rv__cabecalho {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: $space-4;
+  @include cabecalho-pagina;
 
   h1 {
-    font-family: $font-display;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
+    @include titulo-pagina;
   }
 }
 
@@ -34,133 +25,78 @@
 }
 
 .rv__filtros-tipo {
-  display: flex;
-  gap: $space-1;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-full;
-  padding: 4px;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-x: auto;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  @include grupo-pilulas;
+  @include rolagem-horizontal-oculta;
 }
 
 .rv__filtro {
-  padding: $space-1 $space-4;
-  border: none;
-  background: none;
-  border-radius: $radius-full;
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  cursor: pointer;
+  @include pilula;
+  @include texto-etiqueta(12px);
   white-space: nowrap;
 
-  @include ate-tablet {
-    min-height: 36px;
-  }
-
   &--ativo {
-    background: var(--accent-strong);
-    color: var(--accent-on-accent);
-    font-weight: 700;
+    @include pilula-ativa;
   }
 }
 
 .rv__toggle-modo {
-  display: flex;
-  gap: $space-1;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-full;
-  padding: 4px;
+  @include grupo-pilulas;
 }
 
 .rv__modo {
   display: flex;
   align-items: center;
   gap: $space-1;
-  padding: $space-1 $space-4;
+  @include pilula;
   white-space: nowrap;
-
-  @include ate-tablet {
-    min-height: 36px;
-  }
-  border: none;
-  background: none;
-  border-radius: $radius-full;
   font-family: $font-body;
   font-size: 14px;
-  color: var(--text-secondary);
-  cursor: pointer;
 
   .material-symbols-outlined {
     font-size: 16px;
   }
 
   &--ativo {
-    background: var(--ai);
-    color: white;
-    font-weight: 700;
+    @include pilula-ativa(var(--ai-forte), white);
   }
 }
 
 .rv__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: $space-4;
+  @include grid-cartoes;
 }
 
 .rv__card {
-  padding: $space-5;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-  cursor: pointer;
-  transition: border-color 0.15s;
+  @include cartao;
+  @include cartao-com-link;
+}
 
-  &:hover {
-    border-color: var(--accent);
-  }
+.rv__card-link {
+  @include link-do-cartao;
 }
 
 .rv__card-cabecalho {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: $space-3;
+  @include cabecalho-cartao;
 
-  h4 {
+  h2 {
     font-family: $font-display;
     font-size: 16px;
     margin: 0;
   }
 
   p {
-    font-family: $font-body;
-    font-size: 12px;
-    color: var(--text-secondary);
+    @include texto-apoio(12px);
     margin: 2px 0 0;
   }
 }
 
+.rv__tipo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .rv__card-tipo {
-  font-family: $font-mono;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  background: var(--bg-chip);
-  padding: 2px $space-2;
-  border-radius: $radius-sm;
+  @include selo;
   flex-shrink: 0;
 }
 
@@ -179,41 +115,23 @@
 
 .rv__variacao {
   font-weight: 600;
-
-  &--positiva {
-    color: var(--success-value);
-  }
-
-  &--negativa {
-    color: var(--danger);
-  }
+  @include cores-variacao;
 }
 
 .rv__card-secundarias {
   display: flex;
   gap: $space-3;
-  font-family: $font-body;
-  font-size: 12px;
-  color: var(--text-secondary);
+  @include texto-apoio(12px);
 }
 
 .rv__sem-cotacao {
-  font-family: $font-body;
-  font-size: 13px;
-  color: var(--text-secondary);
+  @include texto-apoio(13px);
   font-style: italic;
   margin: 0;
 }
 
 .rv__mensagem-vazia {
-  font-family: $font-body;
-  font-size: 14px;
-  color: var(--text-secondary);
-  padding: $space-6;
-  text-align: center;
-  background: var(--bg-surface);
-  border: 1px dashed var(--border-default);
-  border-radius: $radius-lg;
+  @include estado-vazio;
 }
 
 .rv__paginacao {
@@ -225,18 +143,14 @@
 .rv__pagina {
   width: 36px;
   height: 36px;
-  border-radius: $radius-md;
-  border: 1px solid var(--border-default);
-  background: var(--bg-surface);
+  @include superficie($radius-md);
   color: var(--text-secondary);
   font-family: $font-body;
   font-size: 14px;
   cursor: pointer;
 
   &--ativa {
-    background: var(--accent-strong);
-    color: var(--accent-on-accent);
+    @include pilula-ativa;
     border-color: var(--accent-strong);
-    font-weight: 700;
   }
 }

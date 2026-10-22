@@ -1,0 +1,236 @@
+@use '../../../../styles/design-system' as *;
+
+.simulador {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding: $space-6;
+  @include superficie;
+}
+
+.simulador__cabecalho {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+
+  h3 {
+    @include titulo-pagina(16px);
+  }
+}
+
+.simulador__selo {
+  @include texto-etiqueta(11px);
+  padding: 2px $space-2;
+  border-radius: $radius-sm;
+  color: var(--warning);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.simulador__texto {
+  @include texto-apoio;
+  margin: 0;
+}
+
+.simulador__formulario {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-4;
+  align-items: start;
+
+  @include ate-celular {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  app-button {
+    justify-self: start;
+  }
+}
+
+.simulador__campo {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  label {
+    @include rotulo(12px);
+    font-weight: 500;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: $space-3 $space-4;
+    background: var(--bg-input);
+    border: 1px solid var(--border-strong);
+    border-radius: $radius-md;
+    color: var(--text-primary);
+    font-family: $font-body;
+    font-size: 16px;
+    outline: none;
+
+    &:focus {
+      border-color: var(--accent);
+    }
+  }
+
+  &--erro {
+    input {
+      border-color: var(--danger);
+    }
+
+    .simulador__ajuda {
+      color: var(--danger);
+    }
+  }
+}
+
+.simulador__ajuda {
+  @include texto-apoio(12px);
+}
+
+.simulador__atalhos {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.simulador__atalho {
+  @include pilula;
+
+  &--ativo {
+    @include pilula-ativa;
+  }
+}
+
+.simulador__atalhos .simulador__atalho {
+  border: 1px solid var(--border-strong);
+  font-size: 13px;
+}
+
+.simulador__atalhos .simulador__atalho--ativo {
+  border-color: transparent;
+}
+
+.simulador__erro {
+  font-size: 14px;
+  color: var(--danger);
+  margin: 0;
+}
+
+.simulador__resultado {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding-top: $space-4;
+  border-top: 1px solid var(--border-default);
+
+  &--atualizando {
+    opacity: 0.55;
+  }
+}
+
+.simulador__destaque {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+
+  strong {
+    font-family: $font-display;
+    font-size: 20px;
+    white-space: nowrap;
+  }
+}
+
+.simulador__valores {
+  @include grid-cartoes(180px, auto-fit);
+  margin: 0;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    padding: $space-3 $space-4;
+    background: var(--bg-surface-alt);
+    border-radius: $radius-md;
+  }
+
+  dt {
+    @include rotulo;
+  }
+
+  dd {
+    margin: 0;
+    font-family: $font-display;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  small {
+    display: block;
+    @include texto-apoio(12px);
+    font-weight: 400;
+  }
+}
+
+.simulador__valor-liquido {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.simulador__comparacao {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+
+  &--positiva {
+    color: var(--success-text);
+  }
+
+  &--negativa {
+    color: var(--danger);
+  }
+}
+
+.simulador__aviso,
+.simulador__estimativa {
+  display: flex;
+  gap: $space-2;
+  @include texto-apoio(13px);
+  line-height: 1.5;
+  margin: 0;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
+
+.simulador__aviso {
+  padding: $space-3;
+  border-radius: $radius-md;
+  background: rgba(245, 158, 11, 0.08);
+
+  .material-symbols-outlined {
+    color: var(--warning);
+  }
+}
+
+.simulador__premissas {
+  @include texto-apoio(13px);
+
+  summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  ul {
+    margin: $space-2 0;
+    padding-left: $space-5;
+    line-height: 1.6;
+  }
+
+  p {
+    margin: 0;
+  }
+}

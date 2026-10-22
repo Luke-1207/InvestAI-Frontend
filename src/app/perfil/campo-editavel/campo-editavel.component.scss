@@ -1,0 +1,70 @@
+@use '../../../styles/design-system' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-5;
+  @include superficie;
+}
+
+:host(.campo-editavel--destaque) {
+  padding: $space-6;
+  background: linear-gradient(135deg, rgba(192, 193, 255, 0.1), rgba(139, 92, 246, 0.06));
+  border-color: var(--border-ai);
+}
+
+:host(.campo-editavel--editando) {
+  grid-column: 1 / -1;
+  border-color: var(--accent);
+}
+
+.campo-editavel__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+
+  h2 {
+    @include rotulo(12px);
+    margin: 0;
+  }
+}
+
+.campo-editavel__editar {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  @include botao-texto(13px);
+
+  @include ate-tablet {
+    min-height: 40px;
+  }
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.campo-editavel__formulario {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.campo-editavel__erro {
+  font-size: 14px;
+  color: var(--danger);
+  margin: 0;
+}
+
+.campo-editavel__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+
+  app-button {
+    display: block;
+    min-width: 128px;
+  }
+}

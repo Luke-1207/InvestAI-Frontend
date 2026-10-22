@@ -17,11 +17,10 @@
       <button
         type="button"
         class="app-input__alternar-senha"
-        tabindex="-1"
         (click)="alternarVisibilidadeSenha()"
         [attr.aria-label]="senhaVisivel() ? 'Ocultar senha' : 'Mostrar senha'"
       >
-        <span class="material-symbols-outlined">
+        <span aria-hidden="true" class="material-symbols-outlined">
           {{ senhaVisivel() ? 'visibility_off' : 'visibility' }}
         </span>
       </button>

@@ -65,4 +65,13 @@ describe('UsuarioService', () => {
     service.removerFoto().subscribe();
     expect(httpMock.expectOne(`${baseUrl}/foto`).request.method).toBe('DELETE');
   });
+
+  it('excluirConta deve chamar DELETE /usuarios/me com a senha no corpo', () => {
+    service.excluirConta('minha-senha').subscribe();
+
+    const req = httpMock.expectOne(baseUrl);
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.body).toEqual({ senha: 'minha-senha' });
+    req.flush(null);
+  });
 });

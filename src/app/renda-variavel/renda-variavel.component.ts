@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AcaoService } from '../shared/services/acao.service';
 import { AcaoListagem, PageResponse, TipoAtivo } from '../shared/models/acao';
 import { SugestoesRendaVariavel } from '../shared/models/dashboard';
@@ -9,7 +9,10 @@ import { ErroServidorComponent } from '../shared/components/erro-servidor/erro-s
 import { CartaoSugestaoAtivoComponent } from '../shared/components/cartao-sugestao-ativo/cartao-sugestao-ativo.component';
 import { RelatorioService } from '../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../shared/components/botao-relatorio/botao-relatorio.component';
-import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { LIMITE_ATIVOS_RELATORIO } from '../shared/models/relatorio';
+import { RotuloPipe } from '../shared/pipes/rotulo.pipe';
+import { AvisoEducativoComponent } from '../shared/components/aviso-educativo/aviso-educativo.component';
+import { AjudaGlossarioComponent } from '../shared/components/ajuda-glossario/ajuda-glossario.component';
 
 type Modo = 'livre' | 'inteligente';
 type FiltroTipo = 'TODOS' | TipoAtivo;
@@ -26,6 +29,10 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
   selector: 'app-renda-variavel',
   standalone: true,
   imports: [
+    RouterLink,
+    RotuloPipe,
+    AvisoEducativoComponent,
+    AjudaGlossarioComponent,
     DecimalPipe,
     SkeletonCardComponent,
     ErroServidorComponent,
@@ -37,7 +44,6 @@ const SKELETONS_PLACEHOLDER = [0, 1, 2, 3, 4, 5];
 })
 export class RendaVariavelComponent implements OnInit {
   private readonly acaoService = inject(AcaoService);
-  private readonly router = inject(Router);
   private readonly relatorioService = inject(RelatorioService);
 
   protected readonly OPCOES_TIPO: OpcaoTipo[] = [
@@ -96,9 +102,6 @@ export class RendaVariavelComponent implements OnInit {
     this.carregar();
   }
 
-  protected abrirDetalhe(codigo: string): void {
-    this.router.navigateByUrl(`/renda-variavel/${codigo}`);
-  }
 
   protected carregar(): void {
     this.carregando.set(true);

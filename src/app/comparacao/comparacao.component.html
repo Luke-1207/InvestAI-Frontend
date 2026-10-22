@@ -9,15 +9,15 @@
           @if (slotA(); as item) {
             <div class="comparacao__slot-preenchido">
               <div>
-                <span class="comparacao__slot-tipo">{{ item.tipo }}</span>
+                <span class="comparacao__slot-tipo">{{ item.tipo | rotulo }}</span>
                 <p>{{ item.rotulo }}</p>
               </div>
               <button type="button" (click)="removerSlot('A')" aria-label="Remover">
-                <span class="material-symbols-outlined">close</span>
+                <span aria-hidden="true" class="material-symbols-outlined">close</span>
               </button>
             </div>
           } @else {
-            <span class="material-symbols-outlined">add_circle</span>
+            <span aria-hidden="true" class="material-symbols-outlined">add_circle</span>
             <p>Escolha o primeiro ativo</p>
           }
         </div>
@@ -28,22 +28,22 @@
           @if (slotB(); as item) {
             <div class="comparacao__slot-preenchido">
               <div>
-                <span class="comparacao__slot-tipo">{{ item.tipo }}</span>
+                <span class="comparacao__slot-tipo">{{ item.tipo | rotulo }}</span>
                 <p>{{ item.rotulo }}</p>
               </div>
               <button type="button" (click)="removerSlot('B')" aria-label="Remover">
-                <span class="material-symbols-outlined">close</span>
+                <span aria-hidden="true" class="material-symbols-outlined">close</span>
               </button>
             </div>
           } @else {
-            <span class="material-symbols-outlined">add_circle</span>
+            <span aria-hidden="true" class="material-symbols-outlined">add_circle</span>
             <p>Escolha o segundo ativo</p>
           }
         </div>
       </div>
 
       <div class="comparacao__busca">
-        <span class="material-symbols-outlined">search</span>
+        <span aria-hidden="true" class="material-symbols-outlined">search</span>
         <input
           type="text"
           placeholder="Buscar ação, FII, ETF, Tesouro ou título..."
@@ -62,7 +62,7 @@
         <div class="comparacao__lista">
           @for (item of itensFiltrados(); track item.tipo + item.identificador) {
             <button type="button" class="comparacao__item-lista" (click)="selecionarItem(item)">
-              <span class="comparacao__item-tipo">{{ item.tipo }}</span>
+              <span class="comparacao__item-tipo">{{ item.tipo | rotulo }}</span>
               <div>
                 <p class="comparacao__item-rotulo">{{ item.rotulo }}</p>
                 <p class="comparacao__item-sub">{{ item.subRotulo }}</p>
@@ -81,7 +81,7 @@
   } @else {
     <div class="comparacao__resultado">
       <button type="button" class="comparacao__voltar" (click)="voltarParaSelecao()">
-        <span class="material-symbols-outlined">arrow_back</span>
+        <span aria-hidden="true" class="material-symbols-outlined">arrow_back</span>
         Trocar ativos
       </button>
 
@@ -97,7 +97,10 @@
           @for (item of [itemResultadoA(), itemResultadoB()]; track $index) {
             @if (item) {
               <div class="comparacao__cartao">
-                <span class="comparacao__cartao-categoria">{{ item.categoria }}</span>
+                <span class="comparacao__cartao-tipo">
+                  <span class="comparacao__cartao-categoria">{{ item.categoria | rotulo }}</span>
+                  <app-ajuda-glossario [chave]="item.categoria" />
+                </span>
                 <h3>{{ item.rotulo }}</h3>
 
                 <div class="comparacao__metricas">
@@ -115,7 +118,7 @@
                       <span>Compatibilidade com seu perfil</span>
                       <strong [style.color]="corCompatibilidade[item.compatibilidade!]">{{ item.score }}</strong>
                     </div>
-                    <div class="comparacao__barra-fundo">
+                    <div class="comparacao__barra-fundo" aria-hidden="true">
                       <div
                         class="comparacao__barra-preenchida"
                         [style.width.%]="item.score"
@@ -131,7 +134,7 @@
 
         <div class="comparacao__veredito">
           <span class="comparacao__veredito-etiqueta">
-            <span class="material-symbols-outlined">auto_awesome</span>
+            <span aria-hidden="true" class="material-symbols-outlined">auto_awesome</span>
             Veredito da IA
           </span>
 
@@ -143,6 +146,8 @@
             <p class="comparacao__veredito-indisponivel">Não foi possível gerar o veredito agora. O resto da comparação continua válido.</p>
           }
         </div>
+
+        <app-aviso-educativo />
       }
     </div>
   }

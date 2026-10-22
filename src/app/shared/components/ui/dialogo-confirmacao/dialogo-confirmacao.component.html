@@ -1,0 +1,25 @@
+<dialog
+  #dialogo
+  class="dialogo"
+  [attr.aria-labelledby]="idTitulo"
+  [attr.aria-describedby]="idTexto"
+  (cancel)="aoCancelar($event)"
+  (close)="aoFechar()"
+>
+  <h2 class="dialogo__titulo" [id]="idTitulo">{{ titulo() }}</h2>
+  <div class="dialogo__texto" [id]="idTexto">
+    <ng-content />
+  </div>
+  <div class="dialogo__acoes">
+    <button type="button" class="dialogo__cancelar" [disabled]="processando()" (click)="fechar()">Cancelar</button>
+    <button
+      type="button"
+      class="dialogo__confirmar"
+      [class.dialogo__confirmar--perigo]="perigoso()"
+      [disabled]="processando()"
+      (click)="confirmado.emit()"
+    >
+      {{ processando() ? 'Aguarde...' : textoConfirmar() }}
+    </button>
+  </div>
+</dialog>

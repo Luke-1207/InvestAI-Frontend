@@ -11,6 +11,9 @@ import { CORES_COMPATIBILIDADE, Compatibilidade } from '../../shared/models/comp
 import { SkeletonDetalheComponent } from '../../shared/components/ui/skeleton-detalhe/skeleton-detalhe.component';
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
 import {GraficoLinhaPrecoComponent} from '../../shared/components/ui/grafico-linha/grafico-linha-preco.component';
+import { AjudaGlossarioComponent } from '../../shared/components/ajuda-glossario/ajuda-glossario.component';
+import { AvisoEducativoComponent } from '../../shared/components/aviso-educativo/aviso-educativo.component';
+import { CriteriosScoreComponent } from '../../shared/components/criterios-score/criterios-score.component';
 
 interface OpcaoPeriodo {
   valor: string;
@@ -40,6 +43,9 @@ const NOTA_RISCO: Record<Compatibilidade, string> = {
     ErroServidorComponent,
     GraficoLinhaPrecoComponent,
     BotaoRelatorioComponent,
+    AjudaGlossarioComponent,
+    AvisoEducativoComponent,
+    CriteriosScoreComponent,
   ],
   templateUrl: './detalhe-ativo.component.html',
   styleUrl: './detalhe-ativo.component.scss',

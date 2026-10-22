@@ -1,0 +1,77 @@
+<section class="usuario" aria-labelledby="usuario-titulo">
+  <a class="usuario__voltar" routerLink="/gestor/usuarios">
+    <span aria-hidden="true" class="material-symbols-outlined">arrow_back</span>
+    Voltar para a lista
+  </a>
+
+  @if (carregando()) {
+    <div class="usuario__estado"><app-spinner tamanho="grande" rotulo="Carregando usuário" /></div>
+  } @else if (naoEncontrado()) {
+    <p class="usuario__aviso" role="alert">
+      Não encontramos esse usuário. <a routerLink="/gestor/usuarios">Voltar para a lista</a>
+    </p>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else {
+    @if (usuario(); as dados) {
+    <header class="usuario__cabecalho">
+      <h1 id="usuario-titulo" class="usuario__titulo">{{ dados.nome }}</h1>
+      <p class="usuario__email">{{ dados.email }}</p>
+      <div class="usuario__selos">
+        <span class="usuario__selo" [class.usuario__selo--gestor]="dados.role === 'GESTOR'">{{ rotuloPapel[dados.role] }}</span>
+        <span class="usuario__selo" [class.usuario__selo--ativo]="dados.ativo">{{ dados.ativo ? 'Conta ativa' : 'Conta inativa' }}</span>
+        @if (souEu()) {
+          <span class="usuario__selo">Você</span>
+        }
+      </div>
+    </header>
+
+    <dl class="usuario__dados">
+      <div><dt>Cadastrado em</dt><dd>{{ dados.criadoEm | date: 'dd/MM/yyyy' }}</dd></div>
+      <div><dt>Última alteração</dt><dd>{{ dados.atualizadoEm | date: 'dd/MM/yyyy HH:mm' }}</dd></div>
+    </dl>
+
+    <section class="usuario__perfil" aria-labelledby="usuario-perfil-titulo">
+      <div class="usuario__perfil-topo">
+        <h2 id="usuario-perfil-titulo">Perfil de investidor</h2>
+        <span class="usuario__leitura">
+          <span aria-hidden="true" class="material-symbols-outlined">visibility</span>
+          Somente leitura
+        </span>
+      </div>
+
+      @if (erroPerfil()) {
+        <p class="usuario__aviso" role="alert">
+          Não conseguimos carregar o perfil agora.
+          <button type="button" class="usuario__tentar" (click)="carregar()">Tentar de novo</button>
+        </p>
+      } @else {
+        @if (perfil(); as p) {
+        <dl class="usuario__dados usuario__dados--perfil">
+          <div><dt>Perfil de risco</dt><dd>{{ p.perfilRisco.descricao }}</dd></div>
+          <div><dt>Objetivo</dt><dd>{{ p.objetivoFinanceiro.descricao }}</dd></div>
+          <div><dt>Horizonte</dt><dd>{{ p.horizonteInvestimento.descricao }}</dd></div>
+          <div><dt>Valor disponível</dt><dd>{{ formatarMoeda(p.valorDisponivel) }}</dd></div>
+          <div><dt>Tipos de ativo que aceita</dt><dd>{{ tiposAceitos() || 'Nenhum informado' }}</dd></div>
+          <div><dt>Setores que prefere</dt><dd>{{ setoresPreferidos() || 'Nenhum' }}</dd></div>
+          <div><dt>Setores que evita</dt><dd>{{ setoresEvitados() || 'Nenhum' }}</dd></div>
+          <div><dt>Perfil atualizado em</dt><dd>{{ p.atualizadoEm | date: 'dd/MM/yyyy' }}</dd></div>
+        </dl>
+        @if (p.resumoIA) {
+          <div class="usuario__ia">
+            <span class="usuario__ia-etiqueta">
+              <span aria-hidden="true" class="material-symbols-outlined">auto_awesome</span>
+              Resumo gerado pela InvestAI
+            </span>
+            <p>{{ p.resumoIA }}</p>
+          </div>
+        }
+        <p class="usuario__nota">Só a própria pessoa pode mudar essas respostas, pela tela de perfil dela.</p>
+        } @else {
+          <p class="usuario__vazio">Essa pessoa ainda não respondeu o quiz de perfil, então ainda não recebe sugestões personalizadas.</p>
+        }
+      }
+    </section>
+    }
+  }
+</section>

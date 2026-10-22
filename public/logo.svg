@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="InvestAI">
+  <defs>
+    <linearGradient id="fundo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8083ff"/>
+      <stop offset="1" stop-color="#524fe0"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#fundo)"/>
+  <path d="M14 45 L26 33 L34 40 L47 23" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M47 11 L49.6 17.4 L56 20 L49.6 22.6 L47 29 L44.4 22.6 L38 20 L44.4 17.4 Z" fill="#ffffff"/>
+  <path d="M14 53 H50" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3" stroke-linecap="round"/>
+</svg>

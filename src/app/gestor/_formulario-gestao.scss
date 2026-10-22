@@ -1,0 +1,165 @@
+@use '../../styles/design-system' as *;
+
+.formulario {
+  @include pagina($space-5);
+  max-width: 720px;
+
+  form {
+    @include pagina($space-5);
+  }
+}
+
+.formulario__voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  align-self: flex-start;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.formulario__titulo {
+  @include titulo-pagina(28px);
+}
+
+.formulario__descricao {
+  margin: $space-1 0 0;
+  @include texto-apoio;
+}
+
+.formulario__estado {
+  @include estado-centralizado(240px);
+}
+
+.formulario__painel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-5;
+  padding: $space-6;
+  @include superficie;
+
+  @include ate-celular {
+    grid-template-columns: 1fr;
+    padding: $space-4;
+  }
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  &--largo {
+    grid-column: 1 / -1;
+  }
+
+  > label,
+  > legend {
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  input:not([type='radio'], [type='checkbox']),
+  select {
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 0 $space-3;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    border-radius: $radius-md;
+    font-family: $font-body;
+    font-size: 15px;
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+
+  &--erro input:not([type='radio'], [type='checkbox']),
+  &--erro select {
+    border-color: var(--danger);
+  }
+}
+
+.campo__ajuda {
+  margin: 0;
+  @include texto-apoio(13px);
+}
+
+.campo__erro {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin: 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.campo__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.campo__opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 40px;
+  padding: 0 $space-3;
+  border: 1px solid var(--border-strong);
+  border-radius: $radius-md;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--bg-muted);
+  }
+
+  input {
+    accent-color: var(--accent-strong);
+  }
+}
+
+.formulario__erro-geral {
+  margin: 0;
+  padding: $space-3 $space-4;
+  border: 1px solid var(--danger);
+  border-radius: $radius-md;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.formulario__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+
+  app-button {
+    min-width: 180px;
+  }
+}
+
+.formulario__cancelar {
+  color: var(--text-secondary);
+  font-size: 14px;
+}

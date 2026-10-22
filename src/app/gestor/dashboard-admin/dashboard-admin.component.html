@@ -2,7 +2,7 @@
   <header class="painel-gestor__cabecalho">
     <div>
       <span class="painel-gestor__etiqueta">
-        <span class="material-symbols-outlined">shield_person</span>
+        <span aria-hidden="true" class="material-symbols-outlined">shield_person</span>
         Área administrativa
       </span>
       <h1 class="painel-gestor__titulo">Painel do Gestor</h1>
@@ -24,13 +24,13 @@
         <article class="painel-gestor__card" data-teste="card-usuarios">
           <div class="painel-gestor__card-topo">
             <h2>Total de usuários</h2>
-            <span class="material-symbols-outlined">group</span>
+            <span aria-hidden="true" class="material-symbols-outlined">group</span>
           </div>
           <p class="painel-gestor__numero">{{ formatarNumero(dados.totalUsuarios) }}</p>
           <p class="painel-gestor__apoio">
             @if (dados.novosUsuariosUltimos30Dias > 0) {
               <span class="painel-gestor__variacao painel-gestor__variacao--positiva">
-                <span class="material-symbols-outlined">trending_up</span>
+                <span aria-hidden="true" class="material-symbols-outlined">trending_up</span>
                 +{{ formatarNumero(dados.novosUsuariosUltimos30Dias) }}
                 @if (variacaoUsuarios(); as variacao) {
                   ({{ formatarVariacao(variacao) }}%)
@@ -47,7 +47,7 @@
         <article class="painel-gestor__card" data-teste="card-perfis">
           <div class="painel-gestor__card-topo">
             <h2>Perfis concluídos</h2>
-            <span class="material-symbols-outlined">fact_check</span>
+            <span aria-hidden="true" class="material-symbols-outlined">fact_check</span>
           </div>
           <p class="painel-gestor__numero">
             {{ formatarNumero(dados.usuariosComPerfilPreenchido) }}
@@ -66,30 +66,40 @@
           <p class="painel-gestor__apoio">{{ percentualPerfis() }}% responderam o quiz</p>
         </article>
 
-        <article class="painel-gestor__card" data-teste="card-ia">
+        <article class="painel-gestor__card" data-teste="card-integracoes">
           <div class="painel-gestor__card-topo">
-            <h2>Microsserviço de IA</h2>
-            <span class="material-symbols-outlined">smart_toy</span>
+            <h2>Integrações</h2>
+            <span aria-hidden="true" class="material-symbols-outlined">hub</span>
           </div>
-          @if (statusIa(); as status) {
+          @if (saudeIntegracoes()) {
             <p class="painel-gestor__status">
               <span
                 class="painel-gestor__pulso"
-                [class.painel-gestor__pulso--online]="status.disponivel"
-                [class.painel-gestor__pulso--offline]="!status.disponivel"
+                [class.painel-gestor__pulso--online]="!falhaIntegracoes() && resumoIntegracoes().comProblema === 0"
+                [class.painel-gestor__pulso--alerta]="!falhaIntegracoes() && resumoIntegracoes().comProblema > 0 && !resumoIntegracoes().foraDoAr"
+                [class.painel-gestor__pulso--offline]="falhaIntegracoes() || resumoIntegracoes().foraDoAr"
               ></span>
-              {{ status.disponivel ? 'Online' : 'Offline' }}
+              @if (resumoIntegracoes().comProblema === 0) {
+                Tudo operando
+              } @else {
+                {{ resumoIntegracoes().comProblema }} com problema
+              }
             </p>
             <p class="painel-gestor__apoio">
-              @if (status.rabbitmqConectado === null) {
-                RabbitMQ sem informação
-              } @else {
-                RabbitMQ {{ status.rabbitmqConectado ? 'conectado' : 'desconectado' }}
+              {{ resumoIntegracoes().total - resumoIntegracoes().comProblema }} de {{ resumoIntegracoes().total }} sem problemas
+              @if (resumoIntegracoes().simuladas > 0) {
+                · {{ resumoIntegracoes().simuladas }} em modo simulado
               }
             </p>
             <p class="painel-gestor__apoio painel-gestor__apoio--discreto">
-              Ao vivo · verificado às {{ status.verificadoEm | date: 'HH:mm:ss' }}
+              <a href="#saude-integracoes" (click)="irParaIntegracoes($event)">Ver detalhes</a>
             </p>
+          } @else if (falhaIntegracoes()) {
+            <p class="painel-gestor__status">
+              <span class="painel-gestor__pulso painel-gestor__pulso--offline"></span>
+              Sem resposta
+            </p>
+            <p class="painel-gestor__apoio">Não foi possível verificar as integrações agora.</p>
           } @else {
             <p class="painel-gestor__status">
               <span class="painel-gestor__pulso"></span>
@@ -120,7 +130,7 @@
             @for (categoria of categorias(); track categoria.rotulo) {
               <li class="painel-gestor__categoria">
                 <span class="painel-gestor__categoria-rotulo">{{ categoria.rotulo }}</span>
-                <span class="painel-gestor__categoria-trilho">
+                <span class="painel-gestor__categoria-trilho" aria-hidden="true">
                   <span
                     class="painel-gestor__categoria-barra"
                     [class.painel-gestor__categoria-barra--rf]="categoria.grupo === 'rf'"
@@ -171,4 +181,15 @@
       </section>
     }
   }
+
+  <app-saude-integracoes
+    [saude]="saudeIntegracoes()"
+    [falhaConsulta]="falhaIntegracoes()"
+    [intervaloSegundos]="intervaloIntegracoesSegundos"
+    [verificandoTodas]="verificandoTodas()"
+    [verificando]="verificandoIntegracoes()"
+    [aviso]="avisoVerificacao()"
+    (verificar)="verificarIntegracao($event)"
+    (verificarTodas)="verificarTodasIntegracoes()"
+  />
 </div>

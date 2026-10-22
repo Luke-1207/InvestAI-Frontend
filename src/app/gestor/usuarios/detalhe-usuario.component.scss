@@ -1,0 +1,144 @@
+@use '../../../styles/design-system' as *;
+
+.usuario {
+  @include pagina($space-5);
+  max-width: 880px;
+}
+
+.usuario__voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  align-self: flex-start;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-decoration: none;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.usuario__estado {
+  @include estado-centralizado(240px);
+}
+
+.usuario__titulo {
+  @include titulo-pagina(28px);
+  overflow-wrap: anywhere;
+}
+
+.usuario__email {
+  margin: $space-1 0 $space-3;
+  overflow-wrap: anywhere;
+  @include texto-apoio;
+}
+
+.usuario__selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.usuario__selo {
+  padding: 2px $space-2;
+  border: 1px solid var(--border-strong);
+  border-radius: $radius-full;
+  @include rotulo(12px);
+
+  &--gestor {
+    border-color: var(--border-ai);
+    color: var(--ai);
+  }
+
+  &--ativo {
+    border-color: var(--border-success);
+    color: var(--success-text);
+  }
+}
+
+.usuario__dados {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: $space-4;
+  margin: 0;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  dt {
+    @include rotulo;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+.usuario__perfil {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding: $space-6;
+  @include superficie;
+
+  @include ate-celular {
+    padding: $space-4;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+}
+
+.usuario__perfil-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+}
+
+.usuario__leitura {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  @include rotulo(12px);
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.usuario__ia {
+  padding: $space-4;
+  @include painel-ia;
+
+  p {
+    margin: $space-2 0 0;
+    line-height: 1.5;
+  }
+}
+
+.usuario__ia-etiqueta {
+  @include etiqueta-ia;
+}
+
+.usuario__nota,
+.usuario__vazio,
+.usuario__aviso {
+  margin: 0;
+  @include texto-apoio;
+}
+
+.usuario__tentar {
+  @include botao-texto;
+  color: var(--accent);
+  text-decoration: underline;
+}

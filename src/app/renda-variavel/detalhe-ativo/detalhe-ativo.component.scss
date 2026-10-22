@@ -1,23 +1,14 @@
-@use '../../../styles/tokens' as *;
+@use '../../../styles/design-system' as *;
 
 .detalhe-ativo {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  @include pagina;
 }
 
 .detalhe-ativo__cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: $space-4;
+  @include cabecalho-pagina(flex-start);
 
   h1 {
-    font-family: $font-display;
-    font-size: 32px;
-    font-weight: 700;
-    margin: 0;
+    @include titulo-pagina(32px);
 
     @include ate-celular {
       font-size: 28px;
@@ -25,9 +16,7 @@
   }
 
   p {
-    font-family: $font-body;
-    font-size: 14px;
-    color: var(--text-secondary);
+    @include texto-apoio;
     margin: $space-1 0 0;
   }
 }
@@ -48,20 +37,11 @@
   font-family: $font-body;
   font-size: 16px;
   font-weight: 700;
-
-  &--positiva {
-    color: var(--success-value);
-  }
-
-  &--negativa {
-    color: var(--danger);
-  }
+  @include cores-variacao;
 }
 
 .detalhe-ativo__sem-cotacao {
-  font-family: $font-body;
-  font-size: 14px;
-  color: var(--text-secondary);
+  @include texto-apoio;
   font-style: italic;
 }
 
@@ -78,17 +58,7 @@
 
 .detalhe-ativo__favorito,
 .detalhe-ativo__comparar {
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  padding: $space-2 $space-4;
-  border: 1px solid var(--border-strong);
-  border-radius: $radius-md;
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  font-family: $font-body;
-  font-size: 14px;
-  cursor: pointer;
+  @include botao-contorno;
 
   @include ate-tablet {
     min-height: 40px;
@@ -100,13 +70,7 @@
     white-space: nowrap;
   }
 
-  .material-symbols-outlined {
-    font-size: 18px;
-  }
-
-  &:hover {
-    border-color: var(--accent);
-  }
+  @include botao-contorno-icone;
 }
 
 .detalhe-ativo__favorito--ativo {
@@ -115,13 +79,7 @@
 }
 
 .detalhe-ativo__grafico-painel {
-  padding: $space-6;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $space-5;
+  @include cartao($space-6, $space-5);
 }
 
 .detalhe-ativo__periodos {
@@ -134,75 +92,33 @@
 }
 
 .detalhe-ativo__periodo {
-  padding: $space-1 $space-4;
-  border: none;
-  background: none;
-  border-radius: $radius-full;
+  @include pilula;
   font-family: $font-mono;
   font-size: 12px;
-  color: var(--text-secondary);
-  cursor: pointer;
-
-  @include ate-tablet {
-    min-height: 36px;
-  }
 
   &--ativo {
-    background: var(--accent-strong);
-    color: var(--accent-on-accent);
-    font-weight: 700;
+    @include pilula-ativa;
   }
 }
 
 .detalhe-ativo__metricas-secundarias {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: $space-4;
+  @include grid-cartoes(140px, auto-fit);
+  @include dados-rotulados;
 
   div {
     padding: $space-4;
-    background: var(--bg-surface);
-    border: 1px solid var(--border-default);
-    border-radius: $radius-md;
-    display: flex;
-    flex-direction: column;
-    gap: $space-1;
-  }
-
-  span {
-    font-family: $font-mono;
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-  }
-
-  strong {
-    font-family: $font-body;
-    font-size: 16px;
-    color: var(--text-primary);
+    @include superficie($radius-md);
   }
 }
 
 .detalhe-ativo__ia {
   padding: $space-6;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(192, 193, 255, 0.06));
-  border: 1px solid var(--border-ai);
-  border-radius: $radius-lg;
+  @include painel-ia;
 }
 
 .detalhe-ativo__ia-etiqueta {
-  display: inline-flex;
-  align-items: center;
-  gap: $space-1;
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: var(--ai);
+  @include etiqueta-ia;
   margin-bottom: $space-4;
-
-  .material-symbols-outlined {
-    font-size: 16px;
-  }
 }
 
 .detalhe-ativo__ia-corpo {
@@ -212,17 +128,7 @@
 }
 
 .detalhe-ativo__ia-score {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: $radius-full;
-  border: 2px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: $font-mono;
-  font-size: 16px;
-  font-weight: 700;
+  @include circulo-score(48px, 16px);
 }
 
 .detalhe-ativo__ia-texto {
@@ -233,9 +139,17 @@
   margin: 0 0 $space-2;
 }
 
+.detalhe-ativo__criterios {
+  margin-top: $space-5;
+  padding-top: $space-4;
+  border-top: 1px solid var(--border-ai);
+}
+
+.detalhe-ativo__aviso {
+  margin-top: $space-4;
+}
+
 .detalhe-ativo__ia-risco {
-  font-family: $font-body;
-  font-size: 13px;
-  color: var(--text-secondary);
+  @include texto-apoio(13px);
   margin: 0;
 }

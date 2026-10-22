@@ -1,0 +1,73 @@
+@use '../../../styles/design-system' as *;
+
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $space-3 $space-4;
+}
+
+.filtros__busca {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex: 1 1 260px;
+  max-width: 420px;
+  padding: $space-2 $space-3;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: $radius-md;
+
+  &:focus-within {
+    border-color: var(--accent);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: $font-body;
+    font-size: 14px;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--text-secondary);
+  }
+}
+
+.filtros__pilulas {
+  @include grupo-pilulas;
+  @include rolagem-horizontal-oculta;
+}
+
+.filtros__pilula {
+  white-space: nowrap;
+  font-size: 13px;
+  @include pilula;
+
+  &[aria-pressed='true'] {
+    @include pilula-ativa;
+  }
+}
+
+.filtros__status {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  @include texto-apoio;
+
+  select {
+    min-height: 36px;
+    padding: 0 $space-3;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+    border-radius: $radius-md;
+    font-family: $font-body;
+    font-size: 14px;
+  }
+}

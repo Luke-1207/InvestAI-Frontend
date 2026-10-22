@@ -1,6 +1,6 @@
 <div class="editar-dados">
   <a routerLink="/perfil" class="editar-dados__voltar">
-    <span class="material-symbols-outlined">arrow_back</span>
+    <span aria-hidden="true" class="material-symbols-outlined">arrow_back</span>
     Voltar ao perfil
   </a>
 
@@ -23,20 +23,20 @@
 
         <div class="editar-dados__foto-acoes">
           <label class="editar-dados__botao-foto" [class.editar-dados__botao-foto--desabilitado]="processandoFoto()">
-            <span class="material-symbols-outlined">upload</span>
+            <span aria-hidden="true" class="material-symbols-outlined">upload</span>
             {{ urlFoto() ? 'Trocar foto' : 'Enviar foto' }}
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
               [disabled]="processandoFoto()"
               (change)="aoSelecionarArquivo($event)"
-              hidden
+              class="leitor-de-tela"
             />
           </label>
 
           @if (urlFoto()) {
             <button type="button" class="editar-dados__remover-foto" [disabled]="processandoFoto()" (click)="removerFoto()">
-              <span class="material-symbols-outlined">delete</span>
+              <span aria-hidden="true" class="material-symbols-outlined">delete</span>
               Remover
             </button>
           }
@@ -80,7 +80,7 @@
 
         @if (!trocandoSenha()) {
           <button type="button" class="editar-dados__botao-foto" (click)="abrirTrocaSenha()">
-            <span class="material-symbols-outlined">lock_reset</span>
+            <span aria-hidden="true" class="material-symbols-outlined">lock_reset</span>
             Alterar senha
           </button>
         } @else {
@@ -112,7 +112,7 @@
 
       @if (avisoFormulario(); as aviso) {
         <p class="editar-dados__aviso" [class.editar-dados__aviso--erro]="aviso.tipo === 'erro'" role="status">
-          <span class="material-symbols-outlined">{{ aviso.tipo === 'erro' ? 'error' : 'check_circle' }}</span>
+          <span aria-hidden="true" class="material-symbols-outlined">{{ aviso.tipo === 'erro' ? 'error' : 'check_circle' }}</span>
           {{ aviso.texto }}
         </p>
       }
@@ -123,5 +123,7 @@
         </app-button>
       </div>
     </form>
+
+    <app-excluir-conta />
   }
 </div>

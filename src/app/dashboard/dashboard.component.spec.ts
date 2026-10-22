@@ -54,20 +54,56 @@ describe('DashboardComponent', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('Dica do Dia deve escolher o item de MAIOR score, não o primeiro do array', async () => {
+  it('deve avisar que as sugestões são conteúdo educativo', async () => {
     await montar(mockDashboard());
 
-    const titulo = fixture.nativeElement.querySelector('.dashboard__dica-do-dia h2');
-    expect(titulo.textContent).toContain('VALE3'); // score 91, não PETR4 (72) que vem primeiro
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).not.toBeNull();
   });
 
-  it('não deve mostrar Dica do Dia quando não há sugestões de renda variável', async () => {
+  it('o ativo em destaque da Dica do Dia deve ser o de MAIOR score, não o primeiro do array', async () => {
+    await montar(mockDashboard());
+
+    const destaque: HTMLAnchorElement = fixture.nativeElement.querySelector('app-dica-do-dia .dica-do-dia__destaque');
+    expect(destaque.textContent).toContain('VALE3');
+    expect(destaque.getAttribute('href')).toBe('/renda-variavel/VALE3');
+  });
+
+  it('sem sugestões de renda variável, a Dica do Dia continua com a dica educativa, mas sem ativo em destaque', async () => {
     await montar(mockDashboard({ sugestoesRendaVariavel: { itens: [], mensagem: 'Complete seu perfil.' } }));
 
-    expect(fixture.nativeElement.querySelector('.dashboard__dica-do-dia')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-dica-do-dia .dica-do-dia__texto')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.dica-do-dia__destaque')).toBeNull();
     expect(fixture.nativeElement.querySelector('.dashboard__mensagem-vazia').textContent).toContain(
       'Complete seu perfil.',
     );
+  });
+
+  it('os cards de renda variável devem levar ao detalhe do ativo', async () => {
+    await montar(mockDashboard());
+
+    const links = Array.from(fixture.nativeElement.querySelectorAll('app-cartao-sugestao-ativo h3 a')).map((a) =>
+      (a as HTMLAnchorElement).getAttribute('href'),
+    );
+    expect(links).toEqual(['/renda-variavel/PETR4', '/renda-variavel/VALE3']);
+  });
+
+  it('cards de renda fixa devem levar ao detalhe: Tesouro pelo código, título privado pelo id', async () => {
+    await montar(
+      mockDashboard({
+        sugestoesRendaFixa: {
+          itens: [
+            { id: 'aaaaaaaa-1111-4111-8111-111111111111', codigo: 'IPCA2035', categoria: 'TESOURO', nome: 'Tesouro IPCA+ 2035', taxa: 6.2, vencimento: '2035-05-15', score: 70, compatibilidade: 'MEDIA', justificativa: 'x' },
+            { id: 'bbbbbbbb-2222-4222-8222-222222222222', codigo: null, categoria: 'CDB', nome: 'CDB Banco Alfa', taxa: 110, vencimento: '2028-05-10', score: 60, compatibilidade: 'MEDIA', justificativa: 'y' },
+          ],
+          mensagem: null,
+        },
+      }),
+    );
+
+    const links = Array.from(fixture.nativeElement.querySelectorAll('.dashboard__card-link')).map((a) =>
+      (a as HTMLAnchorElement).getAttribute('href'),
+    );
+    expect(links).toEqual(['/renda-fixa/IPCA2035', '/renda-fixa/bbbbbbbb-2222-4222-8222-222222222222']);
   });
 
   it('perfil incompleto: deve mostrar o banner e ESCONDER o resumo de perfil/distribuição', async () => {
@@ -93,5 +129,18 @@ describe('DashboardComponent', () => {
     const legendas = fixture.nativeElement.querySelectorAll('.donut-chart__percentual');
     expect(legendas[0].textContent.trim()).toBe('50%');
     expect(legendas[1].textContent.trim()).toBe('50%');
+  });
+
+  it('as barras de risco e prazo do perfil devem ter descrição em texto', async () => {
+    await montar(mockDashboard());
+
+    const barras = Array.from(fixture.nativeElement.querySelectorAll('.dashboard__barra')).map((b) => [
+      (b as HTMLElement).getAttribute('role'),
+      (b as HTMLElement).getAttribute('aria-label'),
+    ]);
+    expect(barras).toEqual([
+      ['img', 'Nível de risco 2 de 3'],
+      ['img', 'Prazo 3 de 3, do curto ao longo'],
+    ]);
   });
 });

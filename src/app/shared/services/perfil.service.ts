@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { QuizResponse, QuizSubmissaoResponse, RespostaQuiz } from '../models/quiz';
-import { PerfilResponse } from '../models/perfil';
+import { EditarPerfilRequest, PerfilResponse } from '../models/perfil';
 
 @Injectable({ providedIn: 'root' })
 export class PerfilService {
@@ -20,6 +20,10 @@ export class PerfilService {
 
   obterPerfil(): Observable<PerfilResponse> {
     return this.http.get<PerfilResponse>(this.baseUrl);
+  }
+
+  editarPerfil(requisicao: EditarPerfilRequest): Observable<PerfilResponse> {
+    return this.http.put<PerfilResponse>(this.baseUrl, requisicao);
   }
 
   refazerQuiz(): Observable<PerfilResponse> {

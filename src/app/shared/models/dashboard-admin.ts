@@ -25,8 +25,33 @@ export interface DashboardAdminResponse {
   geradoEm: string;
 }
 
-export interface StatusIa {
-  disponivel: boolean;
-  rabbitmqConectado: boolean | null;
+export type ChaveIntegracao = 'MICROSSERVICO_IA' | 'RABBITMQ' | 'LLM' | 'HG_BRASIL' | 'TESOURO_DIRETO' | 'BANCO_CENTRAL';
+export type SituacaoIntegracao = 'OPERACIONAL' | 'DESATUALIZADA' | 'FORA_DO_AR' | 'SEM_DADOS' | 'DESCONHECIDA';
+
+export interface StatusIntegracao {
+  chave: ChaveIntegracao;
+  nome: string;
+  situacao: SituacaoIntegracao;
+  simulado: boolean;
+  detalhe: string | null;
+  ultimoSucessoEm: string | null;
+  ultimaFalhaEm: string | null;
+  ultimoErro: string | null;
+}
+
+export interface SaudeIntegracoes {
+  integracoes: StatusIntegracao[];
   verificadoEm: string;
+}
+
+export const ROTULOS_SITUACAO_INTEGRACAO: Record<SituacaoIntegracao, string> = {
+  OPERACIONAL: 'Operacional',
+  DESATUALIZADA: 'Desatualizada',
+  FORA_DO_AR: 'Fora do ar',
+  SEM_DADOS: 'Sem dados ainda',
+  DESCONHECIDA: 'Sem como verificar',
+};
+
+export function integracaoComProblema(integracao: StatusIntegracao): boolean {
+  return integracao.situacao === 'FORA_DO_AR' || integracao.situacao === 'DESATUALIZADA';
 }

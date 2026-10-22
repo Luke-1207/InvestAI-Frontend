@@ -76,6 +76,11 @@ describe('RendaVariavelComponent', () => {
 
     expect(acaoService.listarSugestoes).toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('app-cartao-sugestao-ativo')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).toBeTruthy();
+  });
+
+  it('não deve mostrar o aviso de sugestão no Modo Livre, que não tem score', () => {
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).toBeNull();
   });
 
   it('deve resetar pra página 1 ao trocar o filtro de tipo', () => {
@@ -105,12 +110,28 @@ describe('RendaVariavelComponent', () => {
     );
   });
 
-  it('deve navegar pro detalhe do ativo ao clicar num card do Modo Livre', () => {
+  it('deve mostrar o tipo do ativo com texto legível no card', () => {
+    expect(fixture.nativeElement.querySelector('.rv__card-tipo').textContent.trim()).toBe('Ação');
+  });
+
+  it('deve explicar o tipo do ativo com o glossário sem abrir o detalhe', () => {
     const navSpy = spyOn(router, 'navigateByUrl');
+    const ajuda: HTMLButtonElement = fixture.nativeElement.querySelector('.rv__card .ajuda__botao');
 
-    fixture.nativeElement.querySelector('.rv__card').click();
+    expect(ajuda.getAttribute('aria-label')).toBe('O que é Ação?');
 
-    expect(navSpy).toHaveBeenCalledWith('/renda-variavel/PETR4');
+    ajuda.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    fixture.detectChanges();
+
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')!.textContent).toContain('pedacinho de uma empresa');
+    expect(navSpy).not.toHaveBeenCalled();
+  });
+
+  it('no Modo Livre, o código do ativo deve ser um link para o detalhe, alcançável pelo Tab', () => {
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('.rv__card h2 a.rv__card-link');
+
+    expect(link.getAttribute('href')).toBe('/renda-variavel/PETR4');
+    expect(link.textContent!.trim()).toBe('PETR4');
   });
 
   it('não deve mostrar paginação quando só existe 1 página', () => {

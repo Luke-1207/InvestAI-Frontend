@@ -5,16 +5,71 @@
   </div>
 
   @if (pontos().length > 0) {
-    <svg [attr.viewBox]="'0 0 ' + largura + ' ' + altura" preserveAspectRatio="none" class="grafico-linha__svg">
-      <defs>
-        <linearGradient id="gradienteArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3" />
-          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
-        </linearGradient>
-      </defs>
-      <path [attr.d]="caminhos().area" fill="url(#gradienteArea)" stroke="none" />
-      <path [attr.d]="caminhos().linha" fill="none" stroke="var(--accent)" stroke-width="2" />
-    </svg>
+    <div
+      class="grafico-linha__area"
+      tabindex="0"
+      role="group"
+      [attr.aria-label]="rotuloAcessivel()"
+      [attr.aria-describedby]="idResumo"
+      (keydown)="aoPressionarTecla($event)"
+      (focus)="aoFocar()"
+      (blur)="limpar()"
+    >
+      <svg
+        class="grafico-linha__svg"
+        aria-hidden="true"
+        [attr.width]="largura()"
+        [attr.height]="altura"
+        [attr.viewBox]="'0 0 ' + largura() + ' ' + altura"
+        (pointerdown)="aoMoverPonteiro($event)"
+        (pointermove)="aoMoverPonteiro($event)"
+        (pointerleave)="aoSairPonteiro($event)"
+      >
+        <defs>
+          <linearGradient id="gradienteArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        @for (marca of marcasY(); track marca.posicao) {
+          <line class="grafico-linha__grade" [attr.x1]="esquerda()" [attr.x2]="direita()" [attr.y1]="marca.posicao" [attr.y2]="marca.posicao" />
+          <text class="grafico-linha__rotulo grafico-linha__rotulo--y" [attr.x]="esquerda() - 8" [attr.y]="marca.posicao">{{ marca.rotulo }}</text>
+        }
+
+        @for (marca of marcasX(); track marca.indice) {
+          <text class="grafico-linha__rotulo grafico-linha__rotulo--x" [attr.x]="marca.posicao" [attr.y]="altura - 8" [attr.text-anchor]="marca.ancora">
+            {{ marca.rotulo }}
+          </text>
+        }
+
+        <path class="grafico-linha__area-preenchida" [attr.d]="caminhos().area" fill="url(#gradienteArea)" />
+        <path class="grafico-linha__linha" [attr.d]="caminhos().linha" />
+
+        @if (pontoAtivo(); as ponto) {
+          <line class="grafico-linha__guia" [attr.x1]="ponto.x" [attr.x2]="ponto.x" [attr.y1]="ponto.y" [attr.y2]="base" />
+          <line class="grafico-linha__guia" [attr.x1]="esquerda()" [attr.x2]="ponto.x" [attr.y1]="ponto.y" [attr.y2]="ponto.y" />
+          <circle class="grafico-linha__ponto" [attr.cx]="ponto.x" [attr.cy]="ponto.y" r="5" />
+        }
+      </svg>
+
+      @if (pontoAtivo(); as ponto) {
+        <div
+          class="grafico-linha__balao"
+          aria-hidden="true"
+          [class.grafico-linha__balao--inicio]="ponto.noInicio"
+          [class.grafico-linha__balao--fim]="ponto.noFim"
+          [class.grafico-linha__balao--abaixo]="ponto.abaixo"
+          [style.left.px]="ponto.x"
+          [style.top.px]="ponto.y"
+        >
+          <strong class="grafico-linha__balao-preco">{{ ponto.preco }}</strong>
+          <span class="grafico-linha__balao-data">{{ ponto.data }}</span>
+        </div>
+      }
+    </div>
+    <p class="leitor-de-tela" [id]="idResumo">{{ resumo() }}</p>
+    <span class="grafico-linha__leitor" aria-live="polite">{{ anuncio() }}</span>
   } @else {
     <p class="grafico-linha__vazio">Sem dados de histórico para esse período.</p>
   }

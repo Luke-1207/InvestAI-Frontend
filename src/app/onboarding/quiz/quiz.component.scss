@@ -1,4 +1,4 @@
-@use '../../../styles/tokens' as *;
+@use '../../../styles/design-system' as *;
 
 .quiz {
   min-height: 100vh;
@@ -40,10 +40,7 @@
 }
 
 .quiz__contador {
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
+  @include rotulo(12px);
   margin: 0 0 $space-3;
 }
 
@@ -53,11 +50,12 @@
 }
 
 .quiz__pergunta {
-  font-family: $font-display;
-  font-size: 28px;
-  font-weight: 700;
+  @include titulo-pagina(28px, 0 0 $space-8);
   line-height: 1.25;
-  margin: 0 0 $space-8;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .quiz__opcoes {
@@ -67,15 +65,29 @@
   margin-bottom: $space-10;
 }
 
+.quiz__ajuda-pergunta {
+  margin-left: $space-1;
+}
+
+.quiz__opcao-item {
+  position: relative;
+  display: flex;
+}
+
+.quiz__opcao-ajuda {
+  position: absolute;
+  top: $space-3;
+  right: $space-3;
+}
+
 .quiz__opcao {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: $space-3;
   padding: $space-5;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: $radius-lg;
+  @include superficie;
   cursor: pointer;
   text-align: left;
   transition: border-color 0.15s, background-color 0.15s, transform 0.1s;
@@ -91,6 +103,10 @@
   &--selecionada {
     border-color: var(--accent);
     background: rgba(192, 193, 255, 0.08);
+  }
+
+  &--com-ajuda {
+    padding-right: $space-10;
   }
 }
 
@@ -114,17 +130,8 @@
 }
 
 .quiz__voltar {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-family: $font-body;
-  font-size: 15px;
-  cursor: pointer;
+  @include botao-texto(15px);
   padding: $space-2;
-
-  &:hover {
-    color: var(--text-primary);
-  }
 }
 
 .quiz__continuar {

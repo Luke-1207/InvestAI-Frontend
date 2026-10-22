@@ -1,21 +1,24 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, of, switchMap, timer } from 'rxjs';
+import { Subject, catchError, map, of, startWith, switchMap, timer } from 'rxjs';
 import { DashboardAdminService } from '../../shared/services/dashboard-admin.service';
 import {
   CategoriaAtivoAdmin,
   DashboardAdminResponse,
   NivelUrgencia,
   PerfilRiscoChave,
-  StatusIa,
+  ChaveIntegracao,
+  SaudeIntegracoes,
   TituloVencendo,
+  integracaoComProblema,
 } from '../../shared/models/dashboard-admin';
 import { SpinnerComponent } from '../../shared/components/ui/spinner/spinner.component';
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
 import { DonutChartComponent, SegmentoDonut } from '../../shared/components/ui/donut-chart/donut-chart.component';
+import { SaudeIntegracoesComponent } from './saude-integracoes/saude-integracoes.component';
 
-export const INTERVALO_STATUS_IA_MS = 30_000;
+export const INTERVALO_INTEGRACOES_MS = 5 * 60_000;
 
 const RISCOS: { chave: PerfilRiscoChave; rotulo: string; cor: string }[] = [
   { chave: 'CONSERVADOR', rotulo: 'Conservador', cor: 'var(--success-strong)' },
@@ -49,7 +52,7 @@ interface CategoriaContagem {
 @Component({
   selector: 'app-dashboard-admin',
   standalone: true,
-  imports: [DatePipe, SpinnerComponent, ErroServidorComponent, DonutChartComponent],
+  imports: [DatePipe, SpinnerComponent, ErroServidorComponent, DonutChartComponent, SaudeIntegracoesComponent],
   templateUrl: './dashboard-admin.component.html',
   styleUrl: './dashboard-admin.component.scss',
 })
@@ -60,7 +63,24 @@ export class DashboardAdminComponent implements OnInit {
   protected readonly carregando = signal(true);
   protected readonly erro = signal(false);
   protected readonly metricas = signal<DashboardAdminResponse | null>(null);
-  protected readonly statusIa = signal<StatusIa | null>(null);
+  protected readonly saudeIntegracoes = signal<SaudeIntegracoes | null>(null);
+  protected readonly falhaIntegracoes = signal(false);
+  protected readonly intervaloIntegracoesSegundos = INTERVALO_INTEGRACOES_MS / 1000;
+  protected readonly verificandoTodas = signal(false);
+  protected readonly verificandoIntegracoes = signal<ReadonlySet<ChaveIntegracao>>(new Set());
+  protected readonly avisoVerificacao = signal<string | null>(null);
+  private readonly reiniciarAcompanhamento = new Subject<void>();
+
+  protected readonly resumoIntegracoes = computed(() => {
+    const integracoes = this.saudeIntegracoes()?.integracoes ?? [];
+    const comProblema = integracoes.filter(integracaoComProblema);
+    return {
+      total: integracoes.length,
+      comProblema: comProblema.length,
+      foraDoAr: comProblema.some((i) => i.situacao === 'FORA_DO_AR'),
+      simuladas: integracoes.filter((i) => i.simulado).length,
+    };
+  });
 
   protected readonly rotuloUrgencia = ROTULO_URGENCIA;
 
@@ -111,7 +131,7 @@ export class DashboardAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregarMetricas();
-    this.acompanharStatusIa();
+    this.acompanharIntegracoes();
   }
 
   protected carregarMetricas(): void {
@@ -144,22 +164,85 @@ export class DashboardAdminComponent implements OnInit {
     return `Vence em ${titulo.diasParaVencimento} dias`;
   }
 
-  private acompanharStatusIa(): void {
-    timer(0, INTERVALO_STATUS_IA_MS)
+  protected irParaIntegracoes(evento: Event): void {
+    evento.preventDefault();
+    const secao = document.getElementById('saude-integracoes');
+    secao?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    secao?.focus({ preventScroll: true });
+  }
+
+  protected verificarTodasIntegracoes(): void {
+    if (this.verificandoTodas()) return;
+    this.verificandoTodas.set(true);
+    this.avisoVerificacao.set(null);
+
+    this.dashboardAdminService
+      .verificarIntegracoes()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (saude) => {
+          this.verificandoTodas.set(false);
+          this.falhaIntegracoes.set(false);
+          this.saudeIntegracoes.set(saude);
+          this.reiniciarAcompanhamento.next();
+        },
+        error: () => {
+          this.verificandoTodas.set(false);
+          this.avisoVerificacao.set('Não conseguimos verificar as integrações agora. Tente de novo em instantes.');
+        },
+      });
+  }
+
+  protected verificarIntegracao(chave: ChaveIntegracao): void {
+    if (this.verificandoTodas() || this.verificandoIntegracoes().has(chave)) return;
+    this.alterarVerificando(chave, true);
+    this.avisoVerificacao.set(null);
+
+    this.dashboardAdminService
+      .verificarIntegracao(chave)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (atualizada) => {
+          this.alterarVerificando(chave, false);
+          this.saudeIntegracoes.update(
+            (saude) =>
+              saude && { ...saude, integracoes: saude.integracoes.map((i) => (i.chave === chave ? atualizada : i)) },
+          );
+        },
+        error: () => {
+          this.alterarVerificando(chave, false);
+          const nome = this.saudeIntegracoes()?.integracoes.find((i) => i.chave === chave)?.nome ?? 'a integração';
+          this.avisoVerificacao.set(`Não conseguimos verificar ${nome} agora. Tente de novo em instantes.`);
+        },
+      });
+  }
+
+  private alterarVerificando(chave: ChaveIntegracao, verificando: boolean): void {
+    this.verificandoIntegracoes.update((atuais) => {
+      const proximas = new Set(atuais);
+      if (verificando) proximas.add(chave);
+      else proximas.delete(chave);
+      return proximas;
+    });
+  }
+
+  private acompanharIntegracoes(): void {
+    this.reiniciarAcompanhamento
       .pipe(
+        map(() => INTERVALO_INTEGRACOES_MS),
+        startWith(0),
+        switchMap((espera) => timer(espera, INTERVALO_INTEGRACOES_MS)),
         switchMap(() =>
-          this.dashboardAdminService.obterStatusIa().pipe(
-            catchError(() =>
-              of<StatusIa>({
-                disponivel: false,
-                rabbitmqConectado: null,
-                verificadoEm: new Date().toISOString(),
-              }),
-            ),
+          this.dashboardAdminService.obterIntegracoes().pipe(
+            map((saude): SaudeIntegracoes | null => saude),
+            catchError(() => of(null)),
           ),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((status) => this.statusIa.set(status));
+      .subscribe((saude) => {
+        this.falhaIntegracoes.set(saude === null);
+        if (saude) this.saudeIntegracoes.set(saude);
+      });
   }
 }

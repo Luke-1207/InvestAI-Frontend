@@ -1,0 +1,24 @@
+@use '../../../../styles/design-system' as *;
+
+:host {
+  display: block;
+}
+
+.aviso-educativo {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-2;
+  margin: 0;
+  @include texto-apoio(12px);
+  line-height: 1.5;
+
+  .material-symbols-outlined {
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  a {
+    color: var(--accent);
+    white-space: nowrap;
+  }
+}

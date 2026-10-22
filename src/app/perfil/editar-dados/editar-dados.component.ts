@@ -13,9 +13,8 @@ import { SkeletonDetalheComponent } from '../../shared/components/ui/skeleton-de
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
 import { trocaSenhaOpcionalValidator } from '../../shared/validators/troca-senha-opcional.validator';
 import { apenasDigitos, formatarTelefone, telefoneValidator } from '../../shared/utils/telefone.util';
-
-const TIPOS_FOTO_ACEITOS = ['image/jpeg', 'image/png', 'image/webp'];
-const TAMANHO_MAXIMO_FOTO_BYTES = 2 * 1024 * 1024;
+import { validarFotoPerfil } from '../../shared/utils/foto-perfil.util';
+import { ExcluirContaComponent } from '../excluir-conta/excluir-conta.component';
 
 interface Aviso {
   tipo: 'sucesso' | 'erro';
@@ -32,6 +31,7 @@ interface Aviso {
     ButtonComponent,
     SkeletonDetalheComponent,
     ErroServidorComponent,
+    ExcluirContaComponent,
   ],
   templateUrl: './editar-dados.component.html',
   styleUrl: './editar-dados.component.scss',
@@ -110,12 +110,9 @@ export class EditarDadosComponent implements OnInit {
     campo.value = '';
     if (!arquivo) return;
 
-    if (!TIPOS_FOTO_ACEITOS.includes(arquivo.type)) {
-      this.avisoFoto.set({ tipo: 'erro', texto: 'Formato não suportado. Use JPG, PNG ou WEBP.' });
-      return;
-    }
-    if (arquivo.size > TAMANHO_MAXIMO_FOTO_BYTES) {
-      this.avisoFoto.set({ tipo: 'erro', texto: 'A foto deve ter no máximo 2 MB.' });
+    const erroFoto = validarFotoPerfil(arquivo);
+    if (erroFoto) {
+      this.avisoFoto.set({ tipo: 'erro', texto: erroFoto });
       return;
     }
 

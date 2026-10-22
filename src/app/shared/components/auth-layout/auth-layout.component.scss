@@ -1,4 +1,4 @@
-@use '../../../../styles/tokens' as *;
+@use '../../../../styles/design-system' as *;
 
 .auth-layout {
   display: flex;
@@ -27,7 +27,8 @@
   gap: $space-3;
   margin-bottom: $space-10;
 
-  h1 {
+  .auth-layout__marca {
+    display: block;
     font-family: $font-display;
     font-size: 24px;
     font-weight: 700;
@@ -35,10 +36,7 @@
   }
 
   p {
-    font-family: $font-mono;
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
+    @include rotulo(12px);
     margin: 2px 0 0;
   }
 }
@@ -68,10 +66,12 @@
   display: flex;
   align-items: center;
   gap: $space-2;
-  font-family: $font-mono;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
+  text-decoration: none;
+  @include rotulo(12px);
+
+  &:hover {
+    color: var(--text-primary);
+  }
 
   .material-symbols-outlined {
     font-size: 16px;
@@ -91,4 +91,22 @@
 .auth-layout__formulario-wrapper {
   width: 100%;
   max-width: 420px;
+}
+
+.auth-layout__institucional-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2 $space-4;
+  margin-top: $space-8;
+  padding-top: $space-4;
+  border-top: 1px solid var(--border-default);
+
+  a {
+    @include rotulo(11px);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
 }

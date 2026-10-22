@@ -58,6 +58,7 @@ describe('ComparacaoComponent', () => {
 
     expect(fixture.nativeElement.querySelectorAll('.comparacao__slot--vazio').length).toBe(1);
     expect(fixture.nativeElement.textContent).toContain('PETR4 — Petrobras');
+    expect(fixture.nativeElement.querySelector('.comparacao__slot-tipo').textContent.trim()).toBe('Ação');
   });
 
   it('deve preencher o slot A primeiro e depois o slot B ao clicar em itens da lista', async () => {
@@ -119,6 +120,7 @@ describe('ComparacaoComponent', () => {
     expect(service.carregarItemComparacao).toHaveBeenCalledWith('TESOURO', 'tesouro-selic-2029');
     expect(service.obterVeredito).toHaveBeenCalledWith('ACAO', 'PETR4', 'TESOURO', 'tesouro-selic-2029');
     expect(fixture.nativeElement.textContent).toContain('PETR4 combina mais com você.');
+    expect(fixture.nativeElement.querySelector('.comparacao__resultado app-aviso-educativo')).not.toBeNull();
   });
 
   it('deve mostrar a barra de compatibilidade só quando o item tem score', async () => {

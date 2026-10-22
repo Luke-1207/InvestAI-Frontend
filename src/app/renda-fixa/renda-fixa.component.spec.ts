@@ -55,8 +55,39 @@ describe('RendaFixaComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('.rf__card').length).toBe(2);
   });
 
+  it('deve mostrar categoria e indexador com texto legível, não o código da API', () => {
+    const cartoes: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('.rf__card'));
+
+    expect(cartoes[0].querySelector('.rf__categoria')!.textContent!.trim()).toBe('Tesouro Direto');
+    expect(cartoes[0].querySelector('.rf__taxa')!.textContent).toContain('Selic');
+    expect(cartoes[0].textContent).not.toContain('TESOURO');
+    expect(cartoes[0].textContent).not.toContain('SELIC');
+    expect(cartoes[1].querySelector('.rf__categoria')!.textContent!.trim()).toBe('CDB');
+  });
+
+  it('deve explicar a categoria e o indexador de cada título com o glossário', () => {
+    const rotulos = Array.from(fixture.nativeElement.querySelectorAll('.rf__card')[0].querySelectorAll('.ajuda__botao')).map(
+      (botao) => (botao as HTMLElement).getAttribute('aria-label'),
+    );
+
+    expect(rotulos).toEqual(['O que é Tesouro Direto?', 'O que é Selic?']);
+  });
+
+  it('abrir a ajuda dentro do card não deve abrir o detalhe do título', () => {
+    const navSpy = spyOn(router, 'navigateByUrl');
+
+    fixture.nativeElement.querySelector('.rf__card .ajuda__botao').dispatchEvent(
+      new MouseEvent('click', { bubbles: true, detail: 1 }),
+    );
+    fixture.detectChanges();
+
+    expect(document.querySelector<HTMLElement>('.ajuda__balao')).not.toBeNull();
+    expect(navSpy).not.toHaveBeenCalled();
+  });
+
   it('não deve mostrar o círculo de score no Modo Livre (score vem null)', () => {
     expect(fixture.nativeElement.querySelector('.rf__score')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).toBeNull();
   });
 
   it('deve trocar pro Modo Inteligente e chamar o serviço de novo', () => {
@@ -73,6 +104,7 @@ describe('RendaFixaComponent', () => {
     expect(service.listar).toHaveBeenCalledWith('inteligente');
     expect(fixture.nativeElement.querySelector('.rf__score').textContent.trim()).toBe('72');
     expect(fixture.nativeElement.querySelector('.rf__justificativa').textContent).toContain('Boa opção');
+    expect(fixture.nativeElement.querySelector('app-aviso-educativo')).not.toBeNull();
   });
 
   it('filtro de categoria deve ser aplicado no cliente, sem chamar o serviço de novo', () => {
@@ -86,7 +118,46 @@ describe('RendaFixaComponent', () => {
 
     expect(service.listar).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelectorAll('.rf__card').length).toBe(1);
-    expect(fixture.nativeElement.querySelector('.rf__card h4').textContent).toContain('CDB Banco X');
+    expect(fixture.nativeElement.querySelector('.rf__card h2').textContent).toContain('CDB Banco X');
+  });
+
+  function clicarFiltro(rotulo: string): void {
+    const botao = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('.rf__filtro')).find(
+      (b) => b.textContent!.trim() === rotulo,
+    )!;
+    botao.click();
+    fixture.detectChanges();
+  }
+
+  it('deve oferecer as abas Tudo, Tesouro Direto, CDBs e LCI e LCA', () => {
+    const rotulos = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.rf__filtro')).map((b) =>
+      b.textContent!.trim(),
+    );
+
+    expect(rotulos).toEqual(['Tudo', 'Tesouro Direto', 'CDBs', 'LCI e LCA']);
+  });
+
+  it('aba "LCI e LCA" deve mostrar só LCIs e LCAs', () => {
+    fixture.componentInstance['itens'].set([
+      itemMock(),
+      itemMock({ id: '2', categoria: 'CDB', nome: 'CDB Banco X' }),
+      itemMock({ id: '3', categoria: 'LCI', nome: 'LCI Banco Y', isentoIr: true }),
+      itemMock({ id: '4', categoria: 'LCA', nome: 'LCA Banco Z', isentoIr: true }),
+    ]);
+
+    clicarFiltro('LCI e LCA');
+
+    const nomes = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.rf__card h2')).map((h) =>
+      h.textContent!.trim(),
+    );
+    expect(nomes).toEqual(['LCI Banco Y', 'LCA Banco Z']);
+  });
+
+  it('aba "LCI e LCA" sem títulos deve mostrar a mensagem de lista vazia', () => {
+    clicarFiltro('LCI e LCA');
+
+    expect(fixture.nativeElement.querySelectorAll('.rf__card').length).toBe(0);
+    expect(fixture.nativeElement.querySelector('.rf__mensagem-vazia').textContent).toContain('Nenhum título encontrado');
   });
 
   it('selo de garantia deve mostrar "Tesouro Nacional" pra TESOURO e "Garantido pelo FGC" só quando garantidoFgc é true', () => {
@@ -103,12 +174,11 @@ describe('RendaFixaComponent', () => {
     expect(fixture.nativeElement.querySelector('.rf__selo')).toBeNull();
   });
 
-  it('deve navegar pro detalhe ao clicar num card', () => {
-    const navSpy = spyOn(router, 'navigateByUrl');
+  it('o título do card deve ser um link para o detalhe, alcançável pelo Tab', () => {
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('.rf__card h2 a.rf__card-link');
 
-    fixture.nativeElement.querySelector('.rf__card').click();
-
-    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/1');
+    expect(link.getAttribute('href')).toBe('/renda-fixa/1');
+    expect(link.tabIndex).toBe(0);
   });
 
   it('deve mostrar mensagem de vazio quando não há itens', () => {
@@ -123,22 +193,16 @@ describe('RendaFixaComponent', () => {
     service.listar.and.returnValue(of([itemMock({ id: '1', codigo: 'tesouro-selic-2029' })]));
     fixture.componentInstance['carregar']();
     fixture.detectChanges();
-    const navSpy = spyOn(router, 'navigateByUrl');
 
-    fixture.nativeElement.querySelector('.rf__card').click();
-
-    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/tesouro-selic-2029');
+    expect(fixture.nativeElement.querySelector('.rf__card-link').getAttribute('href')).toBe('/renda-fixa/tesouro-selic-2029');
   });
 
   it('deve navegar usando o id quando o item é privado (codigo vem null)', () => {
     service.listar.and.returnValue(of([itemMock({ id: '99', codigo: null, categoria: 'CDB' })]));
     fixture.componentInstance['carregar']();
     fixture.detectChanges();
-    const navSpy = spyOn(router, 'navigateByUrl');
 
-    fixture.nativeElement.querySelector('.rf__card').click();
-
-    expect(navSpy).toHaveBeenCalledWith('/renda-fixa/99');
+    expect(fixture.nativeElement.querySelector('.rf__card-link').getAttribute('href')).toBe('/renda-fixa/99');
   });
 
   function irParaModoInteligente(): void {
