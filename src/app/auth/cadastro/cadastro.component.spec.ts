@@ -203,4 +203,13 @@ describe('CadastroComponent', () => {
 
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:previa');
   });
+
+  it('o formulário deve rolar dentro da própria coluna quando não couber na tela', () => {
+    const coluna = el().querySelector<HTMLElement>('.auth-layout__formulario')!;
+    const conteudo = el().querySelector<HTMLElement>('.auth-layout__formulario-wrapper')!;
+
+    expect(getComputedStyle(coluna).overflowY).toBe('auto');
+    expect(getComputedStyle(coluna).alignItems).not.toBe('center');
+    expect(conteudo.getBoundingClientRect().top).toBeGreaterThanOrEqual(coluna.getBoundingClientRect().top);
+  });
 });
