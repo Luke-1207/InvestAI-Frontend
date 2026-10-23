@@ -3,6 +3,7 @@
 .auth-layout {
   display: flex;
   height: 100vh;
+  height: 100dvh;
   background: var(--bg-page);
   color: var(--text-primary);
 }
@@ -82,15 +83,20 @@
 .auth-layout__formulario {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  min-width: 0;
+  overflow-y: auto;
   padding: $space-12;
   box-sizing: border-box;
+
+  @include ate-celular {
+    padding: $space-8 $space-5;
+  }
 }
 
 .auth-layout__formulario-wrapper {
   width: 100%;
   max-width: 420px;
+  margin: auto;
 }
 
 .auth-layout__institucional-links {
