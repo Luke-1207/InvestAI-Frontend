@@ -134,6 +134,16 @@ describe('RendaVariavelComponent', () => {
     expect(link.textContent!.trim()).toBe('PETR4');
   });
 
+  it('no Modo Livre, o hover do link do card não deve aplicar filter, senão o clique no card falha', () => {
+    const regras = Array.from(document.styleSheets)
+      .flatMap((folha) => Array.from(folha.cssRules))
+      .filter((regra): regra is CSSStyleRule => regra instanceof CSSStyleRule)
+      .filter((regra) => /\.rv__card-link(\[[^\]]+\])?:hover/.test(regra.selectorText));
+
+    expect(regras.length).toBeGreaterThan(0);
+    regras.forEach((regra) => expect(regra.style.filter).toBe('none'));
+  });
+
   it('não deve mostrar paginação quando só existe 1 página', () => {
     expect(fixture.nativeElement.querySelector('.rv__paginacao')).toBeNull();
   });

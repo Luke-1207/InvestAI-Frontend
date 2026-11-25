@@ -16,6 +16,13 @@ const ITEM_MOCK: SugestaoAtivoItem = {
   justificativa: 'Boa opção pro seu perfil.',
 };
 
+function regrasDeHoverDoLink(): CSSStyleRule[] {
+  return Array.from(document.styleSheets)
+    .flatMap((folha) => Array.from(folha.cssRules))
+    .filter((regra): regra is CSSStyleRule => regra instanceof CSSStyleRule)
+    .filter((regra) => /\.cartao-sugestao-ativo__link(\[[^\]]+\])?:hover/.test(regra.selectorText));
+}
+
 describe('CartaoSugestaoAtivoComponent', () => {
   let fixture: ComponentFixture<CartaoSugestaoAtivoComponent>;
 
@@ -65,5 +72,21 @@ describe('CartaoSugestaoAtivoComponent', () => {
 
     expect(score.getAttribute('role')).toBe('img');
     expect(score.getAttribute('aria-label')).toBe('Score de compatibilidade 72 de 100');
+  });
+
+  it('clicar em qualquer parte do card deve acionar o link do detalhe', () => {
+    const justificativa: HTMLElement = fixture.nativeElement.querySelector('.cartao-sugestao-ativo__justificativa');
+    const area = justificativa.getBoundingClientRect();
+
+    const alvo = document.elementFromPoint(area.left + area.width / 2, area.top + area.height / 2);
+
+    expect(alvo).toBe(fixture.nativeElement.querySelector('a.cartao-sugestao-ativo__link'));
+  });
+
+  it('o hover do link não deve aplicar filter, senão a área clicável encolhe e o clique falha', () => {
+    const regras = regrasDeHoverDoLink();
+
+    expect(regras.length).toBeGreaterThan(0);
+    regras.forEach((regra) => expect(regra.style.filter).toBe('none'));
   });
 });

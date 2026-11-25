@@ -37,6 +37,10 @@ describe('AppShellComponent', () => {
     return fixture.nativeElement.querySelector('.header__dropdown');
   }
 
+  it('deve exibir o slogan em português abaixo da marca no menu lateral', () => {
+    expect(fixture.nativeElement.querySelector('.sidebar__logo p').textContent.trim()).toBe('Investimento para todos');
+  });
+
   it('deve exibir o carrossel de indicadores de mercado no topo', () => {
     expect(fixture.nativeElement.querySelector('.header app-ticker-mercado')).not.toBeNull();
   });
