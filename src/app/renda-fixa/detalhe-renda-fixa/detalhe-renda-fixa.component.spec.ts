@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RelatorioService } from '../../shared/services/relatorio.service';
+import { FavoritoService } from '../../shared/services/favorito.service';
+import { Favorito } from '../../shared/models/favorito';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { DetalheRendaFixaComponent } from './detalhe-renda-fixa.component';
@@ -38,6 +40,7 @@ function itemListagemMock(overrides: Partial<RendaFixaListagem> = {}): RendaFixa
 
 describe('DetalheRendaFixaComponent', () => {
   let relatorioService: jasmine.SpyObj<RelatorioService>;
+  let favoritoService: jasmine.SpyObj<FavoritoService>;
 
   beforeEach(() => {
     relatorioService = jasmine.createSpyObj<RelatorioService>('RelatorioService', [
@@ -48,6 +51,10 @@ describe('DetalheRendaFixaComponent', () => {
     relatorioService.baixarRelatorioAtivo.and.returnValue(of('relatorio.pdf'));
     relatorioService.baixarRelatorioListagem.and.returnValue(of('relatorio.pdf'));
     relatorioService.baixarRelatorioPerfil.and.returnValue(of('relatorio.pdf'));
+    favoritoService = jasmine.createSpyObj<FavoritoService>('FavoritoService', ['status', 'adicionar', 'remover']);
+    favoritoService.status.and.returnValue(of({ favoritado: false, favoritoId: null }));
+    favoritoService.adicionar.and.returnValue(of({ id: 'fav-1' } as Favorito));
+    favoritoService.remover.and.returnValue(of(undefined));
   });
 
   let fixture: ComponentFixture<DetalheRendaFixaComponent>;
@@ -74,6 +81,7 @@ describe('DetalheRendaFixaComponent', () => {
       providers: [
         { provide: RendaFixaService, useValue: service },
         provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
+        { provide: FavoritoService, useValue: favoritoService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: identificador }) } } },
       ],
     }).compileComponents();
@@ -234,6 +242,7 @@ describe('DetalheRendaFixaComponent', () => {
       providers: [
         { provide: RendaFixaService, useValue: service },
         provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
+        { provide: FavoritoService, useValue: favoritoService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: '123e4567-e89b-12d3-a456-426614174000' }) } } },
       ],
     }).compileComponents();
@@ -255,14 +264,22 @@ describe('DetalheRendaFixaComponent', () => {
     expect(fixture.nativeElement.querySelector('.detalhe-rf__score-painel')).toBeNull();
   });
 
-  it('deve alternar o favorito localmente e mostrar um toast', async () => {
+  it('deve favoritar título privado pelo id e mostrar um toast', async () => {
     await montar('123e4567-e89b-12d3-a456-426614174000');
 
     fixture.nativeElement.querySelector('.detalhe-rf__favorito').click();
     fixture.detectChanges();
 
-    expect(toastService.toasts().length).toBe(1);
+    const referencia = { tipoAtivo: 'TITULO_PRIVADO', ativoId: '123e4567-e89b-12d3-a456-426614174000' };
+    expect(favoritoService.status).toHaveBeenCalledWith(referencia as never);
+    expect(favoritoService.adicionar).toHaveBeenCalledWith(referencia as never);
     expect(toastService.toasts()[0].mensagem).toContain('Adicionado aos favoritos');
+  });
+
+  it('deve usar o código para favoritar título do Tesouro', async () => {
+    await montar('LTN2029');
+
+    expect(favoritoService.status).toHaveBeenCalledWith({ tipoAtivo: 'TITULO_TESOURO', codigo: 'LTN2029' });
   });
 
   it('deve navegar pra Comparação com o título pré-selecionado (tipo/categoria + identificador)', async () => {

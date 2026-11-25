@@ -3,6 +3,8 @@ import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AcaoService } from '../../shared/services/acao.service';
 import { ToastService } from '../../shared/services/toast.service';
+import { FavoritoService } from '../../shared/services/favorito.service';
+import { ControleFavorito } from '../../shared/utils/controle-favorito';
 import { RelatorioService } from '../../shared/services/relatorio.service';
 import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
 import { AcaoDetalhe } from '../../shared/models/acao';
@@ -71,13 +73,18 @@ export class DetalheAtivoComponent implements OnInit {
   protected readonly carregandoIA = signal(true);
   protected readonly sugestaoIA = signal<SugestaoAtivoItem | null>(null);
 
-  protected readonly favoritado = signal(false);
+  protected readonly favorito = new ControleFavorito(inject(FavoritoService), this.toastService, () => ({
+    tipoAtivo: 'ACAO_FII_ETF',
+    codigo: this.codigo,
+  }));
+  protected readonly favoritado = this.favorito.favoritado;
 
   protected readonly baixarRelatorio = () => this.relatorioService.baixarRelatorioAtivo(this.codigo, 'VARIAVEL');
 
   ngOnInit(): void {
     this.carregarDetalhe();
     this.carregarAnaliseIA();
+    this.favorito.carregar();
   }
 
   protected selecionarPeriodo(periodo: string): void {
@@ -117,10 +124,7 @@ export class DetalheAtivoComponent implements OnInit {
   }
 
   protected alternarFavorito(): void {
-    this.favoritado.update((atual) => !atual);
-    this.toastService.sucesso(
-      this.favoritado() ? 'Adicionado aos favoritos.' : 'Removido dos favoritos.',
-    );
+    this.favorito.alternar();
   }
 
   protected compararAtivo(): void {

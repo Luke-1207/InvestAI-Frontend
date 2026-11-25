@@ -44,6 +44,10 @@ export const GESTOR_ROUTES: Routes = [
         loadComponent: () => import('./indicadores/indicadores.component').then((m) => m.IndicadoresComponent),
       },
       {
+        path: 'comunicados',
+        loadComponent: () => import('./comunicados/comunicados.component').then((m) => m.ComunicadosComponent),
+      },
+      {
         path: 'titulos/:id',
         loadComponent: () => import('./titulos/formulario-titulo.component').then((m) => m.FormularioTituloComponent),
       },

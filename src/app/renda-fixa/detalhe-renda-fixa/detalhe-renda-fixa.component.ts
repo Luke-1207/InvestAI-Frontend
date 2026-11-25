@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { RendaFixaService } from '../../shared/services/renda-fixa.service';
 import { ToastService } from '../../shared/services/toast.service';
+import { FavoritoService } from '../../shared/services/favorito.service';
+import { ControleFavorito } from '../../shared/utils/controle-favorito';
 import {
   DetalheRendaFixaNormalizado,
   RentabilidadeEstimada,
@@ -16,7 +18,8 @@ import { formatarTaxaComIndexador } from '../../shared/utils/formatacao.util';
 import { SkeletonDetalheComponent } from '../../shared/components/ui/skeleton-detalhe/skeleton-detalhe.component';
 import { ErroServidorComponent } from '../../shared/components/erro-servidor/erro-servidor.component';
 import { RelatorioService } from '../../shared/services/relatorio.service';
-import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
+import { BotaoRelatorioComponent } from '../../shared/components/botao-relatorio/botao-relatorio.component';
+
 import { RotuloPipe } from '../../shared/pipes/rotulo.pipe';
 import { AjudaContextualComponent } from '../../shared/components/ajuda-contextual/ajuda-contextual.component';
 import { AjudaGlossarioComponent } from '../../shared/components/ajuda-glossario/ajuda-glossario.component';
@@ -119,13 +122,19 @@ export class DetalheRendaFixaComponent implements OnInit {
   protected readonly criterios = signal<CriterioScore[]>([]);
   protected readonly compatibilidade = signal<Compatibilidade | null>(null);
 
-  protected readonly favoritado = signal(false);
+  protected readonly favorito = new ControleFavorito(inject(FavoritoService), this.toastService, () =>
+    ehUuid(this.identificador)
+      ? { tipoAtivo: 'TITULO_PRIVADO', ativoId: this.identificador }
+      : { tipoAtivo: 'TITULO_TESOURO', codigo: this.identificador },
+  );
+  protected readonly favoritado = this.favorito.favoritado;
 
   protected readonly baixarRelatorio = () => this.relatorioService.baixarRelatorioAtivo(this.identificador, 'FIXA');
 
   ngOnInit(): void {
     this.carregarDetalhe();
     this.carregarScore();
+    this.favorito.carregar();
   }
 
   protected carregarDetalhe(): void {
@@ -170,10 +179,7 @@ export class DetalheRendaFixaComponent implements OnInit {
   }
 
   protected alternarFavorito(): void {
-    this.favoritado.update((atual) => !atual);
-    this.toastService.sucesso(
-      this.favoritado() ? 'Adicionado aos favoritos.' : 'Removido dos favoritos.',
-    );
+    this.favorito.alternar();
   }
 
   protected compararAtivo(): void {

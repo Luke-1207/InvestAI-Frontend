@@ -76,8 +76,11 @@
       <div class="header__acoes">
         <app-busca-ativos />
 
-        <a class="header__icone-botao" routerLink="/notificacoes" aria-label="Notificações" title="Notificações">
+        <a class="header__icone-botao header__sininho" routerLink="/notificacoes" [attr.aria-label]="rotuloNotificacoes()" [title]="rotuloNotificacoes()">
           <span aria-hidden="true" class="material-symbols-outlined">notifications</span>
+          @if (notificacaoService.naoLidas() > 0) {
+            <span aria-hidden="true" class="header__contador">{{ contadorNotificacoes() }}</span>
+          }
         </a>
 
         <button

@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { AppShellComponent } from './shared/components/app-shell/app-shell.component';
 import { authGuard } from './shared/guards/auth.guard';
 import { gestorGuard } from './shared/guards/gestor.guard';
-import { ROTAS_EM_BREVE } from './em-breve/em-breve.routes';
 import { visitanteGuard } from './shared/guards/visitante.guard';
 import { INSTITUCIONAL_ROUTES } from './institucional/institucional.routes';
 
@@ -72,7 +71,14 @@ export const routes: Routes = [
         path: 'relatorios',
         loadChildren: () => import('./relatorios/relatorios.routes').then((m) => m.RELATORIOS_ROUTES),
       },
-      ...ROTAS_EM_BREVE,
+      {
+        path: 'favoritos',
+        loadChildren: () => import('./favoritos/favoritos.routes').then((m) => m.FAVORITOS_ROUTES),
+      },
+      {
+        path: 'notificacoes',
+        loadChildren: () => import('./notificacoes/notificacoes.routes').then((m) => m.NOTIFICACOES_ROUTES),
+      },
       {
         path: '**',
         loadComponent: () =>

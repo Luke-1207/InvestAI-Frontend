@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RelatorioService } from '../../shared/services/relatorio.service';
+import { FavoritoService } from '../../shared/services/favorito.service';
+import { Favorito } from '../../shared/models/favorito';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { DetalheAtivoComponent } from './detalhe-ativo.component';
 import { AcaoService } from '../../shared/services/acao.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -33,6 +36,7 @@ function sugestaoMock(): SugestaoAtivoItem {
 
 describe('DetalheAtivoComponent', () => {
   let relatorioService: jasmine.SpyObj<RelatorioService>;
+  let favoritoService: jasmine.SpyObj<FavoritoService>;
 
   beforeEach(() => {
     relatorioService = jasmine.createSpyObj<RelatorioService>('RelatorioService', [
@@ -43,6 +47,10 @@ describe('DetalheAtivoComponent', () => {
     relatorioService.baixarRelatorioAtivo.and.returnValue(of('relatorio.pdf'));
     relatorioService.baixarRelatorioListagem.and.returnValue(of('relatorio.pdf'));
     relatorioService.baixarRelatorioPerfil.and.returnValue(of('relatorio.pdf'));
+    favoritoService = jasmine.createSpyObj<FavoritoService>('FavoritoService', ['status', 'adicionar', 'remover']);
+    favoritoService.status.and.returnValue(of({ favoritado: false, favoritoId: null }));
+    favoritoService.adicionar.and.returnValue(of({ id: 'fav-1' } as Favorito));
+    favoritoService.remover.and.returnValue(of(undefined));
   });
 
   let fixture: ComponentFixture<DetalheAtivoComponent>;
@@ -60,6 +68,7 @@ describe('DetalheAtivoComponent', () => {
       providers: [
         { provide: AcaoService, useValue: acaoService },
         provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
+        { provide: FavoritoService, useValue: favoritoService },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: convertToParamMap({ codigo: 'PETR4' }) } },
@@ -159,6 +168,7 @@ describe('DetalheAtivoComponent', () => {
       providers: [
         { provide: AcaoService, useValue: acaoService },
         provideRouter([]), { provide: RelatorioService, useValue: relatorioService },
+        { provide: FavoritoService, useValue: favoritoService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ codigo: 'PETR4' }) } } },
       ],
     }).compileComponents();
@@ -169,16 +179,50 @@ describe('DetalheAtivoComponent', () => {
     expect(fixture.nativeElement.querySelector('.detalhe-ativo__ia')).toBeNull();
   });
 
-  it('deve alternar o favorito localmente e mostrar um toast, sem chamar nenhum serviço de backend', async () => {
+  it('deve consultar se a ação já está nos favoritos ao abrir', async () => {
+    favoritoService.status.and.returnValue(of({ favoritado: true, favoritoId: 'fav-9' }));
+    await montar();
+
+    expect(favoritoService.status).toHaveBeenCalledWith({ tipoAtivo: 'ACAO_FII_ETF', codigo: 'PETR4' });
+    expect(fixture.nativeElement.querySelector('.detalhe-ativo__favorito').classList).toContain('detalhe-ativo__favorito--ativo');
+  });
+
+  it('deve favoritar pelo backend e mostrar um toast', async () => {
     await montar();
 
     const botaoFavorito: HTMLButtonElement = fixture.nativeElement.querySelector('.detalhe-ativo__favorito');
     botaoFavorito.click();
     fixture.detectChanges();
 
+    expect(favoritoService.adicionar).toHaveBeenCalledWith({ tipoAtivo: 'ACAO_FII_ETF', codigo: 'PETR4' });
     expect(botaoFavorito.classList).toContain('detalhe-ativo__favorito--ativo');
-    expect(toastService.toasts().length).toBe(1);
     expect(toastService.toasts()[0].mensagem).toContain('Adicionado aos favoritos');
+  });
+
+  it('deve remover dos favoritos quando já está favoritado', async () => {
+    favoritoService.status.and.returnValue(of({ favoritado: true, favoritoId: 'fav-9' }));
+    await montar();
+
+    fixture.nativeElement.querySelector('.detalhe-ativo__favorito').click();
+    fixture.detectChanges();
+
+    expect(favoritoService.remover).toHaveBeenCalledWith('fav-9');
+    expect(fixture.nativeElement.querySelector('.detalhe-ativo__favorito').classList).not.toContain('detalhe-ativo__favorito--ativo');
+    expect(toastService.toasts()[0].mensagem).toContain('Removido');
+  });
+
+  it('deve mostrar a mensagem do servidor quando o limite de favoritos foi atingido', async () => {
+    favoritoService.adicionar.and.returnValue(
+      throwError(() => new HttpErrorResponse({ status: 422, error: { erro: 'Você atingiu o limite de 50 favoritos.' } })),
+    );
+    await montar();
+
+    fixture.nativeElement.querySelector('.detalhe-ativo__favorito').click();
+    fixture.detectChanges();
+
+    expect(toastService.toasts()[0].tipo).toBe('erro');
+    expect(toastService.toasts()[0].mensagem).toContain('limite de 50');
+    expect(fixture.nativeElement.querySelector('.detalhe-ativo__favorito').classList).not.toContain('detalhe-ativo__favorito--ativo');
   });
 
   it('deve navegar pra Comparação com o ativo pré-selecionado (tipo + identificador)', async () => {
