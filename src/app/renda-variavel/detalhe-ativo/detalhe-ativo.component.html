@@ -32,6 +32,8 @@
           type="button"
           class="detalhe-ativo__favorito"
           [class.detalhe-ativo__favorito--ativo]="favoritado()"
+          [disabled]="favorito.processando()"
+          [attr.aria-pressed]="favoritado()"
           (click)="alternarFavorito()"
         >
           <span aria-hidden="true" class="material-symbols-outlined">{{ favoritado() ? 'star' : 'star_border' }}</span>

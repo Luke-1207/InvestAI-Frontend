@@ -32,18 +32,19 @@ describe('GestorLayoutComponent', () => {
 
   const atual = (el: HTMLElement) => el.querySelector('nav a[aria-current="page"]')?.textContent?.trim();
 
-  it('deve ter uma navegação com as cinco seções do painel', async () => {
+  it('deve ter uma navegação com as seis seções do painel', async () => {
     const fixture = await montarEm('/gestor');
     const nav: HTMLElement = fixture.nativeElement.querySelector('nav');
 
     expect(nav.getAttribute('aria-label')).toBe('Seções do painel do gestor');
     const textos = Array.from(nav.querySelectorAll('a')).map((a) => a.textContent!);
-    expect(textos.length).toBe(5);
+    expect(textos.length).toBe(6);
     expect(textos[0]).toContain('Visão geral');
     expect(textos[1]).toContain('Renda variável');
     expect(textos[2]).toContain('Títulos privados');
     expect(textos[3]).toContain('Usuários');
     expect(textos[4]).toContain('Indicadores');
+    expect(textos[5]).toContain('Comunicados');
     expect(atual(fixture.nativeElement)).toContain('Visão geral');
   });
 

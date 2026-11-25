@@ -1,0 +1,88 @@
+<div class="notificacoes">
+  <header class="notificacoes__cabecalho">
+    <div>
+      <h1>Notificações</h1>
+      <p>Alertas dos seus favoritos, avisos sobre o seu perfil e comunicados da equipe do InvestAI.</p>
+    </div>
+    <button
+      type="button"
+      class="notificacoes__marcar"
+      [disabled]="marcandoTodas() || notificacaoService.naoLidas() === 0"
+      (click)="marcarTodas()"
+    >
+      <span aria-hidden="true" class="material-symbols-outlined">done_all</span>
+      Marcar todas como lidas
+    </button>
+  </header>
+
+  <div class="notificacoes__filtros" role="group" aria-label="Filtrar notificações">
+    <button type="button" [class.ativo]="filtro() === 'todas'" [attr.aria-pressed]="filtro() === 'todas'" (click)="selecionarFiltro('todas')">
+      Todas
+    </button>
+    <button type="button" [class.ativo]="filtro() === 'nao-lidas'" [attr.aria-pressed]="filtro() === 'nao-lidas'" (click)="selecionarFiltro('nao-lidas')">
+      Não lidas
+      @if (notificacaoService.naoLidas() > 0) {
+        <span class="notificacoes__contador">{{ notificacaoService.naoLidas() }}</span>
+      }
+    </button>
+  </div>
+
+  @if (carregando()) {
+    <div class="notificacoes__estado">
+      <app-spinner tamanho="grande" />
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (notificacoes().length === 0) {
+    <app-estado-erro
+      icone="notifications"
+      [titulo]="filtro() === 'nao-lidas' ? 'Tudo lido por aqui' : 'Nenhuma notificação ainda'"
+      [mensagem]="filtro() === 'nao-lidas'
+        ? 'Quando chegar um alerta novo, ele aparece aqui.'
+        : 'Favorite ativos e ligue os alertas para ser avisado de variações fortes e vencimentos.'"
+    />
+  } @else {
+    <ul class="notificacoes__lista">
+      @for (notificacao of notificacoes(); track notificacao.id) {
+        <li>
+          <button
+            type="button"
+            class="notificacoes__item"
+            [class.notificacoes__item--nao-lida]="!notificacao.lida"
+            [class.notificacoes__item--sem-destino]="!temDestino(notificacao)"
+            (click)="abrir(notificacao)"
+          >
+            <span aria-hidden="true" class="notificacoes__icone material-symbols-outlined" [attr.data-tipo]="notificacao.tipo">
+              {{ icone(notificacao.tipo) }}
+            </span>
+            <span class="notificacoes__texto">
+              <strong>{{ notificacao.titulo }}</strong>
+              <span>{{ notificacao.mensagem }}</span>
+            </span>
+            <span class="notificacoes__meta">
+              <time [attr.datetime]="notificacao.criadoEm">{{ tempoRelativo(notificacao.criadoEm) }}</time>
+              @if (!notificacao.lida) {
+                <span class="notificacoes__ponto"><span class="notificacoes__leitor">Não lida</span></span>
+              }
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+
+    @if (erroAoCarregarMais()) {
+      <p class="notificacoes__aviso">Não foi possível carregar mais notificações. Tente de novo.</p>
+    }
+
+    @if (temMais()) {
+      <button type="button" class="notificacoes__mais" [disabled]="carregandoMais()" (click)="carregarMais()">
+        @if (carregandoMais()) {
+          <app-spinner tamanho="pequeno" />
+          Carregando...
+        } @else {
+          Carregar mais
+        }
+      </button>
+    }
+  }
+</div>

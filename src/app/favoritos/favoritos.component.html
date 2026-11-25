@@ -1,0 +1,134 @@
+<div class="favoritos">
+  <header class="favoritos__cabecalho">
+    <div>
+      <h1>Favoritos</h1>
+      <p>Os ativos que você acompanha. Ligue os alertas e o InvestAI avisa no sininho quando algo importante acontecer.</p>
+    </div>
+    @if (!carregando() && !erro() && favoritos().length > 0) {
+      <span class="favoritos__total">{{ favoritos().length }} de {{ LIMITE }}</span>
+    }
+  </header>
+
+  @if (carregando()) {
+    <div class="favoritos__estado">
+      <app-spinner tamanho="grande" />
+    </div>
+  } @else if (erro()) {
+    <app-erro-servidor (tentarNovamente)="carregar()" />
+  } @else if (favoritos().length === 0) {
+    <app-estado-erro
+      icone="star"
+      titulo="Você ainda não tem favoritos"
+      mensagem="Abra uma ação, um FII, um ETF ou um título de renda fixa e toque em Salvar como Favorito."
+      textoAcao="Ver Renda Variável"
+      (acao)="irParaRendaVariavel()"
+    />
+  } @else {
+    <ul class="favoritos__lista">
+      @for (favorito of favoritos(); track favorito.id) {
+        <li class="favoritos__item">
+          <div class="favoritos__linha">
+            <span aria-hidden="true" class="favoritos__icone material-symbols-outlined">{{ iconeTipo(favorito.tipoAtivo) }}</span>
+
+            <div class="favoritos__descricao">
+              @if (rota(favorito); as link) {
+                <a [routerLink]="link" class="favoritos__nome">{{ favorito.codigo ?? favorito.nome }}</a>
+              } @else {
+                <strong class="favoritos__nome">{{ favorito.codigo ?? favorito.nome }}</strong>
+              }
+              <span>{{ favorito.codigo ? favorito.nome + ' · ' : '' }}{{ rotuloTipo(favorito.tipoAtivo) }}</span>
+              <span class="favoritos__resumo" [class.favoritos__resumo--desligado]="!favorito.alertasAtivos">
+                <span aria-hidden="true" class="material-symbols-outlined">{{ favorito.alertasAtivos ? 'notifications_active' : 'notifications_off' }}</span>
+                {{ resumoAlertas(favorito) }}
+              </span>
+            </div>
+
+            <div class="favoritos__acoes">
+              <button
+                type="button"
+                class="favoritos__botao"
+                [attr.aria-expanded]="emEdicao() === favorito.id"
+                [attr.aria-controls]="'alertas-' + favorito.id"
+                (click)="abrirAlertas(favorito)"
+              >
+                <span aria-hidden="true" class="material-symbols-outlined">tune</span>
+                Alertas
+              </button>
+              <button
+                type="button"
+                class="favoritos__botao favoritos__botao--remover"
+                [disabled]="removendo() === favorito.id"
+                [attr.aria-label]="'Remover ' + (favorito.codigo ?? favorito.nome) + ' dos favoritos'"
+                (click)="remover(favorito)"
+              >
+                <span aria-hidden="true" class="material-symbols-outlined">star</span>
+                Remover
+              </button>
+            </div>
+          </div>
+
+          @if (emEdicao() === favorito.id) {
+            <div class="favoritos__alertas" [id]="'alertas-' + favorito.id">
+              <label class="favoritos__opcao favoritos__opcao--principal">
+                <input
+                  type="checkbox"
+                  [ngModel]="edicao().alertasAtivos"
+                  (ngModelChange)="alternarAlertas($event)"
+                />
+                Receber alertas deste ativo
+              </label>
+
+              @if (edicao().alertasAtivos) {
+                <fieldset class="favoritos__tipos">
+                  <legend>Me avise quando houver</legend>
+                  @for (tipo of favorito.tiposAlertaDisponiveis; track tipo) {
+                    <label class="favoritos__opcao">
+                      <input
+                        type="checkbox"
+                        [ngModel]="edicao().tipos.includes(tipo)"
+                        (ngModelChange)="alternarTipo(tipo, $event)"
+                      />
+                      {{ rotulosAlerta[tipo] }}
+                    </label>
+                  }
+                </fieldset>
+
+                @if (favorito.tipoAtivo === 'ACAO_FII_ETF') {
+                  <div class="favoritos__campo" [class.favoritos__campo--erro]="limiarInvalido(favorito)">
+                    <label [for]="'limiar-' + favorito.id">Avisar a partir de uma variação de (%)</label>
+                    <input
+                      [id]="'limiar-' + favorito.id"
+                      type="number"
+                      inputmode="decimal"
+                      step="0.5"
+                      [min]="LIMIAR_MINIMO"
+                      [max]="LIMIAR_MAXIMO"
+                      [ngModel]="edicao().limiar"
+                      (ngModelChange)="alterarLimiar($event)"
+                      [attr.aria-invalid]="limiarInvalido(favorito)"
+                      [attr.aria-describedby]="'limiar-ajuda-' + favorito.id"
+                    />
+                    <p [id]="'limiar-ajuda-' + favorito.id" class="favoritos__ajuda">
+                      @if (limiarInvalido(favorito)) {
+                        Informe um valor entre 0,01 e 100.
+                      } @else {
+                        Vale para alta ou queda no dia. Você recebe no máximo um aviso de cada tipo a cada 24 horas.
+                      }
+                    </p>
+                  </div>
+                }
+              }
+
+              <div class="favoritos__salvar">
+                <app-button variante="secundaria" (click)="emEdicao.set(null)">Cancelar</app-button>
+                <app-button [carregando]="salvando()" [desabilitado]="limiarInvalido(favorito)" (click)="salvarAlertas(favorito)">
+                  Salvar alertas
+                </app-button>
+              </div>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

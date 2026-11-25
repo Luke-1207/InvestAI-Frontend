@@ -1,0 +1,73 @@
+<section class="formulario" aria-labelledby="comunicados-titulo">
+  <header>
+    <h1 id="comunicados-titulo" class="formulario__titulo">Comunicados</h1>
+    <p class="formulario__descricao">
+      Envie um aviso para todos os usuários ativos. Ele chega no sininho de cada um, junto com os alertas dos favoritos.
+      Use para manutenções, novidades da plataforma ou mudanças importantes.
+    </p>
+  </header>
+
+  @if (ultimoEnvio() !== null) {
+    <p class="comunicados__sucesso" role="status">
+      <span aria-hidden="true" class="material-symbols-outlined">check_circle</span>
+      Último comunicado entregue para {{ ultimoEnvio() }} {{ ultimoEnvio() === 1 ? 'usuário' : 'usuários' }}.
+    </p>
+  }
+
+  <form [formGroup]="formulario" novalidate (ngSubmit)="revisar()">
+    <div class="formulario__painel">
+      <div class="campo campo--largo" [class.campo--erro]="mostrarErro('titulo')">
+        <label for="comunicado-titulo">Título</label>
+        <input
+          id="comunicado-titulo"
+          type="text"
+          formControlName="titulo"
+          [attr.maxlength]="TAMANHO_MAXIMO_TITULO"
+          [attr.aria-invalid]="mostrarErro('titulo')"
+          [attr.aria-describedby]="mostrarErro('titulo') ? 'comunicado-titulo-erro' : 'comunicado-titulo-ajuda'"
+        />
+        @if (mostrarErro('titulo')) {
+          <p id="comunicado-titulo-erro" class="campo__erro">{{ mensagemErro('titulo') }}</p>
+        } @else {
+          <p id="comunicado-titulo-ajuda" class="campo__ajuda">{{ tamanhoTitulo() }} de {{ TAMANHO_MAXIMO_TITULO }} caracteres.</p>
+        }
+      </div>
+
+      <div class="campo campo--largo" [class.campo--erro]="mostrarErro('mensagem')">
+        <label for="comunicado-mensagem">Mensagem</label>
+        <textarea
+          id="comunicado-mensagem"
+          rows="6"
+          formControlName="mensagem"
+          class="comunicados__mensagem"
+          [attr.maxlength]="TAMANHO_MAXIMO_MENSAGEM"
+          [attr.aria-invalid]="mostrarErro('mensagem')"
+          [attr.aria-describedby]="mostrarErro('mensagem') ? 'comunicado-mensagem-erro' : 'comunicado-mensagem-ajuda'"
+        ></textarea>
+        @if (mostrarErro('mensagem')) {
+          <p id="comunicado-mensagem-erro" class="campo__erro">{{ mensagemErro('mensagem') }}</p>
+        } @else {
+          <p id="comunicado-mensagem-ajuda" class="campo__ajuda">{{ tamanhoMensagem() }} de {{ TAMANHO_MAXIMO_MENSAGEM }} caracteres.</p>
+        }
+      </div>
+    </div>
+
+    @if (erroGeral()) {
+      <p class="formulario__erro-geral" role="alert">{{ erroGeral() }}</p>
+    }
+
+    <div class="formulario__acoes">
+      <app-button tipoHtml="submit" [carregando]="enviando()">Revisar e enviar</app-button>
+    </div>
+  </form>
+</section>
+
+<app-dialogo-confirmacao
+  titulo="Enviar comunicado para todos?"
+  textoConfirmar="Enviar agora"
+  [processando]="enviando()"
+  (confirmado)="enviar()"
+>
+  <p><strong>{{ formulario.controls.titulo.value }}</strong></p>
+  <p>Todos os usuários ativos vão receber esse aviso no sininho. Não dá para desfazer o envio.</p>
+</app-dialogo-confirmacao>

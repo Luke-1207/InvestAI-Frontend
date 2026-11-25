@@ -22,5 +22,6 @@ export class GestorLayoutComponent {
     { rota: '/gestor/titulos', rotulo: 'Títulos privados', icone: 'account_balance', exata: false },
     { rota: '/gestor/usuarios', rotulo: 'Usuários', icone: 'group', exata: false },
     { rota: '/gestor/indicadores', rotulo: 'Indicadores', icone: 'percent', exata: false },
+    { rota: '/gestor/comunicados', rotulo: 'Comunicados', icone: 'campaign', exata: false },
   ];
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
@@ -6,6 +6,7 @@ import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import {FotoPerfilService} from '../../services/foto-perfil.service';
+import { NotificacaoService } from '../../services/notificacao.service';
 import { TickerMercadoComponent } from '../ticker-mercado/ticker-mercado.component';
 import { BuscaAtivosComponent } from '../busca-ativos/busca-ativos.component';
 
@@ -22,13 +23,14 @@ interface ItemNav {
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
-export class AppShellComponent implements OnInit {
+export class AppShellComponent implements OnInit, OnDestroy {
   @ViewChild(BuscaAtivosComponent) busca?: BuscaAtivosComponent;
   @ViewChild('botaoUsuario') botaoUsuario?: ElementRef<HTMLButtonElement>;
 
   protected readonly themeService = inject(ThemeService);
   protected readonly authService = inject(AuthService);
   protected readonly fotoPerfilService = inject(FotoPerfilService);
+  protected readonly notificacaoService = inject(NotificacaoService);
   private readonly dashboardService = inject(DashboardService);
   private readonly router = inject(Router);
 
@@ -49,6 +51,17 @@ export class AppShellComponent implements OnInit {
 
   readonly ehGestor = computed(() => this.authService.role() === 'GESTOR');
 
+  readonly rotuloNotificacoes = computed(() => {
+    const total = this.notificacaoService.naoLidas();
+    if (total === 0) return 'Notificações';
+    return total === 1 ? 'Notificações, 1 não lida' : `Notificações, ${total} não lidas`;
+  });
+
+  readonly contadorNotificacoes = computed(() => {
+    const total = this.notificacaoService.naoLidas();
+    return total > 99 ? '99+' : String(total);
+  });
+
   constructor() {
     this.router.events
       .pipe(
@@ -66,9 +79,14 @@ export class AppShellComponent implements OnInit {
 
   ngOnInit(): void {
     this.fotoPerfilService.carregar();
+    this.notificacaoService.iniciarContagem();
     if (!this.dashboardService.dashboard()) {
       this.dashboardService.carregar().subscribe();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.notificacaoService.pararContagem();
   }
 
   get iniciais(): string {
@@ -98,6 +116,7 @@ export class AppShellComponent implements OnInit {
 
   sair(): void {
     this.menuUsuarioAberto.set(false);
+    this.notificacaoService.pararContagem();
     this.authService.logout();
   }
 

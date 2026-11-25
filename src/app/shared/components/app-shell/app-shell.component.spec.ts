@@ -6,6 +6,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppShellComponent } from './app-shell.component';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificacaoService } from '../../services/notificacao.service';
 
 describe('AppShellComponent', () => {
   let fixture: ComponentFixture<AppShellComponent>;
@@ -300,5 +301,35 @@ describe('AppShellComponent', () => {
       expect(fixture.nativeElement.querySelector('.sidebar__logo img').getAttribute('alt')).toBe('');
       expect(fixture.nativeElement.querySelector('.sidebar h1')).toBeNull();
     });
+  });
+
+  it('deve mostrar o contador de não lidas no sininho', () => {
+    const notificacaoService = TestBed.inject(NotificacaoService);
+    notificacaoService.naoLidas.set(3);
+    fixture.detectChanges();
+
+    const sininho: HTMLAnchorElement = fixture.nativeElement.querySelector('.header__sininho');
+    expect(sininho.querySelector('.header__contador')!.textContent!.trim()).toBe('3');
+    expect(sininho.getAttribute('aria-label')).toBe('Notificações, 3 não lidas');
+  });
+
+  it('não deve mostrar o contador quando não há não lidas e deve limitar em 99+', () => {
+    const notificacaoService = TestBed.inject(NotificacaoService);
+    notificacaoService.naoLidas.set(0);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.header__contador')).toBeNull();
+
+    notificacaoService.naoLidas.set(150);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.header__contador').textContent.trim()).toBe('99+');
+  });
+
+  it('deve parar a contagem de notificações ao ser destruído', () => {
+    const notificacaoService = TestBed.inject(NotificacaoService);
+    const pararSpy = spyOn(notificacaoService, 'pararContagem').and.callThrough();
+
+    fixture.destroy();
+
+    expect(pararSpy).toHaveBeenCalled();
   });
 });

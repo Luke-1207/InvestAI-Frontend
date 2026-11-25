@@ -1,0 +1,36 @@
+@use '../../../styles/design-system' as *;
+@use '../formulario-gestao';
+
+.comunicados__mensagem {
+  min-height: 140px;
+  padding: $space-3;
+  box-sizing: border-box;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: 15px;
+  line-height: 1.5;
+  resize: vertical;
+
+  .campo--erro & {
+    border-color: var(--danger);
+  }
+}
+
+.comunicados__sucesso {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin: 0;
+  padding: $space-3 $space-4;
+  border: 1px solid var(--border-success);
+  border-radius: $radius-lg;
+  font-family: $font-body;
+  font-size: 14px;
+
+  .material-symbols-outlined {
+    color: var(--success-text);
+  }
+}
